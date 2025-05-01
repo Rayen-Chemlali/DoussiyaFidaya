@@ -1,10 +1,20 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { User } from './user.entity';
 import { Patient } from './patient.entity';
 import { Medication } from './medication.entity';
 import { Doctor } from './doctor.entity';
 import { Field, GraphQLISODateTime, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';
+
+export enum PrescriptionStatus {
+  PENDING = 'Pending',
+  APPROVED = 'Approved',
+  REJECTED = 'Rejected',
+}
+
+registerEnumType(PrescriptionStatus, {
+  name: 'PrescriptionStatus',
+  description: 'The status of the prescription',
+})
 
 @Entity('prescriptions')
 @ObjectType()
@@ -52,13 +62,3 @@ export class Prescription {
   medications: Medication[];
 }
 
-export enum PrescriptionStatus {
-  PENDING = 'Pending',
-  APPROVED = 'Approved',
-  REJECTED = 'Rejected',
-}
-
-registerEnumType(PrescriptionStatus, {
-  name: 'PrescriptionStatus',
-  description: 'The status of the prescription',
-})

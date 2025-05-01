@@ -3,5 +3,5 @@ import { LabResult } from './lab-result.entity';
 import { ObjectType } from '@nestjs/graphql';
 
 @Entity('xray_results')
-@ObjectType()
+@ObjectType({implements: LabResult})
 export class XRayResult extends LabResult {}

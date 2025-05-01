@@ -43,7 +43,7 @@ export class Consultation {
   institut_medical: InstitutMedical;
 
   @Field(() => Prescription)
-  @OneToOne(() => Prescription, prescription => prescription.consultation, { nullable: true })
+  @OneToOne(() => Prescription, { nullable: true })
   @JoinColumn({ name: 'prescription_id' })
   prescription: Prescription;
 

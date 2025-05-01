@@ -32,4 +32,9 @@ export class DoctorsResolver {
   removeDoctor(@Args('id', { type: () => Int }) id: number) {
     return this.doctorsService.remove(id);
   }
+
+  @Query(() => Int, { name: 'PatientsCount' })
+  async getPatientsCount(@Args('doctorId', { type: () => Int }) doctorId: number) {
+    return 10;
+  }
 }

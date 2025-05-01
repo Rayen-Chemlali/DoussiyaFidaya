@@ -3,7 +3,7 @@ import { InstitutMedical } from './institut-medical.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity('cliniques')
-@ObjectType()
+@ObjectType({implements: InstitutMedical})
 export class Clinique extends InstitutMedical {
   @Field()
   @Column({ type: 'text', nullable: false })

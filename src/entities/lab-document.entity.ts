@@ -6,7 +6,16 @@ import { LabAttachment } from './lab-attachment.entity';
 import { LabResult } from './lab-result.entity';
 import { Field, GraphQLISODateTime, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';
-
+export enum LabDocumentStatus {
+  PENDING = 'pending',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}
+registerEnumType(LabDocumentStatus, {
+  name: 'LabDocumentStatus',
+  description: "Le statut d'un document de laboratoire",
+})
 @Entity('lab_documents')
 @ObjectType()
 export class LabDocument {
@@ -62,13 +71,3 @@ export class LabDocument {
   results: LabResult[];
 }
 
-export enum LabDocumentStatus {
-  PENDING = 'pending',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-}
-registerEnumType(LabDocumentStatus, {
-  name: 'LabDocumentStatus',
-  description: "Le statut d'un document de laboratoire",
-})

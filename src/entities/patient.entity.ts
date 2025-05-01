@@ -3,7 +3,15 @@ import { User } from './user.entity';
 import { GeneralMedicalRecord } from './general-medical-record.entity';
 import { Field, GraphQLISODateTime, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';
+export enum Gender {
+  MALE='Male',
+  FEMALE='Female'
+}
 
+registerEnumType(Gender,{
+  name:'Gender',
+  description:'The gender of the patient',
+})
 @Entity('patients')
 @ObjectType()
 export class Patient {
@@ -33,17 +41,8 @@ export class Patient {
   general_medical_record: GeneralMedicalRecord;
 
   @Field(() => User)
-  @OneToOne(() => User, user => user.patient, { nullable: true })
+  @OneToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 }
 
-export enum Gender {
-  MALE='Male',
-  FEMALE='Female'
-}
-
-registerEnumType(Gender,{
-  name:'Gender',
-  description:'The gender of the patient',
-})

@@ -3,7 +3,16 @@ import { InstitutMedical } from './institut-medical.entity';
 import { Patient } from './patient.entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';
+export enum AuthorizationLevel {
+  GENERAL = 'general',
+  SPECIALITY = 'speciality',
+  FULL_ACCESS = 'full_access',
+}
 
+registerEnumType(AuthorizationLevel, {
+  name: 'AuthorizationLevel',
+  description: "Le niveau d'acces pour un medecin au dossier medical d'un patient",
+})
 @Entity('authorizations')
 @ObjectType()
 export class Authorization {
@@ -26,13 +35,3 @@ export class Authorization {
   level: AuthorizationLevel;
 }
 
-export enum AuthorizationLevel {
-  GENERAL = 'general',
-  SPECIALITY = 'speciality',
-  FULL_ACCESS = 'full_access',
-}
-
-registerEnumType(AuthorizationLevel, {
-  name: 'AuthorizationLevel',
-  description: "Le niveau d'acces pour un medecin au dossier medical d'un patient",
-})

@@ -39,8 +39,8 @@ registerEnumType(Specialty, {
   name: 'Specialty',
   description: 'Les specialites medicales disponibles',
 })
+@ObjectType({implements: InstitutMedical})
 @Entity('doctors')
-@ObjectType()
 export class Doctor extends InstitutMedical {
   @Field()
   @Column({ type: 'text', nullable: true })

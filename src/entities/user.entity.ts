@@ -1,6 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
-import { Patient } from './patient.entity';
-import { Doctor } from './doctor.entity';
 import { Field, GraphQLISODateTime, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLEmailAddress, GraphQLPhoneNumber, GraphQLUUID } from 'graphql-scalars';
 

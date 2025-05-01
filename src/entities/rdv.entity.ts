@@ -36,7 +36,7 @@ export class Rdv {
   doctor: Doctor;
 
   @Field(() => Consultation)
-  @OneToOne(() => Consultation, consultation => consultation.rdv, { nullable: true })
+  @OneToOne(() => Consultation, { nullable: true })
   @JoinColumn({ name: 'consultation_id' })
   consultation: Consultation;
 }

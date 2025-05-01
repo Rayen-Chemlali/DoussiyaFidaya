@@ -3,7 +3,7 @@ import { LabResult } from './lab-result.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity('analysis_results')
-@ObjectType()
+@ObjectType({implements: LabResult})
 export class AnalysisResult extends LabResult {
   @Field()
   @Column({ type: 'text', nullable: false })

@@ -4,8 +4,16 @@ import { Patient } from './patient.entity';
 import { Doctor } from './doctor.entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';
-import { register } from 'tsconfig-paths';
+export enum Priority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+}
 
+registerEnumType(Priority, {
+  name: 'Priority',
+  description: 'Priorité de la demande de laboratoire',
+})
 @Entity('lab_requests')
 @ObjectType()
 export class LabRequest {
@@ -36,13 +44,3 @@ export class LabRequest {
   description: string;
 }
 
-export enum Priority {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-}
-
-registerEnumType(Priority, {
-  name: 'Priority',
-  description: 'Priorité de la demande de laboratoire',
-})

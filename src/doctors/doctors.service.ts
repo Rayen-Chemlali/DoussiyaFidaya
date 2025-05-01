@@ -23,4 +23,7 @@ export class DoctorsService {
   remove(id: number) {
     return `This action removes a #${id} doctor`;
   }
+  getPatientsByDoctorId(doctorId: string) {
+    return
+  }
 }

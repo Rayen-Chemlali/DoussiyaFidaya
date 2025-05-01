@@ -23,10 +23,27 @@ import { CtScanResultsModule } from './ct-scan-results/ct-scan-results.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { GeneralMedicalRecordsModule } from './general-medical-records/general-medical-records.module';
 import { HopitalsModule } from './hopitals/hopitals.module';
-import { InstitutMedicalsModule } from './institut-medicals/institut-medicals.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.local','.env'],
+    }),
+    TypeOrmModule.forRoot({
+    type: 'postgres', // Your DB type
+    host: 'localhost', // Your DB host
+    port: 5432, // Default PostgreSQL port
+    username: process.env.DBUsername, // Database username
+    password: process.env.DBpassword, // Database password
+    database: 'medical-system', // Database name
+    entities: [__dirname + '/entities/*.entity{.ts,.js}'], // Automatically include all entities
+    synchronize: true, // Set to `true` for auto-sync in dev (don't use in production)
+    logging: true, // Enable logging to view SQL queries
+  }),
+    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule],
   controllers: [AppController],
   providers: [AppService],
 })

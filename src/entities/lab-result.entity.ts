@@ -1,12 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Inheritance } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { LabDocument } from './lab-document.entity';
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, InterfaceType, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';
-import { register } from 'tsconfig-paths';
+export enum LabResultType {
+  ANALYSIS = 'analysis',
+  XRAY = 'xray',
+  CTSCAN = 'ctscan',
+}
 
+registerEnumType(LabResultType, {
+  name: 'LabResultType',
+  description: "Le type de résultat d'analyse",
+})
+@InterfaceType()
 @Entity('lab_results')
-@Inheritance({ column: { name: 'result_type', type: 'text' } })
-@ObjectType()
 export abstract class LabResult {
   @Field(() => GraphQLUUID)
   @PrimaryGeneratedColumn('uuid')
@@ -34,13 +41,3 @@ export abstract class LabResult {
   result_type: LabResultType; // Discriminateur : 'Analysis', 'XRay', 'CTScan'
 }
 
-export enum LabResultType {
-  ANALYSIS = 'analysis',
-  XRAY = 'xray',
-  CTSCAN = 'ctscan',
-}
-
-registerEnumType(LabResultType, {
-  name: 'LabResultType',
-  description: "Le type de résultat d'analyse",
-})
