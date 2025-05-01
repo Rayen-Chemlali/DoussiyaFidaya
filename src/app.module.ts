@@ -25,6 +25,8 @@ import { GeneralMedicalRecordsModule } from './general-medical-records/general-m
 import { HopitalsModule } from './hopitals/hopitals.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { CommonModule } from './common/common.module';
+import { GenericService } from './common/generic.service';
 
 @Module({
   imports: [
@@ -36,15 +38,15 @@ import { ConfigModule } from '@nestjs/config';
     type: 'postgres', // Your DB type
     host: 'localhost', // Your DB host
     port: 5432, // Default PostgreSQL port
-    username: process.env.DBUsername, // Database username
-    password: process.env.DBpassword, // Database password
+    username: process.env.DBUsername ?? "postgres", // Database username
+    password: process.env.DBpassword ?? "sahbi", // Database password
     database: 'medical-system', // Database name
     entities: [__dirname + '/entities/*.entity{.ts,.js}'], // Automatically include all entities
     synchronize: true, // Set to `true` for auto-sync in dev (don't use in production)
     logging: true, // Enable logging to view SQL queries
   }),
-    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule],
+    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, GenericService],
 })
 export class AppModule {}
