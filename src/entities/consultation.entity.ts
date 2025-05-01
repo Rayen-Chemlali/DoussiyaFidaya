@@ -5,40 +5,54 @@ import { Prescription } from './prescription.entity';
 import { Patient } from './patient.entity';
 import { LabRequest } from './lab-request.entity';
 import { Doctor } from './doctor.entity';
+import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
+import { GraphQLUUID } from 'graphql-scalars';
 
 @Entity('consultations')
+@ObjectType()
 export class Consultation {
+  @Field(()=> GraphQLUUID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Field(() => String)
   @Column({ type: 'text', nullable: true })
   section: string;
 
+  @Field(() => GraphQLISODateTime)
   @Column({ type: 'timestamp with time zone', nullable: false })
   date: Date;
 
+  @Field(() => [String])
   @Column({ type: 'text', array: true, nullable: true })
   notes: string[];
 
+  @Field(() => GraphQLJSON)
   @Column({ type: 'jsonb', nullable: true })
   measures: object;
 
+  @Field(() => Doctor)
   @ManyToOne(() => Doctor, { nullable: true })
   @JoinColumn({ name: 'doctor_id' })
   doctor: Doctor;
 
+  @Field(() => InstitutMedical)
   @ManyToOne(() => InstitutMedical, { nullable: true })
   @JoinColumn({ name: 'institut_medical_id' })
   institut_medical: InstitutMedical;
 
+  @Field(() => Prescription)
   @OneToOne(() => Prescription, prescription => prescription.consultation, { nullable: true })
   @JoinColumn({ name: 'prescription_id' })
   prescription: Prescription;
 
+  @Field(() => Patient)
   @ManyToOne(() => Patient, { nullable: false })
   @JoinColumn({ name: 'patient_id' })
   patient: Patient;
 
+  @Field(() => [LabRequest])
   @ManyToMany(() => LabRequest)
   @JoinTable({
     name: 'consultation_lab_requests',
