@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { DeepPartial, Repository } from 'typeorm';
 
 @Injectable()
-export class GenericService<T extends { id: number }> { // we extends the entity with id property
+export class GenericService<T extends { id: number },CreateDto,UpdateDto> { // we extends the entity with id property
   constructor(private readonly repository: Repository<T>) {}
 
   async findAll(relations: string[] = []): Promise<T[]> {
@@ -17,11 +17,11 @@ async findOne(id: number, relations: string[] = []): Promise<T | null> {
   return entity;
 }
 
-  async create(createDto: any): Promise<(DeepPartial<T> & T)[]> {
+  async create(createDto: CreateDto): Promise<(DeepPartial<T> & T)[]> {
     return this.repository.save(createDto);
   }
 
-  async update(id: number, updateDto: any): Promise<T | null> {
+  async update(id: number, updateDto: UpdateDto): Promise<T | null> {
     await this.repository.update(id, updateDto);
     return this.findOne(id) as Promise<T | null>;
   }
