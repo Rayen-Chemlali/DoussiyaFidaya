@@ -3,15 +3,13 @@ import { AuthorizationsService } from './authorizations.service';
 import { Authorization } from './entities/authorization.entity';
 import { CreateAuthorizationInput } from './dto/create-authorization.input';
 import { UpdateAuthorizationInput } from './dto/update-authorization.input';
+import { GraphQLUUID } from 'graphql-scalars';
 
 @Resolver(() => Authorization)
 export class AuthorizationsResolver {
   constructor(private readonly authorizationsService: AuthorizationsService) {}
 
-  @Mutation(() => Authorization)
-  createAuthorization(@Args('createAuthorizationInput') createAuthorizationInput: CreateAuthorizationInput) {
-    return this.authorizationsService.create(createAuthorizationInput);
-  }
+ 
 
   @Query(() => [Authorization], { name: 'authorizations' })
   findAll() {
@@ -19,17 +17,23 @@ export class AuthorizationsResolver {
   }
 
   @Query(() => Authorization, { name: 'authorization' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.authorizationsService.findOne(id);
   }
 
-  @Mutation(() => Authorization)
-  updateAuthorization(@Args('updateAuthorizationInput') updateAuthorizationInput: UpdateAuthorizationInput) {
-    return this.authorizationsService.update(updateAuthorizationInput.id, updateAuthorizationInput);
+  @Query(() => [Authorization])
+  async authorizationsByPatientId(
+    @Args('patientId', { type: () => GraphQLUUID }) patientId: string,
+  ): Promise<Authorization[]> {
+    return this.authorizationsService.findByPatientId(patientId);
   }
 
-  @Mutation(() => Authorization)
-  removeAuthorization(@Args('id', { type: () => Int }) id: number) {
-    return this.authorizationsService.remove(id);
+  @Query(() => [Authorization])
+  async authorizationsByMedicalInstituteId(
+    @Args('medicalInstituteId', { type: () => GraphQLUUID }) medicalInstituteId: string,
+  ): Promise<Authorization[]> {
+    return this.authorizationsService.findByMedicalInstituteId(medicalInstituteId);
   }
+
+
 }

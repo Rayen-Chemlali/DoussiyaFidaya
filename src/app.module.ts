@@ -26,7 +26,8 @@ import { HopitalsModule } from './hopitals/hopitals.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
-import { GenericService } from './common/generic.service';
+import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
+
 
 @Module({
   imports: [
@@ -45,8 +46,8 @@ import { GenericService } from './common/generic.service';
     synchronize: true, // Set to `true` for auto-sync in dev (don't use in production)
     logging: true, // Enable logging to view SQL queries
   }),
-    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule],
+    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule, RdvRequestsModule],
   controllers: [AppController],
-  providers: [AppService, GenericService],
+  providers: [AppService],
 })
 export class AppModule {}
