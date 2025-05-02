@@ -7,7 +7,7 @@ import { UpdateGeneralMedicalRecordInput } from './dto/update-general-medical-re
 import { GenericService } from 'src/common/generic.service'; // Adjust path as needed
 
 @Injectable()
-export class GeneralMedicalRecordsService extends GenericService<GeneralMedicalRecord> {
+export class GeneralMedicalRecordsService extends GenericService<GeneralMedicalRecord ,any, any> {
   constructor(
     @InjectRepository(GeneralMedicalRecord)
     private readonly medicalRecordRepository: Repository<GeneralMedicalRecord>,

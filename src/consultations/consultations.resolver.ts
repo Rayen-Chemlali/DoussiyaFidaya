@@ -15,14 +15,14 @@ export class ConsultationsResolver {
 
   @Query(() => [Consultation], { name: 'consultations' })
   findAll() {
-    return this.consultationsService.findAll();
+    return this.consultationsService.genericFindAll();
   }
 
   @Query(() => Consultation, { name: 'consultation' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.consultationsService.findOne(id);
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.consultationsService.genericFindOne(id);
   }
-
+/*
   @Mutation(() => Consultation)
   updateConsultation(@Args('updateConsultationInput') updateConsultationInput: UpdateConsultationInput) {
     return this.consultationsService.update(updateConsultationInput.id, updateConsultationInput);
@@ -32,4 +32,5 @@ export class ConsultationsResolver {
   removeConsultation(@Args('id', { type: () => Int }) id: number) {
     return this.consultationsService.remove(id);
   }
+    */
 }

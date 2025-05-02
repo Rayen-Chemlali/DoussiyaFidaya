@@ -37,7 +37,32 @@ enum LabResultType {
 
 type GeneralMedicalRecord {
   id: UUID!
-  allergies: [String!]!
+  allergies: [String!]
+  bloodType: String
+  birthDate: Date
+  height: Float
+  weight: Float
+  patient: Patient!
+}
+
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
+type Doctor implements InstitutMedical {
+  id: UUID!
+  type: InstitutMedicalType!
+  bio: String!
+  education: [String!]!
+  experience: [String!]!
+  first_name: String!
+  languages: [String!]!
+  last_name: String!
+  profile_image: String!
+  specialty: String!
+  user: User!
+  instituts: [InstitutMedical!]!
 }
 
 type User {
@@ -103,21 +128,6 @@ type Laboratory {
   phone: PhoneNumber!
   email: EmailAddress!
   name: String!
-}
-
-type Doctor implements InstitutMedical {
-  id: UUID!
-  type: InstitutMedicalType!
-  bio: String!
-  education: [String!]!
-  experience: [String!]!
-  first_name: String!
-  languages: [String!]!
-  last_name: String!
-  profile_image: String!
-  specialty: String!
-  user: User!
-  instituts: [InstitutMedical!]!
 }
 
 type LabRequest {
@@ -224,6 +234,22 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
+type RdvRequest {
+  id: UUID!
+  date: DateTime!
+  time: Time!
+  Motif: String!
+  Status: String!
+  patient: Patient!
+  doctor: Doctor!
+  rdv: Rdv!
+}
+
+"""
+A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Time
+
 type Rdv {
   id: UUID!
   date: DateTime!
@@ -232,12 +258,8 @@ type Rdv {
   patient: Patient!
   doctor: Doctor!
   consultation: Consultation!
+  rdvRequest: RdvRequest!
 }
-
-"""
-A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
-"""
-scalar Time
 
 "\n    A string representing a duration conforming to the ISO8601 standard,\n    such as: P1W1DT13H23M34S\n    P is the duration designator (for period) placed at the start of the duration representation.\n    Y is the year designator that follows the value for the number of years.\n    M is the month designator that follows the value for the number of months.\n    W is the week designator that follows the value for the number of weeks.\n    D is the day designator that follows the value for the number of days.\n    T is the time designator that precedes the time components of the representation.\n    H is the hour designator that follows the value for the number of hours.\n    M is the minute designator that follows the value for the number of minutes.\n    S is the second designator that follows the value for the number of seconds.\n\n    Note the time designator, T, that precedes the time value.\n\n    Matches moment.js, Luxon and DateFns implementations\n    ,/. is valid for decimal places and +/- is a valid prefix\n  "
 scalar Duration
@@ -313,37 +335,29 @@ type Hopital implements InstitutMedical {
   email: String!
 }
 
-type RdvRequest {
-  id: UUID!
-  date: DateTime!
-  time: Time!
-  Motif: String!
-  Status: String!
-  patient: Patient!
-  doctor: Doctor!
-  rdv: Rdv!
-}
-
 type Query {
   institutMedicals: [InstitutMedical!]!
   institutMedical(id: Int!): InstitutMedical!
   analysisResults: [AnalysisResult!]!
   analysisResult(id: Int!): AnalysisResult!
   authorizations: [Authorization!]!
-  authorization(id: Int!): Authorization!
+  authorization(id: String!): Authorization!
+  authorizationsByPatientId(patientId: UUID!): [Authorization!]!
+  authorizationsByMedicalInstituteId(medicalInstituteId: UUID!): [Authorization!]!
   certificates: [Certificate!]!
   certificate(id: Int!): Certificate!
   cliniques: [Clinique!]!
   clinique(id: Int!): Clinique!
   consultations: [Consultation!]!
-  consultation(id: Int!): Consultation!
+  consultation(id: String!): Consultation!
   ctScanResults: [CTScanResult!]!
   ctScanResult(id: Int!): CTScanResult!
   doctors: [Doctor!]!
   doctor(id: Int!): Doctor!
   PatientsCount(doctorId: Int!): Int!
   generalMedicalRecords: [GeneralMedicalRecord!]!
-  generalMedicalRecord(id: Int!): GeneralMedicalRecord!
+  generalMedicalRecord(id: String!): GeneralMedicalRecord!
+  generalMedicalRecordsByPatientId(patientId: String!): [GeneralMedicalRecord!]!
   hopitals: [Hopital!]!
   hopital(id: Int!): Hopital!
   labAttachments: [LabAttachment!]!
@@ -359,7 +373,8 @@ type Query {
   medications: [Medication!]!
   medication(id: Int!): Medication!
   patients: [Patient!]!
-  patient(id: Int!): Patient!
+  patient(id: String!): Patient!
+  patientsByUserId(userId: UUID!): [Patient!]!
   pharmacys: [Pharmacy!]!
   pharmacy(id: Int!): Pharmacy!
   prescriptions: [Prescription!]!
@@ -381,9 +396,6 @@ type Mutation {
   createAnalysisResult(createAnalysisResultInput: CreateAnalysisResultInput!): AnalysisResult!
   updateAnalysisResult(updateAnalysisResultInput: UpdateAnalysisResultInput!): AnalysisResult!
   removeAnalysisResult(id: Int!): AnalysisResult!
-  createAuthorization(createAuthorizationInput: CreateAuthorizationInput!): Authorization!
-  updateAuthorization(updateAuthorizationInput: UpdateAuthorizationInput!): Authorization!
-  removeAuthorization(id: Int!): Authorization!
   createCertificate(createCertificateInput: CreateCertificateInput!): Certificate!
   updateCertificate(updateCertificateInput: UpdateCertificateInput!): Certificate!
   removeCertificate(id: Int!): Certificate!
@@ -391,17 +403,12 @@ type Mutation {
   updateClinique(updateCliniqueInput: UpdateCliniqueInput!): Clinique!
   removeClinique(id: Int!): Clinique!
   createConsultation(createConsultationInput: CreateConsultationInput!): Consultation!
-  updateConsultation(updateConsultationInput: UpdateConsultationInput!): Consultation!
-  removeConsultation(id: Int!): Consultation!
   createCtScanResult(createCtScanResultInput: CreateCtScanResultInput!): CTScanResult!
   updateCtScanResult(updateCtScanResultInput: UpdateCtScanResultInput!): CTScanResult!
   removeCtScanResult(id: Int!): CTScanResult!
   createDoctor(createDoctorInput: CreateDoctorInput!): Doctor!
   updateDoctor(updateDoctorInput: UpdateDoctorInput!): Doctor!
   removeDoctor(id: Int!): Doctor!
-  createGeneralMedicalRecord(createGeneralMedicalRecordInput: CreateGeneralMedicalRecordInput!): GeneralMedicalRecord!
-  updateGeneralMedicalRecord(updateGeneralMedicalRecordInput: UpdateGeneralMedicalRecordInput!): GeneralMedicalRecord!
-  removeGeneralMedicalRecord(id: Int!): GeneralMedicalRecord!
   createHopital(createHopitalInput: CreateHopitalInput!): Hopital!
   updateHopital(updateHopitalInput: UpdateHopitalInput!): Hopital!
   removeHopital(id: Int!): Hopital!
@@ -423,9 +430,6 @@ type Mutation {
   createMedication(createMedicationInput: CreateMedicationInput!): Medication!
   updateMedication(updateMedicationInput: UpdateMedicationInput!): Medication!
   removeMedication(id: Int!): Medication!
-  createPatient(createPatientInput: CreatePatientInput!): Patient!
-  updatePatient(updatePatientInput: UpdatePatientInput!): Patient!
-  removePatient(id: Int!): Patient!
   createPharmacy(createPharmacyInput: CreatePharmacyInput!): Pharmacy!
   updatePharmacy(updatePharmacyInput: UpdatePharmacyInput!): Pharmacy!
   removePharmacy(id: Int!): Pharmacy!
@@ -468,17 +472,6 @@ input UpdateAnalysisResultInput {
   id: Int!
 }
 
-input CreateAuthorizationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateAuthorizationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
 input CreateCertificateInput {
   """Example field (placeholder)"""
   exampleField: Int!
@@ -506,12 +499,6 @@ input CreateConsultationInput {
   exampleField: Int!
 }
 
-input UpdateConsultationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
 input CreateCtScanResultInput {
   """Example field (placeholder)"""
   exampleField: Int!
@@ -529,17 +516,6 @@ input CreateDoctorInput {
 }
 
 input UpdateDoctorInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
-input CreateGeneralMedicalRecordInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateGeneralMedicalRecordInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!
@@ -617,17 +593,6 @@ input CreateMedicationInput {
 }
 
 input UpdateMedicationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
-input CreatePatientInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdatePatientInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!

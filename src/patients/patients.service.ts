@@ -7,7 +7,7 @@ import { CreatePatientInput } from './dto/create-patient.input';
 import { UpdatePatientInput } from './dto/update-patient.input';
 
 @Injectable()
-export class PatientsService extends GenericService<Patient> {
+export class PatientsService extends GenericService<Patient , any , any> {
   constructor(
     @InjectRepository(Patient)
     private readonly patientRepository: Repository<Patient>,

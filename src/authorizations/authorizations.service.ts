@@ -8,7 +8,7 @@ import { UpdateAuthorizationInput } from './dto/update-authorization.input';
 import { GenericService } from 'src/common/generic.service';
 
 @Injectable()
-export class AuthorizationsService extends GenericService<Authorization> {
+export class AuthorizationsService extends GenericService<Authorization ,any, any> {
   constructor(
     @InjectRepository(Authorization)
     private readonly authRepo: Repository<Authorization>,

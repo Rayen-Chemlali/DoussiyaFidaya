@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Repository, SelectQueryBuilder } from "typeorm";
 
 @Injectable()
-export class GenericService<T extends { id: string }> { // we extends the entity with id property
+export class GenericService<T extends { id: string },CreateDto,UpdateDto> { // we extends the entity with id property
   constructor(private readonly repository: Repository<T>) {}
 
   async genericFindAll(relations: string[] = []): Promise<T[]> {
