@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GraphQLUUID, GraphQLDate } from 'graphql-scalars';
-import { Patient } from 'src/patients/entities/patient.entity';
+import { Patient } from '../../patients/entities/patient.entity';
 
 @Entity('GeneralMedicalRecords')
 @ObjectType()

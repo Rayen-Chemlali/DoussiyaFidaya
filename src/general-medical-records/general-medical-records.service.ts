@@ -29,7 +29,7 @@ export class GeneralMedicalRecordsService extends GenericService<GeneralMedicalR
 
   // Find by patient.id (assuming there’s a relation named `patient`)
   async findByPatientId(patientId: string): Promise<GeneralMedicalRecord[]> {
-    return this.genericFindByField('patient.id', patientId, ['patient']);
+    return (await this.genericFindByField('patient.id', patientId, ['patient'])).getMany();
   }
 
   async create(

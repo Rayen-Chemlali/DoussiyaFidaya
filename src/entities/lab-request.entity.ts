@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
-import { Patient } from './patient.entity';
+import { Patient } from '../patients/entities/patient.entity';
 import { Doctor } from './doctor.entity';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';

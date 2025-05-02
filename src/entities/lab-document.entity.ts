@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { Patient } from './patient.entity';
+import { Patient } from '../patients/entities/patient.entity';
 import { Laboratory } from './laboratory.entity';
 import { LabRequest } from './lab-request.entity';
 import { LabAttachment } from './lab-attachment.entity';

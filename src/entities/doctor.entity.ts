@@ -71,7 +71,7 @@ export class Doctor extends InstitutMedical {
   profile_image: string;
 
   @Field()
-  @Column({ type: 'enum',enum:InstitutMedicalType, nullable: false })
+  @Column({ type: 'enum',enum:Specialty, nullable: false })
   specialty: Specialty;
 
   @Field(() => User)

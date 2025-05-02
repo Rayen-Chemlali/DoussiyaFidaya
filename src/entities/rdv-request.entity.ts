@@ -1,7 +1,7 @@
 import { Field, GraphQLISODateTime, ObjectType } from "@nestjs/graphql";
 import { GraphQLTime, GraphQLUUID } from "graphql-scalars";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Patient } from "./patient.entity";
+import { Patient } from "../patients/entities/patient.entity";
 import { Doctor } from "./doctor.entity";
 import { Rdv } from "./rdv.entity";
 

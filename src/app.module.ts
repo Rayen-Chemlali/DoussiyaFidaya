@@ -27,6 +27,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
 import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 
 
 @Module({
@@ -35,14 +38,25 @@ import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
       isGlobal: true,
       envFilePath: ['.env.local','.env'],
     }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      playground: true,
+      debug: true,
+    }),
     TypeOrmModule.forRoot({
     type: 'postgres', // Your DB type
     host: 'localhost', // Your DB host
     port: 5432, // Default PostgreSQL port
     username: process.env.DBUsername ?? "postgres", // Database username
     password: process.env.DBpassword ?? "sahbi", // Database password
-    database: 'medical-system', // Database name
-    entities: [__dirname + '/entities/*.entity{.ts,.js}'], // Automatically include all entities
+    // Database name
+    entities: [
+      __dirname + '/entities/*.entity{.ts,.js}', // Automatically include all entities
+      __dirname + '/authorizations/entities/*.entity{.ts,.js}', // Entities in Authorizations module
+      __dirname + '/general-medical-records/entities/*.entity{.ts,.js}', // Entities in GeneralMedicalRecords module
+      __dirname + '/patients/entities/*.entity{.ts,.js}', // Entities in Patients module
+    ],
     synchronize: true, // Set to `true` for auto-sync in dev (don't use in production)
     logging: true, // Enable logging to view SQL queries
   }),

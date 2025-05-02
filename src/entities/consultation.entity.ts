@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne
 import { User } from './user.entity';
 import { InstitutMedical } from './institut-medical.entity';
 import { Prescription } from './prescription.entity';
-import { Patient } from './patient.entity';
+import { Patient } from '../patients/entities/patient.entity';
 import { LabRequest } from './lab-request.entity';
 import { Doctor } from './doctor.entity';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';

@@ -1,7 +1,9 @@
+
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 
-@ObjectType()
+ @ObjectType() 
 export class InstitutMedical {
   @Field(() => Int, { description: 'Example field (placeholder)' })
   exampleField: number;
+  
 }

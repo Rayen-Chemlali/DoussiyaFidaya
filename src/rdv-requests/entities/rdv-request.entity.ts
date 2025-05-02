@@ -26,13 +26,13 @@ export class RdvRequest {
   @Column({ type: 'time', nullable: false })
   time: string;
 
-    @Field()
-    @Column({ type: 'text', nullable: false })
-    Motif: string;
+  @Field()
+  @Column({ type: 'text', nullable: false })
+  Motif: string;
 
-    @Field()
-    @Column({ type: 'text', nullable: false })
-    Status: RdvStatus;
+  @Field()
+  @Column({ type: 'text', nullable: false })
+  Status: RdvStatus;
  
 
   @Field(() => Patient)
@@ -45,9 +45,9 @@ export class RdvRequest {
   @JoinColumn({ name: 'doctor_id' })
   doctor: Doctor;
 
-    @Field(() => Rdv)
-    @OneToOne(() => Rdv, { nullable: true })
-    @JoinColumn({ name: 'rdv_id' })
-    rdv: Rdv;
+  @Field(() => Rdv)
+  @OneToOne(() => Rdv, { nullable: true })
+  @JoinColumn({ name: 'rdv_id' })
+  rdv?: Rdv;
 
 }
