@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './user.entity';
+import { User } from '../users/entities/user.entity';
 import { Patient } from '../patients/entities/patient.entity';
 import { Field, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';

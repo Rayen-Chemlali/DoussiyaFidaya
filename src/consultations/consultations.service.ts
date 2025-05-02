@@ -1,26 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateConsultationInput } from './dto/create-consultation.input';
-import { UpdateConsultationInput } from './dto/update-consultation.input';
+import { GenericService } from '../common/generic.service';
+import { Consultation } from './entities/consultation.entity';
 
 @Injectable()
-export class ConsultationsService {
-  create(createConsultationInput: CreateConsultationInput) {
-    return 'This action adds a new consultation';
-  }
+export class ConsultationsService extends GenericService<Consultation> {
 
-  findAll() {
-    return `This action returns all consultations`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} consultation`;
-  }
-
-  update(id: number, updateConsultationInput: UpdateConsultationInput) {
-    return `This action updates a #${id} consultation`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} consultation`;
-  }
 }

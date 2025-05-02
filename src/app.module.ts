@@ -26,11 +26,11 @@ import { HopitalsModule } from './hopitals/hopitals.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
-import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
+import { GenericService } from './common/generic.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-
+import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
 
 @Module({
   imports: [
@@ -42,24 +42,18 @@ import { join } from 'path';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
-      debug: true,
     }),
     TypeOrmModule.forRoot({
-    type: 'postgres', // Your DB type
-    host: 'localhost', // Your DB host
-    port: 5432, // Default PostgreSQL port
-    username: process.env.DBUsername ?? "postgres", // Database username
-    password: process.env.DBpassword ?? "sahbi", // Database password
-    // Database name
-    entities: [
-      __dirname + '/entities/*.entity{.ts,.js}', // Automatically include all entities
-      __dirname + '/authorizations/entities/*.entity{.ts,.js}', // Entities in Authorizations module
-      __dirname + '/general-medical-records/entities/*.entity{.ts,.js}', // Entities in GeneralMedicalRecords module
-      __dirname + '/patients/entities/*.entity{.ts,.js}', // Entities in Patients module
-    ],
-    synchronize: true, // Set to `true` for auto-sync in dev (don't use in production)
-    logging: true, // Enable logging to view SQL queries
-  }),
+      type: 'postgres', // Your DB type
+      host: 'localhost', // Your DB host
+      port: 5432, // Default PostgreSQL port
+      username: process.env.DBUsername ?? "postgres", // Database username
+      password: process.env.DBpassword ?? "postgres", // Database password
+      database: 'medical-system', // Database name
+      entities: [__dirname + '/entities/*.entity{.ts,.js}'], // Automatically include all entities
+      synchronize: true, // Set to `true` for auto-sync in dev (don't use in production)
+      logging: true, // Enable logging to view SQL queries
+    }),
     InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule, RdvRequestsModule],
   controllers: [AppController],
   providers: [AppService],

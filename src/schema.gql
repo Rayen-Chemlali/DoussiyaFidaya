@@ -1,0 +1,700 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+interface InstitutMedical {
+  id: UUID!
+  type: InstitutMedicalType!
+}
+
+"""
+A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier.
+"""
+scalar UUID
+
+"""Le type d'institut medical"""
+enum InstitutMedicalType {
+  DOCTOR
+  CLINIQUE
+  HOPITAL
+}
+
+interface LabResult {
+  id: UUID!
+  lab_document: LabDocument!
+  is_abnormal: Boolean!
+  description: String!
+  title: String!
+  result_type: LabResultType!
+}
+
+"""Le type de résultat d'analyse"""
+enum LabResultType {
+  ANALYSIS
+  XRAY
+  CTSCAN
+}
+
+type GeneralMedicalRecord {
+  id: UUID!
+  allergies: [String!]!
+}
+
+type User {
+  id: UUID!
+  address: String!
+  created_at: DateTime!
+  email: EmailAddress!
+  first_name: String!
+  last_name: String!
+  is_verified: Boolean!
+  last_login: DateTime!
+  phone: PhoneNumber!
+  profile_picture: String!
+  role: Role!
+  associated_id: UUID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""
+A field whose value conforms to the standard internet email address format as specified in HTML Spec: https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address.
+"""
+scalar EmailAddress @specifiedBy(url: "https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address")
+
+"""
+A field whose value conforms to the standard E.164 format as specified in: https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234.
+"""
+scalar PhoneNumber
+
+"""The role of the user in the system"""
+enum Role {
+  Patient
+  Doctor
+  Pharmacy
+  Laboratory
+  Insurance
+  Assistant
+  Admin
+}
+
+type Patient {
+  id: UUID!
+  cin: Float!
+  date_of_birth: DateTime!
+  gender: Gender!
+  profile_image: String!
+  general_medical_record: GeneralMedicalRecord!
+  user: User!
+}
+
+"""The gender of the patient"""
+enum Gender {
+  MALE
+  FEMALE
+}
+
+type Laboratory {
+  id: UUID!
+  address: String!
+  phone: PhoneNumber!
+  email: EmailAddress!
+  name: String!
+}
+
+type Doctor implements InstitutMedical {
+  id: UUID!
+  type: InstitutMedicalType!
+  bio: String!
+  education: [String!]!
+  experience: [String!]!
+  first_name: String!
+  languages: [String!]!
+  last_name: String!
+  profile_image: String!
+  specialty: String!
+  user: User!
+  instituts: [InstitutMedical!]!
+}
+
+type LabRequest {
+  id: UUID!
+  doctor: Doctor!
+  patient: Patient!
+  type: String!
+  priority: Priority!
+  description: String!
+}
+
+"""Priorité de la demande de laboratoire"""
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+type LabAttachment {
+  id: UUID!
+  lab_document: LabDocument!
+  name: String!
+  type: String!
+  url: String!
+}
+
+type LabDocument {
+  id: UUID!
+  completed_at: DateTime!
+  created_at: DateTime!
+  notes: [String!]!
+  patient: Patient!
+  requested_at: DateTime!
+  status: LabDocumentStatus!
+  section: String!
+  laboratory: Laboratory!
+  lab_request: LabRequest!
+  attachments: [LabAttachment!]!
+  results: [LabResult!]!
+}
+
+"""Le statut d'un document de laboratoire"""
+enum LabDocumentStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+type XRayResult implements LabResult {
+  id: UUID!
+  lab_document: LabDocument!
+  is_abnormal: Boolean!
+  description: String!
+  title: String!
+  result_type: LabResultType!
+}
+
+type Medication {
+  id: UUID!
+  prescription: Prescription!
+  dosage: String!
+  duration: String!
+  frequency: String!
+  name: String!
+  quantity: Int!
+}
+
+type Prescription {
+  id: UUID!
+  date: DateTime!
+  doctor: Doctor!
+  instructions: String!
+  is_signed: Boolean!
+  section: String!
+  patient: Patient!
+  status: PrescriptionStatus!
+  updated_at: DateTime!
+  medications: [Medication!]!
+}
+
+"""The status of the prescription"""
+enum PrescriptionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+type Consultation {
+  id: UUID!
+  section: String!
+  date: DateTime!
+  notes: [String!]!
+  measures: JSON!
+  doctor: Doctor!
+  institut_medical: InstitutMedical!
+  prescription: Prescription!
+  patient: Patient!
+  lab_requests: [LabRequest!]!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type Rdv {
+  id: UUID!
+  date: DateTime!
+  time: Time!
+  duration: Duration!
+  patient: Patient!
+  doctor: Doctor!
+  consultation: Consultation!
+}
+
+"""
+A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Time
+
+"\n    A string representing a duration conforming to the ISO8601 standard,\n    such as: P1W1DT13H23M34S\n    P is the duration designator (for period) placed at the start of the duration representation.\n    Y is the year designator that follows the value for the number of years.\n    M is the month designator that follows the value for the number of months.\n    W is the week designator that follows the value for the number of weeks.\n    D is the day designator that follows the value for the number of days.\n    T is the time designator that precedes the time components of the representation.\n    H is the hour designator that follows the value for the number of hours.\n    M is the minute designator that follows the value for the number of minutes.\n    S is the second designator that follows the value for the number of seconds.\n\n    Note the time designator, T, that precedes the time value.\n\n    Matches moment.js, Luxon and DateFns implementations\n    ,/. is valid for decimal places and +/- is a valid prefix\n  "
+scalar Duration
+
+type Pharmacy {
+  id: UUID!
+  address: String!
+  phone: PhoneNumber!
+  email: EmailAddress!
+  name: String!
+}
+
+type AnalysisResult implements LabResult {
+  id: UUID!
+  lab_document: LabDocument!
+  is_abnormal: Boolean!
+  description: String!
+  title: String!
+  result_type: LabResultType!
+  reference_range: String!
+  unit: String!
+  value: Float!
+}
+
+type Authorization {
+  id: UUID!
+  institut_medical: InstitutMedical!
+  patient: Patient!
+  level: AuthorizationLevel!
+}
+
+"""Le niveau d'acces pour un medecin au dossier medical d'un patient"""
+enum AuthorizationLevel {
+  GENERAL
+  SPECIALITY
+  FULL_ACCESS
+}
+
+type Certificate {
+  id: UUID!
+  type: String!
+  doctor: Doctor!
+  patient: Patient!
+  start_date: DateTime!
+  end_date: DateTime!
+  description: String!
+}
+
+type Clinique implements InstitutMedical {
+  id: UUID!
+  type: InstitutMedicalType!
+  name: String!
+  address: String!
+  phone: String!
+  email: String!
+}
+
+type CTScanResult implements LabResult {
+  id: UUID!
+  lab_document: LabDocument!
+  is_abnormal: Boolean!
+  description: String!
+  title: String!
+  result_type: LabResultType!
+}
+
+type Hopital implements InstitutMedical {
+  id: UUID!
+  type: InstitutMedicalType!
+  name: String!
+  address: String!
+  phone: String!
+  email: String!
+}
+
+type RdvRequest {
+  id: UUID!
+  date: DateTime!
+  time: Time!
+  Motif: String!
+  Status: String!
+  patient: Patient!
+  doctor: Doctor!
+  rdv: Rdv!
+}
+
+type Query {
+  institutMedicals: [InstitutMedical!]!
+  institutMedical(id: Int!): InstitutMedical!
+  analysisResults: [AnalysisResult!]!
+  analysisResult(id: Int!): AnalysisResult!
+  authorizations: [Authorization!]!
+  authorization(id: Int!): Authorization!
+  certificates: [Certificate!]!
+  certificate(id: Int!): Certificate!
+  cliniques: [Clinique!]!
+  clinique(id: Int!): Clinique!
+  consultations: [Consultation!]!
+  consultation(id: Int!): Consultation!
+  ctScanResults: [CTScanResult!]!
+  ctScanResult(id: Int!): CTScanResult!
+  doctors: [Doctor!]!
+  doctor(id: Int!): Doctor!
+  PatientsCount(doctorId: Int!): Int!
+  generalMedicalRecords: [GeneralMedicalRecord!]!
+  generalMedicalRecord(id: Int!): GeneralMedicalRecord!
+  hopitals: [Hopital!]!
+  hopital(id: Int!): Hopital!
+  labAttachments: [LabAttachment!]!
+  labAttachment(id: Int!): LabAttachment!
+  labDocuments: [LabDocument!]!
+  labDocument(id: Int!): LabDocument!
+  labRequests: [LabRequest!]!
+  labRequest(id: Int!): LabRequest!
+  labResults: [LabResult!]!
+  labResult(id: Int!): LabResult!
+  laboratorys: [Laboratory!]!
+  laboratory(id: Int!): Laboratory!
+  medications: [Medication!]!
+  medication(id: Int!): Medication!
+  patients: [Patient!]!
+  patient(id: Int!): Patient!
+  pharmacys: [Pharmacy!]!
+  pharmacy(id: Int!): Pharmacy!
+  prescriptions: [Prescription!]!
+  prescription(id: Int!): Prescription!
+  rdvs: [Rdv!]!
+  rdv(id: Int!): Rdv!
+  users: [User!]!
+  user(id: Int!): User!
+  xrayResults: [XRayResult!]!
+  xrayResult(id: Int!): XRayResult!
+  rdvRequests: [RdvRequest!]!
+  rdvRequest(id: Int!): RdvRequest!
+}
+
+type Mutation {
+  createInstitutMedical(createInstitutMedicalInput: CreateInstitutMedicalInput!): InstitutMedical!
+  updateInstitutMedical(updateInstitutMedicalInput: UpdateInstitutMedicalInput!): InstitutMedical!
+  removeInstitutMedical(id: Int!): InstitutMedical!
+  createAnalysisResult(createAnalysisResultInput: CreateAnalysisResultInput!): AnalysisResult!
+  updateAnalysisResult(updateAnalysisResultInput: UpdateAnalysisResultInput!): AnalysisResult!
+  removeAnalysisResult(id: Int!): AnalysisResult!
+  createAuthorization(createAuthorizationInput: CreateAuthorizationInput!): Authorization!
+  updateAuthorization(updateAuthorizationInput: UpdateAuthorizationInput!): Authorization!
+  removeAuthorization(id: Int!): Authorization!
+  createCertificate(createCertificateInput: CreateCertificateInput!): Certificate!
+  updateCertificate(updateCertificateInput: UpdateCertificateInput!): Certificate!
+  removeCertificate(id: Int!): Certificate!
+  createClinique(createCliniqueInput: CreateCliniqueInput!): Clinique!
+  updateClinique(updateCliniqueInput: UpdateCliniqueInput!): Clinique!
+  removeClinique(id: Int!): Clinique!
+  createConsultation(createConsultationInput: CreateConsultationInput!): Consultation!
+  updateConsultation(updateConsultationInput: UpdateConsultationInput!): Consultation!
+  removeConsultation(id: Int!): Consultation!
+  createCtScanResult(createCtScanResultInput: CreateCtScanResultInput!): CTScanResult!
+  updateCtScanResult(updateCtScanResultInput: UpdateCtScanResultInput!): CTScanResult!
+  removeCtScanResult(id: Int!): CTScanResult!
+  createDoctor(createDoctorInput: CreateDoctorInput!): Doctor!
+  updateDoctor(updateDoctorInput: UpdateDoctorInput!): Doctor!
+  removeDoctor(id: Int!): Doctor!
+  createGeneralMedicalRecord(createGeneralMedicalRecordInput: CreateGeneralMedicalRecordInput!): GeneralMedicalRecord!
+  updateGeneralMedicalRecord(updateGeneralMedicalRecordInput: UpdateGeneralMedicalRecordInput!): GeneralMedicalRecord!
+  removeGeneralMedicalRecord(id: Int!): GeneralMedicalRecord!
+  createHopital(createHopitalInput: CreateHopitalInput!): Hopital!
+  updateHopital(updateHopitalInput: UpdateHopitalInput!): Hopital!
+  removeHopital(id: Int!): Hopital!
+  createLabAttachment(createLabAttachmentInput: CreateLabAttachmentInput!): LabAttachment!
+  updateLabAttachment(updateLabAttachmentInput: UpdateLabAttachmentInput!): LabAttachment!
+  removeLabAttachment(id: Int!): LabAttachment!
+  createLabDocument(createLabDocumentInput: CreateLabDocumentInput!): LabDocument!
+  updateLabDocument(updateLabDocumentInput: UpdateLabDocumentInput!): LabDocument!
+  removeLabDocument(id: Int!): LabDocument!
+  createLabRequest(createLabRequestInput: CreateLabRequestInput!): LabRequest!
+  updateLabRequest(updateLabRequestInput: UpdateLabRequestInput!): LabRequest!
+  removeLabRequest(id: Int!): LabRequest!
+  createLabResult(createLabResultInput: CreateLabResultInput!): LabResult!
+  updateLabResult(updateLabResultInput: UpdateLabResultInput!): LabResult!
+  removeLabResult(id: Int!): LabResult!
+  createLaboratory(createLaboratoryInput: CreateLaboratoryInput!): Laboratory!
+  updateLaboratory(updateLaboratoryInput: UpdateLaboratoryInput!): Laboratory!
+  removeLaboratory(id: Int!): Laboratory!
+  createMedication(createMedicationInput: CreateMedicationInput!): Medication!
+  updateMedication(updateMedicationInput: UpdateMedicationInput!): Medication!
+  removeMedication(id: Int!): Medication!
+  createPatient(createPatientInput: CreatePatientInput!): Patient!
+  updatePatient(updatePatientInput: UpdatePatientInput!): Patient!
+  removePatient(id: Int!): Patient!
+  createPharmacy(createPharmacyInput: CreatePharmacyInput!): Pharmacy!
+  updatePharmacy(updatePharmacyInput: UpdatePharmacyInput!): Pharmacy!
+  removePharmacy(id: Int!): Pharmacy!
+  createPrescription(createPrescriptionInput: CreatePrescriptionInput!): Prescription!
+  updatePrescription(updatePrescriptionInput: UpdatePrescriptionInput!): Prescription!
+  removePrescription(id: Int!): Prescription!
+  createRdv(createRdvInput: CreateRdvInput!): Rdv!
+  updateRdv(updateRdvInput: UpdateRdvInput!): Rdv!
+  removeRdv(id: Int!): Rdv!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  createXrayResult(createXrayResultInput: CreateXrayResultInput!): XRayResult!
+  updateXrayResult(updateXrayResultInput: UpdateXrayResultInput!): XRayResult!
+  removeXrayResult(id: Int!): XRayResult!
+  createRdvRequest(createRdvRequestInput: CreateRdvRequestInput!): RdvRequest!
+  updateRdvRequest(updateRdvRequestInput: UpdateRdvRequestInput!): RdvRequest!
+  removeRdvRequest(id: Int!): RdvRequest!
+}
+
+input CreateInstitutMedicalInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateInstitutMedicalInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateAnalysisResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAnalysisResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateAuthorizationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAuthorizationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateCertificateInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCertificateInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateCliniqueInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCliniqueInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateConsultationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateConsultationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateCtScanResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCtScanResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateDoctorInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateDoctorInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateGeneralMedicalRecordInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateGeneralMedicalRecordInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateHopitalInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateHopitalInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateLabAttachmentInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLabAttachmentInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateLabDocumentInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLabDocumentInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateLabRequestInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLabRequestInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateLabResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLabResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateLaboratoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLaboratoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateMedicationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateMedicationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreatePatientInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePatientInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreatePharmacyInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePharmacyInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreatePrescriptionInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePrescriptionInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateRdvInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateRdvInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateUserInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateUserInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateXrayResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateXrayResultInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateRdvRequestInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateRdvRequestInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}

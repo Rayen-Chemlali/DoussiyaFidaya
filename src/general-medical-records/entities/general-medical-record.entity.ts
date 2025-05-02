@@ -4,6 +4,7 @@ import { GraphQLUUID, GraphQLDate } from 'graphql-scalars';
 import { Patient } from '../../patients/entities/patient.entity';
 
 @Entity('GeneralMedicalRecords')
+@Entity('GeneralMedicalRecords')
 @ObjectType()
 export class GeneralMedicalRecord {
   @Field(() => GraphQLUUID)

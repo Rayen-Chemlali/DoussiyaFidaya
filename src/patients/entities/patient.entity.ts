@@ -1,8 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
-import { User } from '../../entities/user.entity';
-import { GeneralMedicalRecord } from '../../general-medical-records/entities/general-medical-record.entity';
+
 import { Field, GraphQLISODateTime, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLUUID } from 'graphql-scalars';
+import { GeneralMedicalRecord } from '../../general-medical-records/entities/general-medical-record.entity';
+import { User } from '../../users/entities/user.entity';
 export enum Gender {
   MALE='Male',
   FEMALE='Female'
