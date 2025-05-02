@@ -1,9 +1,10 @@
 import { Field, GraphQLISODateTime, ObjectType } from "@nestjs/graphql";
 import { GraphQLTime, GraphQLUUID } from "graphql-scalars";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Patient } from "./patient.entity";
-import { Doctor } from "./doctor.entity";
-import { Rdv } from "./rdv.entity";
+import { Patient } from '../../patients/entities/patient.entity';
+import { Doctor } from '../../doctors/entities/doctor.entity';
+import { Rdv } from '../../rdvs/entities/rdv.entity';
+
 
 enum RdvStatus {
   PENDING = 'PENDING',
@@ -26,14 +27,14 @@ export class RdvRequest {
   @Column({ type: 'time', nullable: false })
   time: string;
 
-    @Field()
-    @Column({ type: 'text', nullable: false })
-    Motif: string;
+  @Field()
+  @Column({ type: 'text', nullable: false })
+  Motif: string;
 
-    @Field()
-    @Column({ type: 'text', nullable: false })
-    Status: RdvStatus;
- 
+  @Field()
+  @Column({ type: 'text', nullable: false })
+  Status: RdvStatus;
+
 
   @Field(() => Patient)
   @ManyToOne(() => Patient, { nullable: false })
@@ -45,9 +46,9 @@ export class RdvRequest {
   @JoinColumn({ name: 'doctor_id' })
   doctor: Doctor;
 
-    @Field(() => Rdv)
-    @OneToOne(() => Rdv, { nullable: true })
-    @JoinColumn({ name: 'rdv_id' })
-    rdv: Rdv;
+  @Field(() => Rdv)
+  @OneToOne(() => Rdv, { nullable: true })
+  @JoinColumn({ name: 'rdv_id' })
+  rdv: Rdv;
 
 }

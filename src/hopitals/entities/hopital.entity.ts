@@ -1,7 +1,23 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Entity, Column } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { InstitutMedical } from '../../institut-medicals/entities/institut-medical.entity';
 
-@ObjectType()
-export class Hopital {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+@Entity('hopitaux')
+@ObjectType({implements: InstitutMedical})
+export class Hopital extends InstitutMedical {
+  @Field()
+  @Column({ type: 'text', nullable: false })
+  name: string;
+
+  @Field()
+  @Column({ type: 'text', nullable: true })
+  address: string;
+
+  @Field()
+  @Column({ type: 'text', nullable: true })
+  phone: string;
+
+  @Field()
+  @Column({ type: 'text', nullable: true })
+  email: string;
 }

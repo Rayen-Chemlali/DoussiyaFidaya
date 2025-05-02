@@ -1,7 +1,15 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { GraphQLUUID } from 'graphql-scalars';
 
+@Entity('GeneralMedicalRecords')
 @ObjectType()
 export class GeneralMedicalRecord {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field(()=> GraphQLUUID)
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Field(() => [String])
+  @Column({ type: 'text',array:true, nullable: true })
+  allergies: string[];
 }
