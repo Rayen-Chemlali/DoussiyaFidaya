@@ -42,7 +42,6 @@ import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
-
     }),
     TypeOrmModule.forRoot({
       type: 'postgres', // Your DB type
@@ -57,6 +56,6 @@ import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
     }),
     InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule, RdvRequestsModule],
   controllers: [AppController],
-  providers: [AppService, GenericService],
+  providers: [AppService],
 })
 export class AppModule {}

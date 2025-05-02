@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { DeepPartial, Repository } from 'typeorm';
 
 @Injectable()
 export class GenericService<T extends { id: number }> { // we extends the entity with id property
@@ -17,7 +17,7 @@ async findOne(id: number, relations: string[] = []): Promise<T | null> {
   return entity;
 }
 
-  async create(createDto: any): Promise<T> {
+  async create(createDto: any): Promise<(DeepPartial<T> & T)[]> {
     return this.repository.save(createDto);
   }
 
