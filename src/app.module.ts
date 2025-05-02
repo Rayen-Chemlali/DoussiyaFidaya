@@ -49,8 +49,8 @@ import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
       port: 5432, // Default PostgreSQL port
       username: process.env.DBUsername ?? "postgres", // Database username
       password: process.env.DBpassword ?? "sahbi", // Database password
-      // Database name
-        entities: [__dirname + '/**/*.entity{.ts,.js}'], // Automatically inclu
+      database: 'medical-system',// Database name
+      entities: [__dirname + '/**/*.entity{.ts,.js}'], // Automatically inclu
       synchronize: true, // Set to `true` for auto-sync in dev (don'tde all entities from all modules use in production)
       logging: true, // Enable logging to view SQL queries
     }),
