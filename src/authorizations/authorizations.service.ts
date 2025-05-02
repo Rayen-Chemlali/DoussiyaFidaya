@@ -17,39 +17,39 @@ export class AuthorizationsService extends GenericService<Authorization> {
   }
 
   async findAll(): Promise<Authorization[]> {
-    return await super.findAll(["institut_medical", "patient"]);
+    return await super.genericFindAll(["institut_medical", "patient"]);
   }
   async findById(id: string): Promise<Authorization | null> {
-    return await super.findOne(id, ["institut_medical", "patient"]);
+    return await super.genericFindOne(id, ["institut_medical", "patient"]);
   }
 
   async findByPatientId(patientId: string): Promise<Authorization[]> {
-    return await super.findByField("patient.id", patientId, ["institut_medical"]);
+    return await super.genericFindByField("patient.id", patientId, ["institut_medical"]);
   }
 
   async findByMedicalInstituteId(medicalInstituteId: string): Promise<Authorization[]> {
-    return await super.findByField("institut_medical.id", medicalInstituteId, ["patient"]);
+    return await super.genericFindByField("institut_medical.id", medicalInstituteId, ["patient"]);
   }
 
-  async createAuth(patientId :string ,data: CreateAuthorizationInput): Promise<Authorization> {
+  async create(patientId :string ,data: CreateAuthorizationInput): Promise<Authorization> {
     const CreateData = {patientId, ...data};
-    return await super.create(CreateData);
+    return await super.genericCreate(CreateData);
   }
 
-  async updateAuth(id: string, data: UpdateAuthorizationInput ,userId : string): Promise<Authorization | null> {
-    const state = super.checkFieldValue(id, "patient.id", userId, ["patient"]);
+  async update(id: string, data: UpdateAuthorizationInput ,userId : string): Promise<Authorization | null> {
+    const state = super.genericCheckFieldValue(id, "patient.id", userId, ["patient"]);
     if (!state) {
       throw new HttpException("You are not authorized to update this authorization.", 403);
     }
-  return await super.update(id, data);
+  return await super.genericUpdate(id, data);
   }
 
   async delete(id: string ,userId : string): Promise<void> {
-    const state = super.checkFieldValue(id, "patient.id", userId, ["patient"]);
+    const state = super.genericCheckFieldValue(id, "patient.id", userId, ["patient"]);
     if (!state) {
       throw new HttpException("You are not authorized to update this authorization.", 403);
     }
-    await super.remove(id);
+    await super.genericRemove(id);
   }
     
 }

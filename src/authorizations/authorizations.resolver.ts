@@ -18,7 +18,7 @@ export class AuthorizationsResolver {
 
   @Query(() => Authorization, { name: 'authorization' })
   findOne(@Args('id', { type: () => String }) id: string) {
-    return this.authorizationsService.findOne(id);
+    return this.authorizationsService.genericFindOne(id);
   }
 
   @Query(() => [Authorization])

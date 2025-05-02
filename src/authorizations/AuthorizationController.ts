@@ -16,7 +16,7 @@ export class AuthorizationController {
   @Post()
   async create(@Body() dto: CreateAuthorizationInput , /*@User() user*/): Promise<Authorization> {
     
-    return this.service.createAuth(this.user.id,dto);
+    return this.service.create(this.user.id,dto);
   }
 
   @Put(':id')
@@ -25,7 +25,7 @@ export class AuthorizationController {
     @Body() dto: UpdateAuthorizationInput,
     /*@User() user*/
   ): Promise<Authorization | null> {
-    return this.service.updateAuth(id, dto , this.user.id);
+    return this.service.update(id, dto , this.user.id);
   }
 
   @Delete(':id')
