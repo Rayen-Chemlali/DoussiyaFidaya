@@ -24,11 +24,11 @@ export class AuthorizationsService extends GenericService<Authorization> {
   }
 
   async findByPatientId(patientId: string): Promise<Authorization[]> {
-    return await super.genericFindByField("patient.id", patientId, ["institut_medical"]);
+    return (await super.genericFindByField("patient.id", patientId, ["institut_medical"])).getMany();
   }
 
   async findByMedicalInstituteId(medicalInstituteId: string): Promise<Authorization[]> {
-    return await super.genericFindByField("institut_medical.id", medicalInstituteId, ["patient"]);
+    return (await super.genericFindByField("institut_medical.id", medicalInstituteId, ["patient"])).getMany();
   }
 
   async create(patientId :string ,data: CreateAuthorizationInput): Promise<Authorization> {

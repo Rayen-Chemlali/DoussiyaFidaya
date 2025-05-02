@@ -4,6 +4,7 @@ import { Authorization } from './entities/authorization.entity';
 import { CreateAuthorizationInput } from './dto/create-authorization.input';
 import { UpdateAuthorizationInput } from './dto/update-authorization.input';
 import { GraphQLUUID } from 'graphql-scalars';
+//const GenericResolver = createResolver(entity ,...inputs)
 
 @Resolver(() => Authorization)
 export class AuthorizationsResolver {

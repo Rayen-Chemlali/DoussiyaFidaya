@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Patient } from './entities/patient.entity';
+import { Repository } from 'typeorm';
+import { GenericService } from 'src/common/generic.service';
 import { CreatePatientInput } from './dto/create-patient.input';
 import { UpdatePatientInput } from './dto/update-patient.input';
 
 @Injectable()
-export class PatientsService {
-  create(createPatientInput: CreatePatientInput) {
-    return 'This action adds a new patient';
+export class PatientsService extends GenericService<Patient> {
+  constructor(
+    @InjectRepository(Patient)
+    private readonly patientRepository: Repository<Patient>,
+  ) {
+    super(patientRepository);
   }
 
-  findAll() {
-    return `This action returns all patients`;
+  async createPatient(input: CreatePatientInput): Promise<Patient> {
+    return this.genericCreate(input);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} patient`;
+  async updatePatient(id: string, input: UpdatePatientInput): Promise<Patient | null> {
+    return this.genericUpdate(id, input);
   }
 
-  update(id: number, updatePatientInput: UpdatePatientInput) {
-    return `This action updates a #${id} patient`;
+  async findAll(): Promise<Patient[]> {
+    return this.genericFindAll(['user', 'general_medical_record']);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} patient`;
+  async findOneById(id: string): Promise<Patient> {
+    const patient = await this.genericFindOne(id, ['user', 'general_medical_record']);
+    if (!patient) {
+      throw new NotFoundException(`Patient with id ${id} not found`);
+    }
+    return patient;
+  }
+
+  async findByUserId(userId: string): Promise<Patient> {
+    return (await this.genericFindByField('user.id', userId, ['user', 'general_medical_record']))?.getOne() as Promise<Patient>;
+  }
+
+  async deletePatient(id: string): Promise<void> {
+    const exists = await this.genericFindOne(id);
+    if (!exists) {
+      throw new NotFoundException(`Patient with id ${id} not found`);
+    }
+    await this.genericRemove(id);
   }
 }

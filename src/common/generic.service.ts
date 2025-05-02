@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { Repository, SelectQueryBuilder } from "typeorm";
 
 @Injectable()
 export class GenericService<T extends { id: string }> { // we extends the entity with id property
@@ -42,7 +42,7 @@ async genericFindOne(id: string, relations: string[] = []): Promise<T | null> {
     ;
   }
 
-  async genericFindByField(field: string, value: any, relations: string[] = []): Promise<T[]> {
+  async genericFindByField(field: string, value: any, relations: string[] = []): Promise<SelectQueryBuilder<T>> {
     const alias = 'entity';
     const qb = this.repository.createQueryBuilder(alias);
   
@@ -58,7 +58,7 @@ async genericFindOne(id: string, relations: string[] = []): Promise<T | null> {
       qb.andWhere(`${alias}.${field} = :value`, { value });
     }
   
-    return qb.getMany();
+    return qb;
   }
 
 
