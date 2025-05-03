@@ -1,0 +1,19 @@
+import * as TypeGraphQL from "type-graphql";
+import type { GraphQLResolveInfo } from "graphql";
+import { CreateOneCliniquesArgs } from "./args/CreateOneCliniquesArgs";
+import { Cliniques } from "../../../models/Cliniques";
+import { transformInfoIntoPrismaArgs, getPrismaFromContext, transformCountFieldIntoSelectRelationsCount } from "../../../helpers";
+
+@TypeGraphQL.Resolver(_of => Cliniques)
+export class CreateOneCliniquesResolver {
+  @TypeGraphQL.Mutation(_returns => Cliniques, {
+    nullable: false
+  })
+  async createOneCliniques(@TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: CreateOneCliniquesArgs): Promise<Cliniques> {
+    const { _count } = transformInfoIntoPrismaArgs(info);
+    return getPrismaFromContext(ctx).cliniques.create({
+      ...args,
+      ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
+    });
+  }
+}

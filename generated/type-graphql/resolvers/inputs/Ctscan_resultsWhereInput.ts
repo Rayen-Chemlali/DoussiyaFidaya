@@ -1,0 +1,63 @@
+import * as TypeGraphQL from "type-graphql";
+import * as GraphQLScalars from "graphql-scalars";
+import { Prisma } from "@prisma/client";
+import { DecimalJSScalar } from "../../scalars";
+import { BoolFilter } from "../inputs/BoolFilter";
+import { Enumctscan_results_result_type_enumFilter } from "../inputs/Enumctscan_results_result_type_enumFilter";
+import { Lab_documentsRelationFilter } from "../inputs/Lab_documentsRelationFilter";
+import { StringFilter } from "../inputs/StringFilter";
+import { StringNullableFilter } from "../inputs/StringNullableFilter";
+import { UuidFilter } from "../inputs/UuidFilter";
+
+@TypeGraphQL.InputType("Ctscan_resultsWhereInput", {})
+export class Ctscan_resultsWhereInput {
+  @TypeGraphQL.Field(_type => [Ctscan_resultsWhereInput], {
+    nullable: true
+  })
+  AND?: Ctscan_resultsWhereInput[] | undefined;
+
+  @TypeGraphQL.Field(_type => [Ctscan_resultsWhereInput], {
+    nullable: true
+  })
+  OR?: Ctscan_resultsWhereInput[] | undefined;
+
+  @TypeGraphQL.Field(_type => [Ctscan_resultsWhereInput], {
+    nullable: true
+  })
+  NOT?: Ctscan_resultsWhereInput[] | undefined;
+
+  @TypeGraphQL.Field(_type => UuidFilter, {
+    nullable: true
+  })
+  id?: UuidFilter | undefined;
+
+  @TypeGraphQL.Field(_type => BoolFilter, {
+    nullable: true
+  })
+  is_abnormal?: BoolFilter | undefined;
+
+  @TypeGraphQL.Field(_type => StringNullableFilter, {
+    nullable: true
+  })
+  description?: StringNullableFilter | undefined;
+
+  @TypeGraphQL.Field(_type => StringFilter, {
+    nullable: true
+  })
+  title?: StringFilter | undefined;
+
+  @TypeGraphQL.Field(_type => Enumctscan_results_result_type_enumFilter, {
+    nullable: true
+  })
+  result_type?: Enumctscan_results_result_type_enumFilter | undefined;
+
+  @TypeGraphQL.Field(_type => UuidFilter, {
+    nullable: true
+  })
+  lab_document_id?: UuidFilter | undefined;
+
+  @TypeGraphQL.Field(_type => Lab_documentsRelationFilter, {
+    nullable: true
+  })
+  lab_documents?: Lab_documentsRelationFilter | undefined;
+}

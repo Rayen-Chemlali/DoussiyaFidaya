@@ -1,0 +1,15 @@
+export { AggregateConsultation_lab_requestsArgs } from "./AggregateConsultation_lab_requestsArgs";
+export { CreateManyAndReturnConsultation_lab_requestsArgs } from "./CreateManyAndReturnConsultation_lab_requestsArgs";
+export { CreateManyConsultation_lab_requestsArgs } from "./CreateManyConsultation_lab_requestsArgs";
+export { CreateOneConsultation_lab_requestsArgs } from "./CreateOneConsultation_lab_requestsArgs";
+export { DeleteManyConsultation_lab_requestsArgs } from "./DeleteManyConsultation_lab_requestsArgs";
+export { DeleteOneConsultation_lab_requestsArgs } from "./DeleteOneConsultation_lab_requestsArgs";
+export { FindFirstConsultation_lab_requestsArgs } from "./FindFirstConsultation_lab_requestsArgs";
+export { FindFirstConsultation_lab_requestsOrThrowArgs } from "./FindFirstConsultation_lab_requestsOrThrowArgs";
+export { FindManyConsultation_lab_requestsArgs } from "./FindManyConsultation_lab_requestsArgs";
+export { FindUniqueConsultation_lab_requestsArgs } from "./FindUniqueConsultation_lab_requestsArgs";
+export { FindUniqueConsultation_lab_requestsOrThrowArgs } from "./FindUniqueConsultation_lab_requestsOrThrowArgs";
+export { GroupByConsultation_lab_requestsArgs } from "./GroupByConsultation_lab_requestsArgs";
+export { UpdateManyConsultation_lab_requestsArgs } from "./UpdateManyConsultation_lab_requestsArgs";
+export { UpdateOneConsultation_lab_requestsArgs } from "./UpdateOneConsultation_lab_requestsArgs";
+export { UpsertOneConsultation_lab_requestsArgs } from "./UpsertOneConsultation_lab_requestsArgs";

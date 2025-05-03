@@ -1,0 +1,15 @@
+export { AggregateXray_resultsArgs } from "./AggregateXray_resultsArgs";
+export { CreateManyAndReturnXray_resultsArgs } from "./CreateManyAndReturnXray_resultsArgs";
+export { CreateManyXray_resultsArgs } from "./CreateManyXray_resultsArgs";
+export { CreateOneXray_resultsArgs } from "./CreateOneXray_resultsArgs";
+export { DeleteManyXray_resultsArgs } from "./DeleteManyXray_resultsArgs";
+export { DeleteOneXray_resultsArgs } from "./DeleteOneXray_resultsArgs";
+export { FindFirstXray_resultsArgs } from "./FindFirstXray_resultsArgs";
+export { FindFirstXray_resultsOrThrowArgs } from "./FindFirstXray_resultsOrThrowArgs";
+export { FindManyXray_resultsArgs } from "./FindManyXray_resultsArgs";
+export { FindUniqueXray_resultsArgs } from "./FindUniqueXray_resultsArgs";
+export { FindUniqueXray_resultsOrThrowArgs } from "./FindUniqueXray_resultsOrThrowArgs";
+export { GroupByXray_resultsArgs } from "./GroupByXray_resultsArgs";
+export { UpdateManyXray_resultsArgs } from "./UpdateManyXray_resultsArgs";
+export { UpdateOneXray_resultsArgs } from "./UpdateOneXray_resultsArgs";
+export { UpsertOneXray_resultsArgs } from "./UpsertOneXray_resultsArgs";

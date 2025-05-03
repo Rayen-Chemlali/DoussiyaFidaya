@@ -1,0 +1,11 @@
+export { PatientsAuthorizationsArgs } from "./PatientsAuthorizationsArgs";
+export { PatientsCertificatesArgs } from "./PatientsCertificatesArgs";
+export { PatientsConsultationsArgs } from "./PatientsConsultationsArgs";
+export { PatientsGeneralMedicalRecords_GeneralMedicalRecords_patient_idTopatientsArgs } from "./PatientsGeneralMedicalRecords_GeneralMedicalRecords_patient_idTopatientsArgs";
+export { PatientsGeneralMedicalRecords_patients_general_medical_record_idToGeneralMedicalRecordsArgs } from "./PatientsGeneralMedicalRecords_patients_general_medical_record_idToGeneralMedicalRecordsArgs";
+export { PatientsLab_documentsArgs } from "./PatientsLab_documentsArgs";
+export { PatientsLab_requestsArgs } from "./PatientsLab_requestsArgs";
+export { PatientsPrescriptionsArgs } from "./PatientsPrescriptionsArgs";
+export { PatientsRdv_requestsArgs } from "./PatientsRdv_requestsArgs";
+export { PatientsRdvsArgs } from "./PatientsRdvsArgs";
+export { PatientsUsersArgs } from "./PatientsUsersArgs";

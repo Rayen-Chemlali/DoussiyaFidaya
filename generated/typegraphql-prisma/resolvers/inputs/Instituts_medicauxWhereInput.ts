@@ -1,0 +1,52 @@
+import * as TypeGraphQL from "type-graphql";
+import * as GraphQLScalars from "graphql-scalars";
+import { Prisma } from "@prisma/client";
+import { DecimalJSScalar } from "../../scalars";
+import { AuthorizationsListRelationFilter } from "../inputs/AuthorizationsListRelationFilter";
+import { ConsultationsListRelationFilter } from "../inputs/ConsultationsListRelationFilter";
+import { Doctor_institutsListRelationFilter } from "../inputs/Doctor_institutsListRelationFilter";
+import { Enuminstituts_medicaux_type_enumFilter } from "../inputs/Enuminstituts_medicaux_type_enumFilter";
+import { UuidFilter } from "../inputs/UuidFilter";
+
+@TypeGraphQL.InputType("Instituts_medicauxWhereInput", {})
+export class Instituts_medicauxWhereInput {
+  @TypeGraphQL.Field(_type => [Instituts_medicauxWhereInput], {
+    nullable: true
+  })
+  AND?: Instituts_medicauxWhereInput[] | undefined;
+
+  @TypeGraphQL.Field(_type => [Instituts_medicauxWhereInput], {
+    nullable: true
+  })
+  OR?: Instituts_medicauxWhereInput[] | undefined;
+
+  @TypeGraphQL.Field(_type => [Instituts_medicauxWhereInput], {
+    nullable: true
+  })
+  NOT?: Instituts_medicauxWhereInput[] | undefined;
+
+  @TypeGraphQL.Field(_type => UuidFilter, {
+    nullable: true
+  })
+  id?: UuidFilter | undefined;
+
+  @TypeGraphQL.Field(_type => Enuminstituts_medicaux_type_enumFilter, {
+    nullable: true
+  })
+  type?: Enuminstituts_medicaux_type_enumFilter | undefined;
+
+  @TypeGraphQL.Field(_type => AuthorizationsListRelationFilter, {
+    nullable: true
+  })
+  authorizations?: AuthorizationsListRelationFilter | undefined;
+
+  @TypeGraphQL.Field(_type => ConsultationsListRelationFilter, {
+    nullable: true
+  })
+  consultations?: ConsultationsListRelationFilter | undefined;
+
+  @TypeGraphQL.Field(_type => Doctor_institutsListRelationFilter, {
+    nullable: true
+  })
+  doctor_instituts?: Doctor_institutsListRelationFilter | undefined;
+}

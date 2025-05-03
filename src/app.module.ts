@@ -31,7 +31,10 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
-
+import { resolvers } from '../generated/typegraphql-prisma'; // './node_modules/@generated/typegraphql-prisma'
+import { buildSchemaSync } from 'type-graphql';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,21 +43,15 @@ import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      schema: buildSchemaSync({
+        resolvers,
+        validate: false,
+        emitSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      }as any),
       playground: true,
+      context: () => ({ prisma }), // Make Prisma available in resolvers
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres', // Your DB type
-      host: 'localhost', // Your DB host
-      port: 5432, // Default PostgreSQL port
-      username: process.env.DBUsername ?? "postgres", // Database username
-      password: process.env.DBpassword ?? "sahbi", // Database password
-      database: 'medical-system',// Database name
-      entities: [__dirname + '/**/*.entity{.ts,.js}'], // Automatically inclu
-      synchronize: true, // Set to `true` for auto-sync in dev (don'tde all entities from all modules use in production)
-      logging: true, // Enable logging to view SQL queries
-    }),
-    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule, RdvRequestsModule],
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

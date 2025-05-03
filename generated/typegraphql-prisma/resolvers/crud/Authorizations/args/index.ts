@@ -1,0 +1,15 @@
+export { AggregateAuthorizationsArgs } from "./AggregateAuthorizationsArgs";
+export { CreateManyAndReturnAuthorizationsArgs } from "./CreateManyAndReturnAuthorizationsArgs";
+export { CreateManyAuthorizationsArgs } from "./CreateManyAuthorizationsArgs";
+export { CreateOneAuthorizationsArgs } from "./CreateOneAuthorizationsArgs";
+export { DeleteManyAuthorizationsArgs } from "./DeleteManyAuthorizationsArgs";
+export { DeleteOneAuthorizationsArgs } from "./DeleteOneAuthorizationsArgs";
+export { FindFirstAuthorizationsArgs } from "./FindFirstAuthorizationsArgs";
+export { FindFirstAuthorizationsOrThrowArgs } from "./FindFirstAuthorizationsOrThrowArgs";
+export { FindManyAuthorizationsArgs } from "./FindManyAuthorizationsArgs";
+export { FindUniqueAuthorizationsArgs } from "./FindUniqueAuthorizationsArgs";
+export { FindUniqueAuthorizationsOrThrowArgs } from "./FindUniqueAuthorizationsOrThrowArgs";
+export { GroupByAuthorizationsArgs } from "./GroupByAuthorizationsArgs";
+export { UpdateManyAuthorizationsArgs } from "./UpdateManyAuthorizationsArgs";
+export { UpdateOneAuthorizationsArgs } from "./UpdateOneAuthorizationsArgs";
+export { UpsertOneAuthorizationsArgs } from "./UpsertOneAuthorizationsArgs";

@@ -1,0 +1,15 @@
+export { AggregatePatientsArgs } from "./AggregatePatientsArgs";
+export { CreateManyAndReturnPatientsArgs } from "./CreateManyAndReturnPatientsArgs";
+export { CreateManyPatientsArgs } from "./CreateManyPatientsArgs";
+export { CreateOnePatientsArgs } from "./CreateOnePatientsArgs";
+export { DeleteManyPatientsArgs } from "./DeleteManyPatientsArgs";
+export { DeleteOnePatientsArgs } from "./DeleteOnePatientsArgs";
+export { FindFirstPatientsArgs } from "./FindFirstPatientsArgs";
+export { FindFirstPatientsOrThrowArgs } from "./FindFirstPatientsOrThrowArgs";
+export { FindManyPatientsArgs } from "./FindManyPatientsArgs";
+export { FindUniquePatientsArgs } from "./FindUniquePatientsArgs";
+export { FindUniquePatientsOrThrowArgs } from "./FindUniquePatientsOrThrowArgs";
+export { GroupByPatientsArgs } from "./GroupByPatientsArgs";
+export { UpdateManyPatientsArgs } from "./UpdateManyPatientsArgs";
+export { UpdateOnePatientsArgs } from "./UpdateOnePatientsArgs";
+export { UpsertOnePatientsArgs } from "./UpsertOnePatientsArgs";

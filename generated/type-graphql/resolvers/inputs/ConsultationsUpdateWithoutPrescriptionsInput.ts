@@ -1,0 +1,66 @@
+import * as TypeGraphQL from "type-graphql";
+import * as GraphQLScalars from "graphql-scalars";
+import { Prisma } from "@prisma/client";
+import { DecimalJSScalar } from "../../scalars";
+import { Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput } from "../inputs/Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput";
+import { ConsultationsUpdatenotesInput } from "../inputs/ConsultationsUpdatenotesInput";
+import { DateTimeFieldUpdateOperationsInput } from "../inputs/DateTimeFieldUpdateOperationsInput";
+import { DoctorsUpdateOneWithoutConsultationsNestedInput } from "../inputs/DoctorsUpdateOneWithoutConsultationsNestedInput";
+import { Instituts_medicauxUpdateOneWithoutConsultationsNestedInput } from "../inputs/Instituts_medicauxUpdateOneWithoutConsultationsNestedInput";
+import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
+import { PatientsUpdateOneRequiredWithoutConsultationsNestedInput } from "../inputs/PatientsUpdateOneRequiredWithoutConsultationsNestedInput";
+import { RdvsUpdateOneWithoutConsultationsNestedInput } from "../inputs/RdvsUpdateOneWithoutConsultationsNestedInput";
+import { StringFieldUpdateOperationsInput } from "../inputs/StringFieldUpdateOperationsInput";
+
+@TypeGraphQL.InputType("ConsultationsUpdateWithoutPrescriptionsInput", {})
+export class ConsultationsUpdateWithoutPrescriptionsInput {
+  @TypeGraphQL.Field(_type => StringFieldUpdateOperationsInput, {
+    nullable: true
+  })
+  id?: StringFieldUpdateOperationsInput | undefined;
+
+  @TypeGraphQL.Field(_type => NullableStringFieldUpdateOperationsInput, {
+    nullable: true
+  })
+  section?: NullableStringFieldUpdateOperationsInput | undefined;
+
+  @TypeGraphQL.Field(_type => DateTimeFieldUpdateOperationsInput, {
+    nullable: true
+  })
+  date?: DateTimeFieldUpdateOperationsInput | undefined;
+
+  @TypeGraphQL.Field(_type => ConsultationsUpdatenotesInput, {
+    nullable: true
+  })
+  notes?: ConsultationsUpdatenotesInput | undefined;
+
+  @TypeGraphQL.Field(_type => GraphQLScalars.JSONResolver, {
+    nullable: true
+  })
+  measures?: Prisma.InputJsonValue | undefined;
+
+  @TypeGraphQL.Field(_type => Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput, {
+    nullable: true
+  })
+  consultation_lab_requests?: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput | undefined;
+
+  @TypeGraphQL.Field(_type => Instituts_medicauxUpdateOneWithoutConsultationsNestedInput, {
+    nullable: true
+  })
+  instituts_medicaux?: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput | undefined;
+
+  @TypeGraphQL.Field(_type => PatientsUpdateOneRequiredWithoutConsultationsNestedInput, {
+    nullable: true
+  })
+  patients?: PatientsUpdateOneRequiredWithoutConsultationsNestedInput | undefined;
+
+  @TypeGraphQL.Field(_type => DoctorsUpdateOneWithoutConsultationsNestedInput, {
+    nullable: true
+  })
+  doctors?: DoctorsUpdateOneWithoutConsultationsNestedInput | undefined;
+
+  @TypeGraphQL.Field(_type => RdvsUpdateOneWithoutConsultationsNestedInput, {
+    nullable: true
+  })
+  rdvs?: RdvsUpdateOneWithoutConsultationsNestedInput | undefined;
+}
