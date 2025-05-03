@@ -3,33 +3,16 @@ import { ConsultationsService } from './consultations.service';
 import { Consultation } from './entities/consultation.entity';
 import { CreateConsultationInput } from './dto/create-consultation.input';
 import { UpdateConsultationInput } from './dto/update-consultation.input';
+import { createResolver } from '../common/generic.resolver';
 
+const genericResolver = createResolver<Consultation, CreateConsultationInput, UpdateConsultationInput>(
+  Consultation,
+  CreateConsultationInput,
+  UpdateConsultationInput
+);
 @Resolver(() => Consultation)
-export class ConsultationsResolver {
-  constructor(private readonly consultationsService: ConsultationsService) {}
-
-  @Mutation(() => Consultation)
-  createConsultation(@Args('createConsultationInput') createConsultationInput: CreateConsultationInput) {
-    return this.consultationsService.create(createConsultationInput);
-  }
-
-  @Query(() => [Consultation], { name: 'consultations' })
-  findAll() {
-    return this.consultationsService.findAll();
-  }
-
-  @Query(() => Consultation, { name: 'consultation' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.consultationsService.findOne(id);
-  }
-
-  @Mutation(() => Consultation)
-  updateConsultation(@Args('updateConsultationInput') updateConsultationInput: UpdateConsultationInput) {
-    return this.consultationsService.update(updateConsultationInput.id, updateConsultationInput);
-  }
-
-  @Mutation(() => Consultation)
-  removeConsultation(@Args('id', { type: () => Int }) id: number) {
-    return this.consultationsService.remove(id);
+export class ConsultationsResolver  extends genericResolver {
+  constructor(private readonly consultationsService: ConsultationsService) {
+    super(consultationsService);
   }
 }

@@ -335,8 +335,8 @@ type Query {
   certificate(id: Int!): Certificate!
   cliniques: [Clinique!]!
   clinique(id: Int!): Clinique!
-  consultations: [Consultation!]!
-  consultation(id: Int!): Consultation!
+  findAllConsultations: [Consultation!]!
+  findConsultationById(id: Float!): Consultation!
   ctScanResults: [CTScanResult!]!
   ctScanResult(id: Int!): CTScanResult!
   doctors: [Doctor!]!
@@ -390,9 +390,9 @@ type Mutation {
   createClinique(createCliniqueInput: CreateCliniqueInput!): Clinique!
   updateClinique(updateCliniqueInput: UpdateCliniqueInput!): Clinique!
   removeClinique(id: Int!): Clinique!
-  createConsultation(createConsultationInput: CreateConsultationInput!): Consultation!
-  updateConsultation(updateConsultationInput: UpdateConsultationInput!): Consultation!
-  removeConsultation(id: Int!): Consultation!
+  updateConsultation(id: Float!, input: UpdateConsultationInput!): Consultation!
+  deleteConsultation(id: Float!): Consultation!
+  findConsultationsByIds(ids: [Float!]!): [Consultation!]!
   createCtScanResult(createCtScanResultInput: CreateCtScanResultInput!): CTScanResult!
   updateCtScanResult(updateCtScanResultInput: UpdateCtScanResultInput!): CTScanResult!
   removeCtScanResult(id: Int!): CTScanResult!
@@ -501,15 +501,11 @@ input UpdateCliniqueInput {
   id: Int!
 }
 
-input CreateConsultationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 input UpdateConsultationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  section: String
+  date: DateTime
+  notes: [String!]
+  measures: JSON
 }
 
 input CreateCtScanResultInput {

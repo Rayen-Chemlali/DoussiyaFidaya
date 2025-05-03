@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { DeepPartial, Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class GenericService<T extends { id: number },CreateDto,UpdateDto> { // we extends the entity with id property
+export class GenericService<T extends {id:String},CreateDto extends DeepPartial<T> ,UpdateDto extends QueryDeepPartialEntity<T>> {
   constructor(private readonly repository: Repository<T>) {}
 
   async findAll(relations: string[] = []): Promise<T[]> {
@@ -17,7 +19,7 @@ async findOne(id: number, relations: string[] = []): Promise<T | null> {
   return entity;
 }
 
-  async create(createDto: CreateDto): Promise<(DeepPartial<T> & T)[]> {
+  async create(createDto: CreateDto): Promise<any> {
     return this.repository.save(createDto);
   }
 

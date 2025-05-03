@@ -9,14 +9,14 @@ import { Type } from '@nestjs/common';
 import { GenericService } from './generic.service'; // Adjust path as needed
 
 export function createResolver<TEntity, TCreateInput, TUpdateInput>(
-  entity: Type<TEntity>,
-  createInput: Type<TCreateInput>,
-  updateInput: Type<TUpdateInput>
+  entity: any,
+  createInput: any,
+  updateInput: any
 ) {
   @Resolver(() => entity)
   class GenericResolver {
     constructor(
-      protected readonly service: GenericService<TEntity, TCreateInput, TUpdateInput>
+      public readonly service: any
     ) {}
 
     @Query(() => [entity], { name: `findAll${entity.name}s` })
@@ -29,13 +29,13 @@ export function createResolver<TEntity, TCreateInput, TUpdateInput>(
       return this.service.findOne(id, []);
     }
 
-    @Mutation(() => entity, { name: `create${entity.name}` })
-    async create(@Args('input') input: TCreateInput): Promise<TEntity> {
-      return this.service.create(input);
-    }
-
+    // @Mutation(() => entity, { name: `create${entity.name}` })
+    // async create(@Args('input') input: TCreateInput): Promise<TEntity> {
+    //   return this.service.create(input);
+    // }
+    //
     @Mutation(() => entity, { name: `update${entity.name}` })
-    async update(@Args('id') id: number, @Args('input') input: TUpdateInput): Promise<TEntity> {
+    async update(@Args('id') id: number, @Args('input',{type:()=>updateInput}) input: TUpdateInput): Promise<TEntity> {
       return this.service.update(id, input);
     }
 
