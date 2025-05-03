@@ -37,7 +37,32 @@ enum LabResultType {
 
 type GeneralMedicalRecord {
   id: UUID!
-  allergies: [String!]!
+  allergies: [String!]
+  bloodType: String
+  birthDate: Date
+  height: Float
+  weight: Float
+  patient: Patient!
+}
+
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
+type Doctor implements InstitutMedical {
+  id: UUID!
+  type: InstitutMedicalType!
+  bio: String!
+  education: [String!]!
+  experience: [String!]!
+  first_name: String!
+  languages: [String!]!
+  last_name: String!
+  profile_image: String!
+  specialty: String!
+  user: User!
+  instituts: [InstitutMedical!]!
 }
 
 type User {
@@ -335,8 +360,8 @@ type Query {
   certificate(id: Int!): Certificate!
   cliniques: [Clinique!]!
   clinique(id: Int!): Clinique!
-  findAllConsultations: [Consultation!]!
-  findConsultationById(id: Float!): Consultation!
+  consultations: [Consultation!]!
+  consultation(id: Int!): Consultation!
   ctScanResults: [CTScanResult!]!
   ctScanResult(id: Int!): CTScanResult!
   doctors: [Doctor!]!
@@ -390,9 +415,9 @@ type Mutation {
   createClinique(createCliniqueInput: CreateCliniqueInput!): Clinique!
   updateClinique(updateCliniqueInput: UpdateCliniqueInput!): Clinique!
   removeClinique(id: Int!): Clinique!
-  updateConsultation(id: Float!, input: UpdateConsultationInput!): Consultation!
-  deleteConsultation(id: Float!): Consultation!
-  findConsultationsByIds(ids: [Float!]!): [Consultation!]!
+  createConsultation(createConsultationInput: CreateConsultationInput!): Consultation!
+  updateConsultation(updateConsultationInput: UpdateConsultationInput!): Consultation!
+  removeConsultation(id: Int!): Consultation!
   createCtScanResult(createCtScanResultInput: CreateCtScanResultInput!): CTScanResult!
   updateCtScanResult(updateCtScanResultInput: UpdateCtScanResultInput!): CTScanResult!
   removeCtScanResult(id: Int!): CTScanResult!
@@ -501,11 +526,15 @@ input UpdateCliniqueInput {
   id: Int!
 }
 
+input CreateConsultationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 input UpdateConsultationInput {
-  section: String
-  date: DateTime
-  notes: [String!]
-  measures: JSON
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input CreateCtScanResultInput {

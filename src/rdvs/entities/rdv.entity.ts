@@ -1,10 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
-
+import { Patient } from '../../patients/entities/patient.entity';
+import { User } from '../../users/entities/user.entity';
+import { Consultation } from '../../consultations/entities/consultation.entity';
+import { Doctor } from '../../doctors/entities/doctor.entity';
 import { Field, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 import { GraphQLDuration, GraphQLTime, GraphQLUUID } from 'graphql-scalars';
-import { Patient } from '../../patients/entities/patient.entity';
-import { Doctor } from '../../doctors/entities/doctor.entity';
-import { Consultation } from '../../consultations/entities/consultation.entity';
+import { RdvRequest } from 'src/rdv-requests/entities/rdv-request.entity';
 
 @Entity('rdvs')
 @ObjectType()
@@ -39,4 +40,9 @@ export class Rdv {
   @OneToOne(() => Consultation, { nullable: true })
   @JoinColumn({ name: 'consultation_id' })
   consultation: Consultation;
+
+  @Field(() => RdvRequest)
+  @OneToOne(() => RdvRequest, { nullable: true })
+  @JoinColumn({ name: 'rdv_request_id' })
+  rdvRequest: RdvRequest;
 }

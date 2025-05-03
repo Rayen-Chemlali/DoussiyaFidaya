@@ -3,15 +3,13 @@ import { PatientsService } from './patients.service';
 import { Patient } from './entities/patient.entity';
 import { CreatePatientInput } from './dto/create-patient.input';
 import { UpdatePatientInput } from './dto/update-patient.input';
+import { GraphQLUUID } from 'graphql-scalars';
 
 @Resolver(() => Patient)
 export class PatientsResolver {
   constructor(private readonly patientsService: PatientsService) {}
 
-  @Mutation(() => Patient)
-  createPatient(@Args('createPatientInput') createPatientInput: CreatePatientInput) {
-    return this.patientsService.create(createPatientInput);
-  }
+ 
 
   @Query(() => [Patient], { name: 'patients' })
   findAll() {
@@ -19,8 +17,18 @@ export class PatientsResolver {
   }
 
   @Query(() => Patient, { name: 'patient' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.patientsService.findOne(id);
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.patientsService.findOneById(id);
+  }
+
+  @Query(() => [Patient], { name: 'patientsByUserId' })
+  findByUserId(@Args('userId', { type: () => GraphQLUUID }) userId: string): Promise<Patient> {
+    return this.patientsService.findByUserId(userId);
+  }
+/*
+  @Mutation(() => Patient)
+  createPatient(@Args('createPatientInput') createPatientInput: CreatePatientInput) {
+    return this.patientsService.create(createPatientInput);
   }
 
   @Mutation(() => Patient)
@@ -32,4 +40,5 @@ export class PatientsResolver {
   removePatient(@Args('id', { type: () => Int }) id: number) {
     return this.patientsService.remove(id);
   }
+*/
 }

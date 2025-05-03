@@ -1,17 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import { DeepPartial, Repository } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, SelectQueryBuilder } from "typeorm";
 
 @Injectable()
-export class GenericService<T extends {id:String},CreateDto extends DeepPartial<T> ,UpdateDto extends QueryDeepPartialEntity<T>> {
+export class GenericService<T extends { id: string },CreateDto,UpdateDto> { // we extends the entity with id property
   constructor(private readonly repository: Repository<T>) {}
 
-  async findAll(relations: string[] = []): Promise<T[]> {
+  async genericFindAll(relations: string[] = []): Promise<T[]> {
     return this.repository.find({ relations });
   }
 
-async findOne(id: number, relations: string[] = []): Promise<T | null> {
+async genericFindOne(id: string, relations: string[] = []): Promise<T | null> {
   const entity = await this.repository.findOne({
     where: { id } as any,
     relations,
@@ -19,23 +17,23 @@ async findOne(id: number, relations: string[] = []): Promise<T | null> {
   return entity;
 }
 
-  async create(createDto: CreateDto): Promise<any> {
+  async genericCreate(createDto: any): Promise<T> {
     return this.repository.save(createDto);
   }
 
-  async update(id: number, updateDto: UpdateDto): Promise<T | null> {
+  async genericUpdate(id: string, updateDto: any): Promise<T | null> {
     await this.repository.update(id, updateDto);
-    return this.findOne(id) as Promise<T | null>;
+    return this.genericFindOne(id) as Promise<T | null>;
   }
 
-  async remove(id: number): Promise<void> {
+  async genericRemove(id: string): Promise<void> {
     await this.repository.delete(id);
   }
 
-  async findByIds(ids: number[] , relations : string [] = []): Promise<T[]> {
+  async genericFindByIds(ids: string[] , relations : string [] = []): Promise<T[]> {
     let entities: T[] = [];
     for (const id of ids) {
-      const entity = await this.findOne(id , relations);
+      const entity = await this.genericFindOne(id , relations);
       if (entity) {
         entities.push(entity);
       }
@@ -43,5 +41,56 @@ async findOne(id: number, relations: string[] = []): Promise<T | null> {
     return entities
     ;
   }
+
+  async genericFindByField(field: string, value: any, relations: string[] = []): Promise<SelectQueryBuilder<T>> {
+    const alias = 'entity';
+    const qb = this.repository.createQueryBuilder(alias);
+  
+    // Join specified relations
+    for (const relation of relations) {
+      qb.leftJoinAndSelect(`${alias}.${relation}`, relation);
+    }
+  
+    // Check if it's a relation field (e.g., 'patient.id')
+    if (field.includes('.')) {
+      qb.andWhere(`${field} = :value`, { value });
+    } else {
+      qb.andWhere(`${alias}.${field} = :value`, { value });
+    }
+  
+    return qb;
+  }
+
+
+  //await checkFieldValue('auth-id', 'patient.id', 'uuid-of-patient', ['patient']);
+
+  async genericCheckFieldValue(
+    id: string,
+    targetField: string,
+    targetValue: any,
+    relations: string[] = [],
+  ): Promise<boolean> {
+    const alias = 'entity';
+    const qb = this.repository.createQueryBuilder(alias);
+  
+    // Always filter by entity ID
+    qb.where(`${alias}.id = :id`, { id });
+
+    // Join specified relations
+    for (const relation of relations) {
+        qb.leftJoinAndSelect(`${alias}.${relation}`, relation);
+    }
+  
+    // Add field comparison
+    if (targetField.includes('.')) {
+      qb.andWhere(`${targetField} = :value`, { value: targetValue });
+    } else {
+      qb.andWhere(`${alias}.${targetField} = :value`, { value: targetValue });
+    }
+  
+    const result = await qb.getOne();
+    return !!result;
+  }
+  
 
 }

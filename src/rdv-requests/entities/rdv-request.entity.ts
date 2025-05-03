@@ -1,10 +1,9 @@
 import { Field, GraphQLISODateTime, ObjectType } from "@nestjs/graphql";
 import { GraphQLTime, GraphQLUUID } from "graphql-scalars";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Patient } from '../../patients/entities/patient.entity';
-import { Doctor } from '../../doctors/entities/doctor.entity';
-import { Rdv } from '../../rdvs/entities/rdv.entity';
-
+import { Patient } from "../../patients/entities/patient.entity";
+import { Doctor } from "../../doctors/entities/doctor.entity";
+import { Rdv } from "../../rdvs/entities/rdv.entity";
 
 enum RdvStatus {
   PENDING = 'PENDING',
@@ -34,7 +33,7 @@ export class RdvRequest {
   @Field()
   @Column({ type: 'text', nullable: false })
   Status: RdvStatus;
-
+ 
 
   @Field(() => Patient)
   @ManyToOne(() => Patient, { nullable: false })
@@ -49,6 +48,6 @@ export class RdvRequest {
   @Field(() => Rdv)
   @OneToOne(() => Rdv, { nullable: true })
   @JoinColumn({ name: 'rdv_id' })
-  rdv: Rdv;
+  rdv?: Rdv;
 
 }

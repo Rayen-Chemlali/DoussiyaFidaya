@@ -1,6 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 import { Field, GraphQLISODateTime, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLEmailAddress, GraphQLPhoneNumber, GraphQLUUID } from 'graphql-scalars';
+import { Patient } from '../../patients/entities/patient.entity';
+import { Doctor } from '../../doctors/entities/doctor.entity';
 
 export enum Role {
   Patient = 'Patient',
@@ -66,16 +68,16 @@ export class User {
   @Field(() => GraphQLUUID)
   @Column({ type: 'uuid', nullable: true })
   associated_id: string;
-
-  // @Column({ type: 'text', nullable: true })
-  // specialization: string;
-
+/*
+  @Column({ type: 'text', nullable: true })
+  specialization: string;
+*/
   @UpdateDateColumn({ nullable: false })
   updated_at: Date;
 
-  // @OneToOne(() => Patient, patient => patient.user)
-  // patient: Patient;
-  //
-  // @OneToOne(() => Doctor, doctor => doctor.user)
-  // doctor: Doctor;
+  @OneToOne(() => Patient, patient => patient.user)
+  patient: Patient;
+  
+  @OneToOne(() => Doctor, doctor => doctor.user)
+  doctor: Doctor;
 }

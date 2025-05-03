@@ -8,10 +8,6 @@ import { UpdateGeneralMedicalRecordInput } from './dto/update-general-medical-re
 export class GeneralMedicalRecordsResolver {
   constructor(private readonly generalMedicalRecordsService: GeneralMedicalRecordsService) {}
 
-  @Mutation(() => GeneralMedicalRecord)
-  createGeneralMedicalRecord(@Args('createGeneralMedicalRecordInput') createGeneralMedicalRecordInput: CreateGeneralMedicalRecordInput) {
-    return this.generalMedicalRecordsService.create(createGeneralMedicalRecordInput);
-  }
 
   @Query(() => [GeneralMedicalRecord], { name: 'generalMedicalRecords' })
   findAll() {
@@ -19,9 +15,25 @@ export class GeneralMedicalRecordsResolver {
   }
 
   @Query(() => GeneralMedicalRecord, { name: 'generalMedicalRecord' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.generalMedicalRecordsService.findOne(id);
   }
+
+
+  @Query(() => [GeneralMedicalRecord], { name: 'generalMedicalRecordsByPatientId' })
+  findByPatientId(@Args('patientId', { type: () => String }) patientId: string) {
+    return this.generalMedicalRecordsService.findByPatientId(patientId);
+  } 
+
+  
+
+/*
+  @Mutation(() => GeneralMedicalRecord)
+  createGeneralMedicalRecord(@Args('createGeneralMedicalRecordInput') createGeneralMedicalRecordInput: CreateGeneralMedicalRecordInput) {
+    return this.generalMedicalRecordsService.create(createGeneralMedicalRecordInput);
+  }
+
+  
 
   @Mutation(() => GeneralMedicalRecord)
   updateGeneralMedicalRecord(@Args('updateGeneralMedicalRecordInput') updateGeneralMedicalRecordInput: UpdateGeneralMedicalRecordInput) {
@@ -32,4 +44,5 @@ export class GeneralMedicalRecordsResolver {
   removeGeneralMedicalRecord(@Args('id', { type: () => Int }) id: number) {
     return this.generalMedicalRecordsService.remove(id);
   }
+*/
 }
