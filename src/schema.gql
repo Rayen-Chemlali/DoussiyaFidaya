@@ -1528,6 +1528,7 @@ input Consultation_lab_requestsUpdateInput {
 
 input Consultation_lab_requestsUpdateManyMutationInput {
   consultation_id: String
+  lab_request_id: String
 }
 
 input Consultation_lab_requestsUpdateManyWithWhereWithoutConsultationsInput {
@@ -3107,11 +3108,8 @@ input Doctor_institutsUpdateInput {
 }
 
 input Doctor_institutsUpdateManyMutationInput {
-  address: String
-  email: String
-  name: String
-  phone: String
-  website: String
+  doctor_id: String
+  instituts_id: String
 }
 
 input Doctor_institutsUpdateManyWithWhereWithoutDoctorsInput {
@@ -7974,8 +7972,10 @@ type Mutation {
   updateManyAuthorizations(data: AuthorizationsUpdateManyMutationInput!, where: AuthorizationsWhereInput): AffectedRowsOutput!
   updateManyCertificates(data: CertificatesUpdateManyMutationInput!, where: CertificatesWhereInput): AffectedRowsOutput!
   updateManyCliniques(data: CliniquesUpdateManyMutationInput!, where: CliniquesWhereInput): AffectedRowsOutput!
+  updateManyConsultation_lab_requests(data: Consultation_lab_requestsUpdateManyMutationInput!, where: Consultation_lab_requestsWhereInput): AffectedRowsOutput!
   updateManyConsultations(data: ConsultationsUpdateManyMutationInput!, where: ConsultationsWhereInput): AffectedRowsOutput!
   updateManyCtscan_results(data: Ctscan_resultsUpdateManyMutationInput!, where: Ctscan_resultsWhereInput): AffectedRowsOutput!
+  updateManyDoctor_instituts(data: Doctor_institutsUpdateManyMutationInput!, where: Doctor_institutsWhereInput): AffectedRowsOutput!
   updateManyDoctors(data: DoctorsUpdateManyMutationInput!, where: DoctorsWhereInput): AffectedRowsOutput!
   updateManyGeneralMedicalRecords(data: GeneralMedicalRecordsUpdateManyMutationInput!, where: GeneralMedicalRecordsWhereInput): AffectedRowsOutput!
   updateManyHopitaux(data: HopitauxUpdateManyMutationInput!, where: HopitauxWhereInput): AffectedRowsOutput!
