@@ -31,6 +31,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
+import { MessagesModule } from './messsages/messages.module';
 
 @Module({
   imports: [
@@ -48,13 +49,13 @@ import { RdvRequestsModule } from './rdv-requests/rdv-requests.module';
       host: 'localhost', // Your DB host
       port: 5432, // Default PostgreSQL port
       username: process.env.DBUsername ?? "postgres", // Database username
-      password: process.env.DBpassword ?? "sahbi", // Database password
+      password: process.env.DBpassword ?? "postgres", // Database password
       database: 'medical-system',// Database name
       entities: [__dirname + '/**/*.entity{.ts,.js}'], // Automatically inclu
       synchronize: true, // Set to `true` for auto-sync in dev (don'tde all entities from all modules use in production)
       logging: true, // Enable logging to view SQL queries
     }),
-    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule, RdvRequestsModule],
+    InstitutMedicalsModule, AnalysisResultsModule, AuthorizationsModule, CertificatesModule, CliniquesModule, ConsultationsModule, CtScanResultsModule, DoctorsModule, GeneralMedicalRecordsModule, HopitalsModule, LabAttachmentsModule, LabDocumentsModule, LabRequestsModule, LabResultsModule, LaboratorysModule, MedicationsModule, PatientsModule, PharmacysModule, PrescriptionsModule, RdvsModule, UsersModule, XrayResultsModule, CommonModule, RdvRequestsModule, MessagesModule],
   controllers: [AppController],
   providers: [AppService],
 })
