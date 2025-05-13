@@ -1,14 +1,21 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
+import { registerEnumType } from '@nestjs/graphql'; // Import for enum registration
 import { GraphQLUUID } from 'graphql-scalars';
 import { User } from '../../users/entities/user.entity';
 
-// Define enum first
+// Define and register enum
 export enum MessageStatus {
   SENT = 'sent',
   DELIVERED = 'delivered',
   SEEN = 'seen'
 }
+
+// Register the enum with GraphQL
+registerEnumType(MessageStatus, {
+  name: 'MessageStatus', // Must match the name used in GraphQL schema
+  description: 'The status of a message (sent, delivered, or seen)',
+});
 
 @ObjectType()
 @Entity('chat_rooms')
@@ -17,7 +24,7 @@ export class ChatRoom {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ type: 'text', nullable: true })
   name: string | null;
 

@@ -335,6 +335,42 @@ type Hopital implements InstitutMedical {
   email: String!
 }
 
+type ChatRoom {
+  id: UUID!
+  name: String
+  is_group: Boolean!
+  created_at: DateTime!
+  participants: [User!]!
+  messages: [Message!]
+}
+
+type Message {
+  id: UUID!
+  content: String!
+  status: MessageStatus!
+  created_at: DateTime!
+  sender: User!
+  chat_room: ChatRoom!
+  attachments: [MessageAttachment!]
+}
+
+"""The status of a message (sent, delivered, or seen)"""
+enum MessageStatus {
+  SENT
+  DELIVERED
+  SEEN
+}
+
+type MessageAttachment {
+  id: UUID!
+  file_name: String!
+  file_path: String!
+  mime_type: String!
+  file_size: Float!
+  created_at: DateTime!
+  message: Message!
+}
+
 type Query {
   institutMedicals: [InstitutMedical!]!
   institutMedical(id: Int!): InstitutMedical!
