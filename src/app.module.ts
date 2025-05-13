@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { resolvers } from '../generated/type-graphql'; // './node_modules/@generated/typegraphql-prisma'
 import { buildSchemaSync } from 'type-graphql';
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs'
-import { PrismaService } from '../prisma.service';
-import { createGeneratedResolverProviders } from '../generate-resolvers';
+import { NotificationsModule } from './notifications/notifications.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { PrismaMiddlewareService } from './notifications/services/prisma-middleware.service';
 
 @Module({
   imports: [
@@ -18,17 +18,32 @@ import { createGeneratedResolverProviders } from '../generate-resolvers';
       isGlobal: true,
       envFilePath: ['.env.local','.env'],
     }),
-    GraphQLModule.forRoot<YogaDriverConfig>({
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({ secret: 'your-secret-key', signOptions: { expiresIn: '1h' } }),
+    EventEmitterModule.forRoot(),
+    GraphQLModule.forRootAsync<YogaDriverConfig>({
       driver: YogaDriver,
-      schema: buildSchemaSync({
-        resolvers,
-        validate: false,
-        emitSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      }as any),
-      context: () => ({ prisma }), // Make Prisma available in resolvers
+      imports: [NotificationsModule],
+      inject: [PrismaMiddlewareService],
+      useFactory: (prismaMiddleware: PrismaMiddlewareService): YogaDriverConfig => ({
+        driver: YogaDriver,
+        schema: buildSchemaSync({
+          resolvers,
+          validate: false,
+          emitSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        }),
+        context: ({ req }) => {
+          const prisma = new PrismaClient();
+          prismaMiddleware.applyMiddleware(prisma, req);
+          const userId = req.user?.userId;
+          return { req, prisma, userId };
+        },
+      }),
     }),
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSE Notification Tester</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      body { font-family: 'Inter', sans-serif; }
+      #notifications { max-height: 400px; overflow-y: auto; }
+      .notification { transition: all 0.3s ease; }
+      .notification:hover { background-color: #f1f5f9; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">SSE Notification Tester</h1>
+
+  <!-- Input Form -->
+  <form id="sseForm" class="space-y-4 mb-6">
+    <div>
+      <label for="userId" class="block text-sm font-medium text-gray-700">User ID</label>
+      <input
+        type="text"
+        id="userId"
+        value="user1"
+        class="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+        placeholder="e.g., user1"
+        required
+      >
+    </div>
+    <div>
+      <label for="channels" class="block text-sm font-medium text-gray-700">Channels (comma-separated)</label>
+      <input
+        type="text"
+        id="channels"
+        value="offer.*.updated,job-offer.*.created"
+        class="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+        placeholder="e.g., offer.*.updated,job-offer.*.created"
+        required
+      >
+    </div>
+    <div>
+      <label for="jwtToken" class="block text-sm font-medium text-gray-700">JWT Token (optional)</label>
+      <input
+        type="text"
+        id="jwtToken"
+        class="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+        placeholder="Paste JWT token here"
+      >
+    </div>
+    <button
+      type="submit"
+      class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 disabled:bg-gray-400"
+      id="connectBtn"
+    >
+      Connect to SSE
+    </button>
+  </form>
+
+  <!-- Connection Status -->
+  <div class="mb-4">
+    <p class="text-sm font-medium text-gray-700">Status: <span id="status" class="font-semibold text-gray-900">Disconnected</span></p>
+  </div>
+
+  <!-- Notifications List -->
+  <div>
+    <h2 class="text-lg font-semibold text-gray-800 mb-2">Notifications</h2>
+    <div id="notifications" class="bg-gray-50 p-4 rounded-md border"></div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('sseForm');
+  const connectBtn = document.getElementById('connectBtn');
+  const statusEl = document.getElementById('status');
+  const notificationsEl = document.getElementById('notifications');
+  let eventSource = null;
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 5;
+  const reconnectDelay = 3000;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (eventSource) {
+      eventSource.close();
+      eventSource = null;
+      updateStatus('Disconnected');
+      connectBtn.textContent = 'Connect to SSE';
+      connectBtn.disabled = false;
+      return;
+    }
+
+    const userId = document.getElementById('userId').value.trim();
+    const channels = document.getElementById('channels').value.trim();
+    const jwtToken = document.getElementById('jwtToken').value.trim();
+
+    if (!userId || !channels) {
+      alert('User ID and channels are required');
+      return;
+    }
+
+    connectBtn.disabled = true;
+    connectBtn.textContent = 'Connecting...';
+    connectSSE(userId, channels, jwtToken);
+  });
+
+  function connectSSE(userId, channels, jwtToken) {
+    const query = `userId=${encodeURIComponent(userId)}&channels=${encodeURIComponent(channels)}`;
+    const url = `http://localhost:3000/sse?${query}`;
+    const options = jwtToken ? { headers: { Authorization: `Bearer ${jwtToken}` } } : {};
+
+    eventSource = new EventSource(url, options);
+
+    eventSource.onopen = () => {
+      updateStatus('Connected');
+      connectBtn.textContent = 'Disconnect';
+      connectBtn.disabled = false;
+      reconnectAttempts = 0;
+      addNotification('System', 'Connected to SSE server');
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        const { eventName, entity } = data;
+        addNotification(eventName, JSON.stringify(entity, null, 2));
+      } catch (err) {
+        console.error('Failed to parse SSE message:', err);
+        addNotification('Error', 'Invalid message format');
+      }
+    };
+
+    eventSource.onerror = () => {
+      updateStatus('Disconnected (Error)');
+      eventSource.close();
+      eventSource = null;
+
+      if (reconnectAttempts < maxReconnectAttempts) {
+        reconnectAttempts++;
+        addNotification('System', `Connection lost, reconnecting (${reconnectAttempts}/${maxReconnectAttempts})...`);
+        setTimeout(() => connectSSE(userId, channels, jwtToken), reconnectDelay);
+      } else {
+        addNotification('System', 'Max reconnect attempts reached. Please reconnect manually.');
+        connectBtn.textContent = 'Connect to SSE';
+        connectBtn.disabled = false;
+      }
+    };
+  }
+
+  function updateStatus(status) {
+    statusEl.textContent = status;
+    statusEl.className = `font-semibold ${status === 'Connected' ? 'text-green-600' : 'text-red-600'}`;
+  }
+
+  function addNotification(eventName, message) {
+    const div = document.createElement('div');
+    div.className = 'notification p-3 mb-2 bg-white rounded-md shadow-sm border';
+    const time = new Date().toLocaleTimeString();
+    div.innerHTML = `
+        <div class="flex justify-between">
+          <span class="font-medium text-indigo-600">${eventName}</span>
+          <span class="text-sm text-gray-500">${time}</span>
+        </div>
+        <pre class="text-sm text-gray-700 mt-1 whitespace-pre-wrap">${message}</pre>
+      `;
+    notificationsEl.insertBefore(div, notificationsEl.firstChild);
+    // Limit to 50 notifications to prevent memory issues
+    if (notificationsEl.children.length > 50) {
+      notificationsEl.removeChild(notificationsEl.lastChild);
+    }
+  }
+</script>
+</body>
+</html>

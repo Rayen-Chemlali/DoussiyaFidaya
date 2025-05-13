@@ -1,1 +1,0 @@
-export { GeneralMedicalRecordsPatients_patients_general_medical_record_idToGeneralMedicalRecordsArgs } from "./GeneralMedicalRecordsPatients_patients_general_medical_record_idToGeneralMedicalRecordsArgs";
