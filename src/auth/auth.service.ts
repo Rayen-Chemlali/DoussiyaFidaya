@@ -208,10 +208,11 @@ export class AuthService {
             throw new BadRequestException('Invalid verification code');
         }
         const payload = {"mail" : user.email ,"able_to_reset_password" : true}
-        const token = this.jwtService.sign(payload, {
+        const token = this.jwtService.sign(payload, /*{
             secret: process.env.JWT_SECRET,
             expiresIn: '1h',
-        });
+        }*/
+        );
         return {
             message: 'Email verified successfully you can reset your password',
             token,
@@ -253,12 +254,15 @@ export class AuthService {
         const foundUser = await this.prisma.users.findUnique({
             where: { 
                 email,
-                is_verified: true,
-             },
+            },
         });
         if (!foundUser) {
             throw new NotFoundException('User not found');
         }
+        if (!foundUser.is_verified) {
+            throw new BadRequestException('Email not verified');
+        }
+
         const hashedPassword = await bcrypt.hash(plainPassword, foundUser.salt);
         if (hashedPassword !== foundUser.password) {
             throw new BadRequestException('Invalid password');
@@ -266,7 +270,9 @@ export class AuthService {
 
         const { password, salt, ...userData } = foundUser;
 
-        return {message : "Login successful", user : userData};
+        const token = this.jwtService.sign({...userData} );
+
+        return {message : "Login successful", user : userData , token};
     }
 
 
