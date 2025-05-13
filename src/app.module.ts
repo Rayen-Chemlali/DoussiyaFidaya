@@ -6,11 +6,15 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { resolvers } from '../generated/type-graphql'; // './node_modules/@generated/typegraphql-prisma'
 import { buildSchemaSync } from 'type-graphql';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs'
 import { PrismaService } from '../prisma.service';
 import { createGeneratedResolverProviders } from '../generate-resolvers';
+import { AuthModule } from './auth/auth.module';
+import { MailerModule } from './mailer/mailer.module';
+import { PrismaModule } from './prisma/prisma.module';
+
 
 @Module({
   imports: [
@@ -27,6 +31,11 @@ import { createGeneratedResolverProviders } from '../generate-resolvers';
       }as any),
       context: () => ({ prisma }), // Make Prisma available in resolvers
     }),
+    AuthModule,
+    MailerModule,
+    PrismaModule,
+    PrismaModule,
+    
   ],
   controllers: [],
   providers: [],

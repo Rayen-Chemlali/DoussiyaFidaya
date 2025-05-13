@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL") 
 }
 
 model GeneralMedicalRecords {
@@ -115,6 +115,7 @@ model doctor_instituts {
 model doctors {
   id               String                 @id(map: "PK_8207e7889b50ee3695c2b8154ff") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   type             doctors_type_enum
+  is_license_verified   Boolean  @default(false)
   bio              String?
   education        String[]
   experience       String[]
@@ -226,7 +227,7 @@ model medications {
 
 model patients {
   id                                                                              String                 @id(map: "PK_a7f0b9fcbb3469d5ec0b0aceaa7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  cin                                                                             Int?                   @unique(map: "UQ_a0d78441c0c6cf0f1753a1fb139")
+  cin                                                                             Int                  @unique(map: "UQ_a0d78441c0c6cf0f1753a1fb139")
   date_of_birth                                                                   DateTime               @db.Timestamptz(6)
   gender                                                                          patients_gender_enum
   profile_image                                                                   String?
@@ -308,7 +309,10 @@ model users {
   email           String          @unique(map: "UQ_97672ac88f789774dd47f7c8be3")
   first_name      String
   last_name       String
+  validation_token verification_tokens? 
   is_verified     Boolean
+  password        String
+  salt            String
   last_login      DateTime?       @db.Timestamptz(6)
   phone           String?
   profile_picture String?
@@ -448,4 +452,14 @@ enum xray_results_result_type_enum {
   analysis
   xray
   ctscan
+}
+
+model verification_tokens {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String   @unique @db.Uuid
+  token      String
+  numberofTries Int      @default(0)
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  expireAt   DateTime @db.Timestamp(6)
+  user       users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
