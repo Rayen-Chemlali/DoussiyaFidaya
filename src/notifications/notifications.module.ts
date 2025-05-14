@@ -10,6 +10,7 @@ import { EntityUserRelationUtil } from './utils/entity-user-relation.util';
 import { NotificationHandler } from './handlers/notification.handler';
 import { PrismaMiddlewareService } from './services/prisma-middleware.service';
 import { TestEventController } from './controllers/test-event.controller';
+import Redis from 'ioredis';
 
 @Module({
   imports: [EventEmitterModule.forRoot(
@@ -24,7 +25,16 @@ import { TestEventController } from './controllers/test-event.controller';
     EntityUserRelationUtil,
     PrismaService,
     NotificationHandler,
-    PrismaMiddlewareService
+    PrismaMiddlewareService,
+    {
+      provide: 'REDIS_CLIENT',
+      useFactory: () => {
+        return new Redis({
+          host: process.env.REDIS_HOST || 'localhost',
+          port: parseInt(process.env.REDIS_PORT || '6379'),
+        });
+      },
+    },
   ],
   exports: [NotificationService, NotificationHandler, PrismaMiddlewareService,PrismaService],
 })

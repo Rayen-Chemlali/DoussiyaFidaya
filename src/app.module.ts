@@ -11,12 +11,22 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaMiddlewareService } from './notifications/services/prisma-middleware.service';
-
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-store';
+import Redis from 'ioredis';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local','.env'],
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => ({
+        store: await redisStore({
+          url: `redis://${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || 6379}`,
+        }),
+      }),
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({ secret: 'your-secret-key', signOptions: { expiresIn: '1h' } }),
