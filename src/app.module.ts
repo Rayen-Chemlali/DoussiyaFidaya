@@ -20,17 +20,8 @@ import Redis from 'ioredis';
       isGlobal: true,
       envFilePath: ['.env.local','.env'],
     }),
-    CacheModule.registerAsync({
-      isGlobal: true,
-      useFactory: async () => ({
-        store: await redisStore({
-          url: `redis://${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || 6379}`,
-        }),
-      }),
-    }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({ secret: 'your-secret-key', signOptions: { expiresIn: '1h' } }),
-    EventEmitterModule.forRoot(),
     GraphQLModule.forRootAsync<YogaDriverConfig>({
       driver: YogaDriver,
       imports: [NotificationsModule],

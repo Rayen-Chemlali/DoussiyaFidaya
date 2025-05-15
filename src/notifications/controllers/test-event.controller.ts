@@ -12,7 +12,7 @@ export class TestEventController {
 
   @Get('test')
   async test() {
-    const eventName = 'joboffer.test.updated';
+    const eventName = 'sse.notify:4e1d7bb6-702c-4847-a09a-17796d2a2a36';
     const payload = {
       entity: {
         id: 'test',

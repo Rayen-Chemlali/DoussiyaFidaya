@@ -1,28 +1,24 @@
-import { Injectable, OnModuleInit, Inject, Logger } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserPreferencesService } from './user-preferences.service';
 import { EntityUserRelationUtil } from '../utils/entity-user-relation.util';
 import { PrismaService } from './prisma.service';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
-import Redis from 'ioredis';
 
 @Injectable()
 export class NotificationService implements OnModuleInit {
   private readonly logger = new Logger(NotificationService.name);
-  private clients: Map<string, { channels: string[] }> = new Map();
+  private clients: Map<string, { channels: string[]; timeout?: NodeJS.Timeout }> = new Map();
   private rabbitClient: ClientProxy;
-  private redis: Redis;
-  private pub: Redis;
-  private sub: Redis;
+  private eventCache: Map<string, { timestamp: number; payload: any }> = new Map();
+  private entityUsersCache: Map<string, string[]> = new Map();
   private my_id: number = 0;
 
   constructor(
     private userPreferences: UserPreferencesService,
     private relationUtil: EntityUserRelationUtil,
     private prisma: PrismaService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    @Inject('REDIS_CLIENT') redisClient: Redis,
+    private eventEmitter: EventEmitter2,
   ) {
     this.rabbitClient = ClientProxyFactory.create({
       transport: Transport.RMQ,
@@ -32,9 +28,6 @@ export class NotificationService implements OnModuleInit {
         queueOptions: { durable: true, messageTtl: 86400000 },
       },
     });
-    this.redis = redisClient;
-    this.pub = new Redis({ host: process.env.REDIS_HOST || 'localhost', port: parseInt(process.env.REDIS_PORT || '6379') });
-    this.sub = new Redis({ host: process.env.REDIS_HOST || 'localhost', port: parseInt(process.env.REDIS_PORT || '6379') });
     this.my_id = Math.random() * 1000;
     this.logger.log(`NotificationService initialized, ID: ${this.my_id}`);
   }
@@ -42,18 +35,7 @@ export class NotificationService implements OnModuleInit {
   async onModuleInit() {
     try {
       await this.rabbitClient.connect();
-      await this.sub.subscribe('sse.notify');
-      this.sub.on('message', (channel, message) => {
-        if (channel === 'sse.notify') {
-          const data = JSON.parse(message);
-          this.clients.forEach((client, clientId) => {
-            if (data.userIds.includes(clientId) && client.channels.some((ch) => this.matchPattern(ch, data.eventName))) {
-              this.notifyClient(clientId, data);
-            }
-          });
-        }
-      });
-      this.logger.log('RabbitMQ and Redis Pub/Sub initialized');
+      this.logger.log('RabbitMQ initialized');
     } catch (err) {
       this.logger.error(`Initialization failed: ${err.message}`);
     }
@@ -61,10 +43,16 @@ export class NotificationService implements OnModuleInit {
 
   async registerClient(clientId: string, channels: string[]) {
     try {
-      this.clients.set(clientId, { channels });
-      await this.cacheManager.set(`user:channels:${clientId}`, JSON.stringify(channels), 86400);
+      console.log('this is my id here registerClient', this.my_id);
+      // Clear existing timeout if re-registering
+      const existing = this.clients.get(clientId);
+      if (existing && existing.timeout) {
+        clearTimeout(existing.timeout);
+      }
+      // Set new timeout for 24h (86400s)
+      const timeout  = setTimeout(() => this.clients.delete(clientId), 86400 * 1000);
+      this.clients.set(clientId, { channels, timeout });
       this.logger.log(`Client ${clientId} registered for channels: ${channels.join(', ')}`);
-      await this.deliverStoredNotifications(clientId);
     } catch (err) {
       this.logger.error(`Error registering client ${clientId}: ${err.message}`);
       throw err;
@@ -73,10 +61,13 @@ export class NotificationService implements OnModuleInit {
 
   async unregisterClient(clientId: string) {
     try {
+      console.log("i'm unregistering the client", clientId);
       const client = this.clients.get(clientId);
       if (client) {
+        if (client.timeout) {
+          clearTimeout(client.timeout);
+        }
         this.clients.delete(clientId);
-        await this.cacheManager.del(`user:channels:${clientId}`);
         this.logger.log(`Client ${clientId} unregistered`);
       }
     } catch (err) {
@@ -87,30 +78,31 @@ export class NotificationService implements OnModuleInit {
 
   async dispatchEvent(eventName: string, payload: any) {
     try {
+      console.log('this is my id here', this.my_id);
       this.logger.log(`Dispatching event: ${eventName}, entity ID: ${payload.entity.id}`);
+      console.log('this the payload i expect in cache', payload);
       const cacheKey = `${eventName}:${payload.entity.id}`;
       const now = Date.now();
-      const cachedEvent = await this.redis.get(`event:cache:${cacheKey}`);
-      if (cachedEvent) {
-        const event = JSON.parse(cachedEvent);
-        if (now - event.timestamp < 5000) {
-          this.logger.log(`Event ${cacheKey} skipped (cached)`);
-          return;
-        }
+      const cachedEvent = this.eventCache.get(cacheKey);
+      if (cachedEvent && now - cachedEvent.timestamp < 5000) {
+        this.logger.log(`Event ${cacheKey} skipped (cached)`);
+        return;
       }
-      await this.redis.set(`event:cache:${cacheKey}`, JSON.stringify({ timestamp: now, payload }), 'EX', 5);
+      this.eventCache.set(cacheKey, { timestamp: now, payload });
+      setTimeout(() => this.eventCache.delete(cacheKey), 5000);
 
       const entity = payload.entity;
       let userIds: string[] = [];
 
-      // Check Redis cache for entity-user relations
-      const cachedUsers = await this.redis.get(`entity:users:${entity.id}`);
+      // Check in-memory cache for entity-user relations
+      const cachedUsers = this.entityUsersCache.get(`entity:users:${entity.id}`);
       if (cachedUsers) {
-        userIds = JSON.parse(cachedUsers);
+        userIds = cachedUsers;
       } else {
         // Query database for related users
         userIds = await this.getRelatedUserIds(entity);
-        await this.redis.set(`entity:users:${entity.id}`, JSON.stringify(userIds), 'EX', 3600);
+        this.entityUsersCache.set(`entity:users:${entity.id}`, userIds);
+        setTimeout(() => this.entityUsersCache.delete(`entity:users:${entity.id}`), 3600000);
       }
       this.logger.log(`Related user IDs: ${userIds.join(', ')}`);
 
@@ -120,24 +112,22 @@ export class NotificationService implements OnModuleInit {
       const onlineUserIds: string[] = [];
       const offlineUserIds: string[] = [];
       for (const userId of allowedUserIds) {
-        const channelsJson = await this.cacheManager.get(`user:channels:${userId}`);
-        if (channelsJson) {
-          let channels;
-          if (typeof channelsJson === 'string') {
-            channels = JSON.parse(channelsJson);
-          }
-          if (channels.some((ch: string) => this.matchPattern(ch, eventName))) {
-            onlineUserIds.push(userId);
-          }
+        const client = this.clients.get(userId);
+        if (client && client.channels.some((ch: string) => this.matchPattern(ch, eventName))) {
+          console.log('client is online', client);
+          onlineUserIds.push(userId);
         } else {
+          console.log('client is offline', client);
           offlineUserIds.push(userId);
         }
       }
 
       if (onlineUserIds.length > 0) {
         const compactPayload = { eventName, entity: { id: entity.id, ...entity } };
-        await this.pub.publish('sse.notify', JSON.stringify({ eventName, payload: compactPayload, userIds: onlineUserIds }));
-        this.logger.log(`Published sse.notify for ${onlineUserIds.length} users`);
+        for (const userId of onlineUserIds) {
+          this.eventEmitter.emit(`sse.notify:${userId}`, { eventName, payload: compactPayload });
+          this.logger.log(`Emitted sse.notify:${userId} for user ${userId}`);
+        }
       }
 
       if (offlineUserIds.length > 0) {
@@ -151,11 +141,15 @@ export class NotificationService implements OnModuleInit {
   }
 
   async deliverStoredNotifications(userId: string) {
+    console.log('this is my id here deliverStoredNotifications', this.my_id);
     try {
       const notifications = await this.prisma.userNotification.findMany({ where: { userId } });
+      console.log('these are my notifications', notifications);
       if (notifications.length > 0) {
         for (const notif of notifications) {
-          await this.notifyClient(userId, JSON.parse(notif.payload));
+          const data = JSON.parse(notif.payload);
+          console.log('this is my data', data);
+          await this.notifyClient(userId, {eventName:notif.eventName, entity: data});
           await this.prisma.userNotification.delete({ where: { id: notif.id } });
         }
         this.logger.log(`Delivered ${notifications.length} stored notifications to ${userId}`);
@@ -168,8 +162,7 @@ export class NotificationService implements OnModuleInit {
 
   async isUserOnline(userId: string): Promise<boolean> {
     try {
-      const channelsJson = await this.cacheManager.get(`user:channels:${userId}`);
-      const isOnline = !!channelsJson;
+      const isOnline = this.clients.has(userId);
       this.logger.log(`User ${userId} isOnline: ${isOnline}`);
       return isOnline;
     } catch (err) {
@@ -178,42 +171,22 @@ export class NotificationService implements OnModuleInit {
     }
   }
 
-  private async notifyClient(userId: string, data: { eventName: string; payload: any }) {
+  private async notifyClient(userId: string, data: { eventName: string; entity: any }) {
+    console.log('this is my id here notifyClient', this.my_id);
     try {
-      await this.redis.set(`event:cache:${data.eventName}:${Date.now()}`, JSON.stringify(data), 'EX', 5);
-      await this.pub.publish(`sse.client.notify:${userId}`, JSON.stringify({ userId, data }));
+      const {eventName,entity} = data;
+      this.eventCache.set(eventName, {timestamp: Date.now(), payload: {entity:entity}});
+      console.log('this is the payload im sending', {entity:data.entity})
+      setTimeout(() => this.eventCache.delete(eventName), 5000);
+      this.eventEmitter.emit(`sse.notify:${userId}`, { eventName, payload: data });
+      console.log(`Emitted sse.notify:${userId} for user ${userId} from notifyClient`);
     } catch (err) {
       this.logger.error(`Error notifying client ${userId}: ${err.message}`);
     }
   }
 
   private async getRelatedUserIds(entity: any): Promise<string[]> {
-    this.logger.log(`Getting related user IDs for entity ${entity.id}`);
-    // i need to fix this ( to be fixed)
-    return [entity.id,entity.patient_id,entity.doctor_id].filter((id) => id !== null && id !== undefined);
-    // try {
-    //   const userIds: string[] = [];
-    //   const jobOffer = await this.prisma.jobOffer.findUnique({
-    //     where: { id: entity.id },
-    //     select: {
-    //       userId: true,
-    //       applications: { select: { userId: true } },
-    //     },
-    //   });
-    //   if (jobOffer) {
-    //     userIds.push(jobOffer.userId);
-    //     userIds.push(...jobOffer.applications.map((app) => app.userId));
-    //   }
-    //   const relatedUserIds = await Promise.all(
-    //     userIds.map(async (userId) => {
-    //       return (await this.relationUtil.isUserRelatedToEntity(userId, entity)) ? userId : null;
-    //     }),
-    //   );
-    //   return [...new Set(relatedUserIds.filter((id): id is string => id !== null))];
-    // } catch (err) {
-    //   this.logger.error(`Error getting related user IDs for entity ${entity.id}: ${err.message}`);
-    //   return [];
-    // }
+    return [entity.id,entity.patient_id,entity.doctor_id].filter(id => id !== undefined) as string[];
   }
 
   private matchPattern(pattern: string, topic: string): boolean {
@@ -227,11 +200,8 @@ export class NotificationService implements OnModuleInit {
 
   async onApplicationShutdown() {
     try {
-      await this.redis.quit();
-      await this.pub.quit();
-      await this.sub.quit();
       await this.rabbitClient.close();
-      this.logger.log('Redis and RabbitMQ connections closed');
+      this.logger.log('RabbitMQ connection closed');
     } catch (err) {
       this.logger.error(`Error during shutdown: ${err.message}`);
     }

@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
-import { PrismaService } from '../../prisma.service';
+import { PrismaService } from '../notifications/services/prisma.service';
 
 @Controller()
 export class NotificationWorkerService {
@@ -18,7 +18,7 @@ export class NotificationWorkerService {
           data: {
             userId,
             eventName,
-            payload: JSON.stringify({ eventName, entity: { id: payload.entity.id, ...payload.entity } }),
+            payload: JSON.stringify({ id: payload.entity.id, ...payload.entity }),
             createdAt: new Date(),
             expiresAt,
           },

@@ -10,6 +10,8 @@ export class NotificationHandler {
   ) {
     this.eventEmitter.onAny(async (eventName: string, payload: any) => {
       console.log(`Caught event: ${eventName}`);
+      console.log(`Payload: ${JSON.stringify(payload)}`);
+      if (eventName.startsWith('sse.notify')) return;
       try {
         await this.notificationService.dispatchEvent(eventName, payload);
       } catch (err) {

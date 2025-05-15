@@ -6,7 +6,6 @@ import { PrismaService } from '../notifications/services/prisma.service';
 
 @Module({
   imports: [
-    NotificationsModule,
     ClientsModule.register([
       {
         name: 'RABBITMQ_SERVICE',
@@ -18,6 +17,7 @@ import { PrismaService } from '../notifications/services/prisma.service';
         },
       },
     ]),
+    NotificationsModule,
   ],
   controllers: [NotificationWorkerService],
   providers: [],
