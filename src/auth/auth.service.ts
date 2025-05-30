@@ -269,6 +269,28 @@ export class AuthService {
         }
 
         const { password, salt, ...userData } = foundUser;
+        const associatedId = foundUser.associated_id;
+        if (!associatedId) {
+            throw new NotFoundException('Associated data not found');
+        }
+        if (foundUser.role === users_role_enum.Patient) {
+            const patient = await this.prisma.patients.findUnique({
+                where: { id: associatedId },
+            });
+            if (!patient) {
+                throw new NotFoundException('Patient not found');
+            }
+            userData['associated_data'] = patient;
+        }
+        else if (foundUser.role === users_role_enum.Doctor) {
+            const doctor = await this.prisma.doctors.findUnique({
+                where: { id: associatedId },
+            });
+            if (!doctor) {
+                throw new NotFoundException('Doctor not found');
+            }
+            userData['associated_data'] = doctor;
+        }
 
         const token = this.jwtService.sign({...userData} );
 
@@ -295,6 +317,119 @@ export class AuthService {
             message: 'Verification code sent successfully to '+ email,
         };
     }
+
+    // Register a patient
+     async registerPatient(registrationInput: PatientRegistrationInput) {
+
+        const { email, first_name, last_name, password, address, phone, cin, gender, date_of_birth } = registrationInput;
+
+        const salt: string = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const emailExists = await this.prisma.users.findUnique({ where: { email } });
+        if (emailExists) {
+            throw new ConflictException('Email already exists. If you forgot, click on forgot password');
+        }
+
+        const cinExists = await this.prisma.patients.findUnique({ where: { cin } });
+        if (cinExists) {
+            throw new ConflictException('CIN already exists');
+        }
+
+        const user = await this.prisma.$transaction(async (tx) => {
+            const createdUser = await tx.users.create({
+                data: {
+                    email,
+                    first_name,
+                    last_name,
+                    password: hashedPassword,
+                    salt,
+                    address,
+                    phone,
+                    role: users_role_enum.Patient,
+                    is_verified: false,
+                },
+            });
+
+            const patient = await tx.patients.create({
+                data: {
+                    user_id: createdUser.id,
+                    cin: cin,
+                    date_of_birth,
+                    gender,
+                },
+            });
+
+            await tx.users.update({
+                where: { id: createdUser.id },
+                data: { associated_id: patient.id },
+            });
+
+            return createdUser;
+        });
+
+        return {
+            message: 'Patient registered successfully, verify your email',
+            email: user.email,
+        };
+    }
+    //doctor registration
+     async registerDoctor(registrationInput: DoctorRegistrationInput) {
+       
+        const { email, first_name, last_name, password, address, phone, type, specialty } = registrationInput;
+
+        const salt: string = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const emailExists = await this.prisma.users.findUnique({ where: { email } });
+        if (emailExists) {
+            throw new ConflictException('Email already exists. If you forgot, click on forgot password');
+        }
+
+        const user = await this.prisma.$transaction(async (tx) => {
+            const createdUser = await tx.users.create({
+                data: {
+                    email,
+                    first_name,
+                    last_name,
+                    password: hashedPassword,
+                    salt,
+                    address,
+                    phone,
+                    role: users_role_enum.Doctor,
+                    is_verified: false,
+                },
+            });
+
+            const doctor = await tx.doctors.create({
+                data: {
+                    users: {
+                        connect: {
+                            id: createdUser.id,
+                        },
+                    },
+                    type,
+                    specialty,
+                    first_name,
+                    last_name,
+                    is_license_verified: false,
+                },
+            });
+
+            await tx.users.update({
+                where: { id: createdUser.id },
+                data: { associated_id: doctor.id },
+            });
+
+            return createdUser;
+        });
+
+        return {
+            message: 'Doctor registered successfully, verify your email',
+            email: user.email,
+        };
+    }
+
 
 
 }

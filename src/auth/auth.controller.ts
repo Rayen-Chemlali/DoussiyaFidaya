@@ -1,15 +1,22 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegistrationInput } from './dtos/registration.input';
+import { Doctor } from 'src/doctors/entities/doctor.entity';
+import { DoctorRegistrationInput } from './dtos/doctor-registration.input';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {
     
   }
-  @Post('register')
+  @Post('registerPatient')
   async register(@Body() registrationInput : any) {
-    return this.authService.register(registrationInput);
+    return this.authService.registerPatient(registrationInput);
+  }
+
+  @Post('registerDoctor')
+  async registerDoctor(@Body() registrationInput: DoctorRegistrationInput) {
+    return this.authService.registerDoctor(registrationInput);
   }
 
   @Post('sendverification/:email')
