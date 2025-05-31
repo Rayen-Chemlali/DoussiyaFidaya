@@ -7,17 +7,27 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { VerificationModule } from 'src/utils/verification/verification.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './strategies/jwt-strategie';
 
 @Module({
-  imports: [MailerModule , PrismaModule,
-    JwtModule.register({
-      secret: "123456789",
-      signOptions: { expiresIn: '3h' }, 
-      
-  }),
-  VerificationModule,
+  imports: [
+    MailerModule,
+    PrismaModule,
+    ConfigModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '3h' },
+      }),
+    }),
+    VerificationModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService , MailerService],
+  providers: [AuthService, MailerService,JwtStrategy],
 })
 export class AuthModule {}

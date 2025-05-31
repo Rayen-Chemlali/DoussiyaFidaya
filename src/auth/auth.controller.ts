@@ -1,8 +1,9 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegistrationInput } from './dtos/registration.input';
 import { Doctor } from 'src/doctors/entities/doctor.entity';
 import { DoctorRegistrationInput } from './dtos/doctor-registration.input';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -43,7 +44,6 @@ export class AuthController {
   async resetPassword(@Param('email') email: string, @Body() body: any) {
     const token = body.token;
     const password = body.password;
-
     return this.authService.resetPassword(email, password, token);
   }
 
@@ -55,4 +55,15 @@ export class AuthController {
     return this.authService.login(email, password);
   }
   
+    @Get('status')
+    @UseGuards(JwtAuthGuard)
+    async getStatus(@Req() req :any) {
+        return {
+            message: "User is authenticated",
+            user : req.user
+  };
+    }
+   
+  
 }
+

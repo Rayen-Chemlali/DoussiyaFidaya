@@ -10,6 +10,8 @@ import { DoctorRegistrationInput } from './dtos/doctor-registration.input';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { PatientRegistrationInput } from './dtos/patient-registration.input';
+import { UserPayload } from './interfaces/payload.interface';
+import { AssociatedData } from './interfaces/payload.interface';
 import { send } from 'process';
 
 @Injectable()
@@ -20,7 +22,6 @@ export class AuthService {
         private readonly jwtService : JwtService,
         
     ) {}  
-    private readonly jwtSecret = "123456789";
     async register(body: any) {
 
         
@@ -222,9 +223,7 @@ export class AuthService {
     async resetPassword(email: string, newPassword: string , token: string) {
         let decodedToken;
         try {
-            decodedToken = this.jwtService.verify(token, {
-                secret: this.jwtSecret,
-            });
+            decodedToken = this.jwtService.verify(token);
         } catch (error) {
             throw new BadRequestException('Invalid token');
         }
@@ -250,52 +249,64 @@ export class AuthService {
     }
 
 
-    async login(email: string, plainPassword: string) {
-        const foundUser = await this.prisma.users.findUnique({
-            where: { 
-                email,
-            },
-        });
-        if (!foundUser) {
-            throw new NotFoundException('User not found');
-        }
-        if (!foundUser.is_verified) {
-            throw new BadRequestException('Email not verified');
-        }
+    async login(email: string, plainPassword: string): Promise<{ message: string; user: UserPayload; token: string }> {
+    const foundUser = await this.prisma.users.findUnique({
+        where: { email },
+    });
 
-        const hashedPassword = await bcrypt.hash(plainPassword, foundUser.salt);
-        if (hashedPassword !== foundUser.password) {
-            throw new BadRequestException('Invalid password');
-        }
-
-        const { password, salt, ...userData } = foundUser;
-        const associatedId = foundUser.associated_id;
-        if (!associatedId) {
-            throw new NotFoundException('Associated data not found');
-        }
-        if (foundUser.role === users_role_enum.Patient) {
-            const patient = await this.prisma.patients.findUnique({
-                where: { id: associatedId },
-            });
-            if (!patient) {
-                throw new NotFoundException('Patient not found');
-            }
-            userData['associated_data'] = patient;
-        }
-        else if (foundUser.role === users_role_enum.Doctor) {
-            const doctor = await this.prisma.doctors.findUnique({
-                where: { id: associatedId },
-            });
-            if (!doctor) {
-                throw new NotFoundException('Doctor not found');
-            }
-            userData['associated_data'] = doctor;
-        }
-
-        const token = this.jwtService.sign({...userData} );
-
-        return {message : "Login successful", user : userData , token};
+    if (!foundUser) {
+        throw new NotFoundException('User not found');
     }
+    if (!foundUser.is_verified) {
+        throw new BadRequestException('Email not verified');
+    }
+
+    const hashedPassword = await bcrypt.hash(plainPassword, foundUser.salt);
+    if (hashedPassword !== foundUser.password) {
+        throw new BadRequestException('Invalid password');
+    }
+
+    const { password, salt, ...userWithoutSensitiveData } = foundUser;
+    const associatedId = foundUser.associated_id;
+    if (!associatedId) {
+        throw new NotFoundException('Associated data not found');
+    }
+
+    let associated_data: AssociatedData;
+
+    if (foundUser.role === users_role_enum.Patient) {
+        const patient = await this.prisma.patients.findUnique({
+            where: { id: associatedId },
+        });
+        if (!patient) {
+            throw new NotFoundException('Patient not found');
+        }
+        associated_data = {...patient }; // Include patient data if needed
+    } else if (foundUser.role === users_role_enum.Doctor) {
+        const doctor = await this.prisma.doctors.findUnique({
+            where: { id: associatedId },
+        });
+        if (!doctor) {
+            throw new NotFoundException('Doctor not found');
+        }
+        associated_data = { ...doctor }; // Include doctor data if needed
+    } else {
+        throw new BadRequestException('Unknown user role');
+    }
+
+    const userPayload: UserPayload = {
+        ...userWithoutSensitiveData,
+        associated_data,
+    };
+
+    const token = this.jwtService.sign(userPayload);
+
+    return {
+        message: 'Login successful',
+        user: userPayload,
+        token,
+    };
+}
 
 
 

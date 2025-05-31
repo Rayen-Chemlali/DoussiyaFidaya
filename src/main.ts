@@ -9,6 +9,7 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: false,
   }));
-  await app.listen(process.env.PORT ?? 3000);
+  app.listen(process.env.PORT ?? 4000, '0.0.0.0');
+
 }
 bootstrap();
