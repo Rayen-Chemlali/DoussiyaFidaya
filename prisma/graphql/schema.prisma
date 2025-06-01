@@ -1,0 +1,487 @@
+generator typegraphql {
+  provider = "typegraphql-prisma"
+  output   = "./generated/graphql"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GeneralMedicalRecords {
+  id                                                                 String    @id @default(uuid()) @db.Uuid
+  allergies                                                          String[]
+  bloodType                                                          String?   @db.VarChar
+  birthDate                                                          DateTime? @db.Date
+  height                                                             Float?
+  weight                                                             Float?
+  patient_id                                                         String    @unique @db.Uuid
+  patients_GeneralMedicalRecords_patient_idTopatients                patients  @relation("GeneralMedicalRecords_patient_idTopatients", fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients_patients_general_medical_record_idToGeneralMedicalRecords patients? @relation("patients_general_medical_record_idToGeneralMedicalRecords")
+}
+
+model analysis_results {
+  id              String                            @id @default(uuid()) @db.Uuid
+  is_abnormal     Boolean
+  description     String?
+  title           String
+  result_type     analysis_results_result_type_enum
+  reference_range String
+  unit            String
+  value           String
+  lab_document_id String                            @db.Uuid
+  lab_documents   lab_documents                     @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model authorizations {
+  id                  String                    @id @default(uuid()) @db.Uuid
+  level               authorizations_level_enum
+  institut_medical_id String?                   @db.Uuid
+  patient_id          String                    @db.Uuid
+  instituts_medicaux  instituts_medicaux?       @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients            patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model certificates {
+  id          String    @id @default(uuid()) @db.Uuid
+  type        String
+  start_date  DateTime? @db.Timestamptz(6)
+  end_date    DateTime? @db.Timestamptz(6)
+  description String?
+  doctor_id   String?   @db.Uuid
+  patient_id  String    @db.Uuid
+  doctors     doctors?  @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients    patients  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model cliniques {
+  id      String              @id @default(uuid()) @db.Uuid
+  type    cliniques_type_enum
+  name    String
+  address String?
+  phone   String?
+  email   String?
+}
+
+model consultation_lab_requests {
+  consultation_id String        @db.Uuid
+  lab_request_id  String        @db.Uuid
+  lab_requests    lab_requests  @relation(fields: [lab_request_id], references: [id], onDelete: Cascade, map: "FK_c7ff515e4184d1f7f535e8b3caa")
+  consultations   consultations @relation(fields: [consultation_id], references: [id], onDelete: Cascade, map: "FK_dee1a36c581e90ee3237a3b5eda")
+
+  @@id([consultation_id, lab_request_id], map: "PK_fd46884e9600ab52922ed44848f")
+  @@index([lab_request_id], map: "IDX_c7ff515e4184d1f7f535e8b3ca")
+  @@index([consultation_id], map: "IDX_dee1a36c581e90ee3237a3b5ed")
+}
+
+model consultations {
+  id                        String                      @id @default(uuid()) @db.Uuid
+  section                   String?
+  date                      DateTime                    @db.Timestamptz(6)
+  notes                     String[]
+  measures                  Json?
+  doctor_id                 String?                     @db.Uuid
+  institut_medical_id       String?                     @db.Uuid
+  prescription_id           String?                     @unique @db.Uuid
+  patient_id                String                      @db.Uuid
+  consultation_lab_requests consultation_lab_requests[]
+  prescriptions             prescriptions?              @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  instituts_medicaux        instituts_medicaux?         @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rdvs                      rdvs?
+}
+
+model ctscan_results {
+  id              String                          @id @default(uuid()) @db.Uuid
+  is_abnormal     Boolean
+  description     String?
+  title           String
+  result_type     ctscan_results_result_type_enum
+  lab_document_id String                          @db.Uuid
+  lab_documents   lab_documents                   @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model doctor_instituts {
+  doctor_id           String             @db.Uuid
+  institut_medical_id String             @db.Uuid
+  doctors             doctors            @relation(fields: [doctor_id], references: [id], onDelete: Cascade, map: "FK_923f87cb0e2090945db970c7b6e")
+  instituts_medicaux  instituts_medicaux @relation(fields: [institut_medical_id], references: [id], onDelete: Cascade, map: "FK_b0a5ec63efd9946c346c74e5768")
+
+  @@id([doctor_id, institut_medical_id], map: "PK_2d7427057147c74b40bcaa512dd")
+  @@index([doctor_id], map: "IDX_923f87cb0e2090945db970c7b6")
+  @@index([institut_medical_id], map: "IDX_b0a5ec63efd9946c346c74e576")
+}
+
+model doctors {
+  id                  String                 @id @default(uuid()) @db.Uuid
+  type                doctors_type_enum
+  is_license_verified Boolean                @default(false)
+  bio                 String?
+  education           String[]
+  experience          String[]
+  first_name          String
+  languages           String[]
+  last_name           String
+  profile_image       String?
+  specialty           doctors_specialty_enum
+  user_id             String                 @unique @db.Uuid
+  certificates        certificates[]
+  consultations       consultations[]
+  doctor_instituts    doctor_instituts[]
+  users               users                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lab_requests        lab_requests[]
+  prescriptions       prescriptions[]
+  rdv_requests        rdv_requests[]
+  rdvs                rdvs[]
+  sentMessages        Message[]              @relation("SentMessages")
+  receivedMessages    Message[]              @relation("ReceivedMessages")
+}
+
+model hopitaux {
+  id      String             @id @default(uuid()) @db.Uuid
+  type    hopitaux_type_enum
+  name    String
+  address String?
+  phone   String?
+  email   String?
+}
+
+model instituts_medicaux {
+  id               String                       @id @default(uuid()) @db.Uuid
+  type             instituts_medicaux_type_enum
+  authorizations   authorizations[]
+  consultations    consultations[]
+  doctor_instituts doctor_instituts[]
+}
+
+model lab_attachments {
+  id              String        @id @default(uuid()) @db.Uuid
+  name            String
+  type            String
+  url             String
+  lab_document_id String        @db.Uuid
+  lab_documents   lab_documents @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model lab_documents {
+  id               String                    @id @default(uuid()) @db.Uuid
+  completed_at     DateTime?                 @db.Timestamptz(6)
+  created_at       DateTime                  @default(now()) @db.Timestamp(6)
+  notes            String?
+  requested_at     DateTime                  @db.Timestamptz(6)
+  status           lab_documents_status_enum
+  section          String?
+  patient_id       String                    @db.Uuid
+  laboratory_id    String?                   @db.Uuid
+  lab_request_id   String?                   @db.Uuid
+  analysis_results analysis_results[]
+  ctscan_results   ctscan_results[]
+  lab_attachments  lab_attachments[]
+  laboratories     laboratories?             @relation(fields: [laboratory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients         patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lab_requests     lab_requests?             @relation(fields: [lab_request_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lab_results      lab_results[]
+  xray_results     xray_results[]
+}
+
+model lab_requests {
+  id                        String                      @id @default(uuid()) @db.Uuid
+  type                      String
+  priority                  lab_requests_priority_enum?
+  description               String?
+  doctor_id                 String?                     @db.Uuid
+  patient_id                String                      @db.Uuid
+  consultation_lab_requests consultation_lab_requests[]
+  lab_documents             lab_documents[]
+  doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model lab_results {
+  id              String                       @id @default(uuid()) @db.Uuid
+  is_abnormal     Boolean
+  description     String?
+  title           String
+  result_type     lab_results_result_type_enum
+  lab_document_id String                       @db.Uuid
+  lab_documents   lab_documents                @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model laboratories {
+  id            String          @id @default(uuid()) @db.Uuid
+  address       String?
+  phone         String?
+  email         String?
+  name          String
+  lab_documents lab_documents[]
+}
+
+model medications {
+  id              String        @id @default(uuid()) @db.Uuid
+  dosage          String
+  duration        String
+  frequency       String
+  name            String
+  quantity        Float
+  prescription_id String        @db.Uuid
+  prescriptions   prescriptions @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model patients {
+  id                                                                              String                 @id @default(uuid()) @db.Uuid
+  cin                                                                             Int                    @unique
+  date_of_birth                                                                   DateTime               @db.Timestamptz(6)
+  gender                                                                          patients_gender_enum
+  profile_image                                                                   String?
+  general_medical_record_id                                                       String?                @unique @db.Uuid
+  user_id                                                                         String?                @unique @db.Uuid
+  GeneralMedicalRecords_GeneralMedicalRecords_patient_idTopatients                GeneralMedicalRecords? @relation("GeneralMedicalRecords_patient_idTopatients")
+  authorizations                                                                  authorizations[]
+  certificates                                                                    certificates[]
+  consultations                                                                   consultations[]
+  lab_documents                                                                   lab_documents[]
+  lab_requests                                                                    lab_requests[]
+  users                                                                           users?                 @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  GeneralMedicalRecords_patients_general_medical_record_idToGeneralMedicalRecords GeneralMedicalRecords? @relation("patients_general_medical_record_idToGeneralMedicalRecords", fields: [general_medical_record_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  prescriptions                                                                   prescriptions[]
+  rdv_requests                                                                    rdv_requests[]
+  rdvs                                                                            rdvs[]
+}
+
+model pharmacies {
+  id      String  @id(map: "PK_887410330080d3beb73850ebc8f") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  address String?
+  phone   String?
+  email   String?
+  name    String
+}
+
+model prescriptions {
+  id            String                    @id @default(uuid()) @db.Uuid
+  date          DateTime                  @db.Timestamptz(6)
+  instructions  String?
+  is_signed     Boolean
+  section       String?
+  status        prescriptions_status_enum
+  updated_at    DateTime                  @default(now()) @db.Timestamp(6)
+  doctor_id     String?                   @db.Uuid
+  patient_id    String                    @db.Uuid
+  consultations consultations[]
+  medications   medications[]
+  doctors       doctors?                  @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients      patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model rdv_requests {
+  id                                     String   @id @default(uuid()) @db.Uuid
+  date                                   DateTime @db.Timestamptz(6)
+  time                                   DateTime @db.Time(6)
+  Motif                                  String
+  Status                                 String
+  patient_id                             String   @db.Uuid
+  doctor_id                              String?  @db.Uuid
+  rdv_id                                 String?  @unique @db.Uuid
+  rdvs_rdv_requests_rdv_idTordvs         rdvs?    @relation("rdv_requests_rdv_idTordvs", fields: [rdv_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                               patients @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  doctors                                doctors? @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rdvs_rdvs_rdv_request_idTordv_requests rdvs?    @relation("rdvs_rdv_request_idTordv_requests")
+
+  @@map("rdv-requests")
+}
+
+model rdvs {
+  id                                             String         @id @default(uuid()) @db.Uuid
+  date                                           DateTime       @db.Timestamptz(6)
+  time                                           DateTime       @db.Time(6)
+  patient_id                                     String         @db.Uuid
+  doctor_id                                      String?        @db.Uuid
+  consultation_id                                String?        @unique @db.Uuid
+  rdv_request_id                                 String?        @unique @db.Uuid
+  rdv_requests_rdv_requests_rdv_idTordvs         rdv_requests?  @relation("rdv_requests_rdv_idTordvs")
+  consultations                                  consultations? @relation(fields: [consultation_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                                       patients       @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rdv_requests_rdvs_rdv_request_idTordv_requests rdv_requests?  @relation("rdvs_rdv_request_idTordv_requests", fields: [rdv_request_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  doctors                                        doctors?       @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id               String               @id @default(uuid()) @db.Uuid
+  address          String?
+  created_at       DateTime             @default(now()) @db.Timestamp(6)
+  email            String               @unique
+  first_name       String
+  last_name        String
+  validation_token verification_tokens?
+  is_verified      Boolean
+  password         String
+  salt             String
+  last_login       DateTime?            @db.Timestamptz(6)
+  phone            String?
+  profile_picture  String?
+  role             users_role_enum
+  associated_id    String?              @db.Uuid
+  updated_at       DateTime             @default(now()) @db.Timestamp(6)
+  doctors          doctors[]
+  patients         patients[]
+}
+
+model xray_results {
+  id              String                        @id @default(uuid()) @db.Uuid
+  is_abnormal     Boolean
+  description     String?
+  title           String
+  result_type     xray_results_result_type_enum
+  lab_document_id String                        @db.Uuid
+  lab_documents   lab_documents                 @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum analysis_results_result_type_enum {
+  NORMAL
+  ABNORMAL
+  CRITICAL
+}
+
+enum authorizations_level_enum {
+  READ
+  WRITE
+  ADMIN
+}
+
+enum cliniques_type_enum {
+  PRIVATE
+  PUBLIC
+}
+
+enum ctscan_results_result_type_enum {
+  NORMAL
+  ABNORMAL
+  CRITICAL
+}
+
+enum doctors_specialty_enum {
+  GENERAL_PRACTITIONER
+  CARDIOLOGIST
+  DERMATOLOGIST
+  ENDOCRINOLOGIST
+  GASTROENTEROLOGIST
+  GYNECOLOGIST
+  HEMATOLOGIST
+  INFECTIOUS_DISEASE
+  INTERNIST
+  NEPHROLOGIST
+  NEUROLOGIST
+  OBSTETRICIAN
+  ONCOLOGIST
+  OPHTHALMOLOGIST
+  ORTHOPEDIST
+  OTOLARYNGOLOGIST
+  PEDIATRICIAN
+  PSYCHIATRIST
+  PULMONOLOGIST
+  RHEUMATOLOGIST
+  UROLOGIST
+}
+
+enum doctors_type_enum {
+  GENERAL_PRACTITIONER
+  SPECIALIST
+  SURGEON
+}
+
+enum hopitaux_type_enum {
+  PUBLIC
+  PRIVATE
+}
+
+enum instituts_medicaux_type_enum {
+  CLINIC
+  HOSPITAL
+  LABORATORY
+}
+
+enum lab_documents_status_enum {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum lab_requests_priority_enum {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum lab_results_result_type_enum {
+  NORMAL
+  ABNORMAL
+  CRITICAL
+}
+
+enum patients_gender_enum {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum prescriptions_status_enum {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum users_role_enum {
+  ADMIN
+  DOCTOR
+  PATIENT
+  LABORATORY
+  HOSPITAL
+  CLINIC
+}
+
+enum xray_results_result_type_enum {
+  NORMAL
+  ABNORMAL
+  CRITICAL
+}
+
+model verification_tokens {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @unique @db.Uuid
+  token         String
+  numberofTries Int      @default(0)
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  expireAt      DateTime @db.Timestamp(6)
+  user          users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id         String   @id @default(uuid()) @db.Uuid
+  content    String
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+  senderId   String   @db.Uuid
+  receiverId String   @db.Uuid
+  isRead     Boolean  @default(false)
+
+  patientId String? @db.Uuid
+
+  //patient      patients?           @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  sender      doctors             @relation("SentMessages", fields: [senderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  receiver    doctors             @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  attachments MessageAttachment[]
+}
+
+model MessageAttachment {
+  id        String   @id @default(uuid()) @db.Uuid
+  filename  String
+  path      String
+  mimeType  String
+  size      Int
+  messageId String   @db.Uuid
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade, onUpdate: NoAction) // Consider Cascade delete for attachments
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+}

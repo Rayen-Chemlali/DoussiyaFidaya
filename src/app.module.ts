@@ -18,25 +18,44 @@ import { LoggerMiddleware } from './middlemare';
 import { ChatModule } from './chat/chat.module';
 
 
+import { NotificationsModule } from './notifications/notifications.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { PrismaMiddlewareService } from './notifications/services/prisma-middleware.service';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-store';
+import Redis from 'ioredis';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local','.env'],
     }),
-    GraphQLModule.forRoot<YogaDriverConfig>({
+    GraphQLModule.forRootAsync<YogaDriverConfig>({
       driver: YogaDriver,
-      schema: buildSchemaSync({
-        resolvers,
-        validate: false,
-        emitSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      }as any),
-      context: () => ({ prisma }), // Make Prisma available in resolvers
+      imports: [NotificationsModule],
+      inject: [PrismaMiddlewareService],
+      useFactory: (prismaMiddleware: PrismaMiddlewareService): YogaDriverConfig => ({
+        driver: YogaDriver,
+        schema: buildSchemaSync({
+          resolvers,
+          validate: false,
+          emitSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        }),
+        context: ({ req }) => {
+          const prisma = new PrismaClient();
+          prismaMiddleware.applyMiddleware(prisma, req);
+          const userId = req.user?.userId;
+          return { req, prisma, userId };
+        },
+      }),
     }),
     AuthModule,
     MailerModule,
     PrismaModule,
     ChatModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],
