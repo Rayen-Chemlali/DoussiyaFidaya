@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Messenger Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Sidebar avec conversations */
+        .sidebar {
+            width: 350px;
+            border-right: 1px solid #e4e6ea;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid #e4e6ea;
+            background: #fff;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .connection-status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .connection-status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .auth-section {
+            margin-bottom: 16px;
+        }
+
+        .auth-section textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 60px;
+            font-size: 12px;
+        }
+
+        .auth-section input {
+            width: 100%;
+            padding: 8px 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background: #1877f2;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #166fe5;
+        }
+
+        .btn-danger {
+            background: #e41e3f;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #d11a3b;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .conversations-header {
+            padding: 16px;
+            border-bottom: 1px solid #e4e6ea;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .refresh-btn:hover {
+            background: #f0f2f5;
+        }
+
+        .conversations-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .conversation-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .conversation-item:hover {
+            background: #f0f2f5;
+        }
+
+        .conversation-item.active {
+            background: #e7f3ff;
+            border-right: 3px solid #1877f2;
+        }
+
+        .conversation-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1877f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .conversation-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .conversation-preview {
+            color: #65676b;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .conversation-time {
+            color: #65676b;
+            font-size: 12px;
+        }
+
+        .unread-badge {
+            background: #e41e3f;
+            color: white;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Zone de chat principale */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .chat-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e4e6ea;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1877f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .chat-info h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .chat-status {
+            color: #65676b;
+            font-size: 12px;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #f0f2f5;
+        }
+
+        .message-group {
+            margin-bottom: 16px;
+        }
+
+        .message-date {
+            text-align: center;
+            color: #65676b;
+            font-size: 12px;
+            margin-bottom: 12px;
+            background: white;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            display: block;
+            width: fit-content;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: flex-end;
+        }
+
+        .message.own {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.own .message-bubble {
+            background: #1877f2;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message:not(.own) .message-bubble {
+            background: #e4e6ea;
+            color: #050505;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #65676b;
+            margin: 4px 12px 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .message:hover .message-time {
+            opacity: 1;
+        }
+
+        .message.own .message-time {
+            text-align: right;
+        }
+
+        .message-attachments {
+            margin-top: 8px;
+        }
+
+        .attachment-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin: 4px;
+            font-size: 13px;
+        }
+
+        .message:not(.own) .attachment-item {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .typing-indicator.show {
+            opacity: 1;
+        }
+
+        .typing-bubble {
+            background: #e4e6ea;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #65676b;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .load-more {
+            text-align: center;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .load-more button {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .load-more button:hover {
+            background: #166fe5;
+        }
+
+        .load-more button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Zone de saisie */
+        .message-input-container {
+            padding: 16px;
+            border-top: 1px solid #e4e6ea;
+            background: white;
+        }
+
+        .file-preview {
+            margin-bottom: 12px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: #f0f2f5;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .remove-file {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #e41e3f;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .remove-file:hover {
+            background: #fee;
+        }
+
+        .message-input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            background: #f0f2f5;
+            border-radius: 20px;
+            padding: 8px 12px;
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            background: none;
+            outline: none;
+            resize: none;
+            max-height: 100px;
+            font-size: 15px;
+            font-family: inherit;
+            line-height: 1.3;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .send-btn {
+            background: #1877f2;
+            color: white;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #166fe5;
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #65676b;
+            text-align: center;
+            padding: 32px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #1c1e21;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: absolute;
+                left: 0;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .chat-main {
+                width: 100%;
+            }
+        }
+
+        .scroll-to-bottom {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+        }
+
+        .scroll-to-bottom.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-to-bottom:hover {
+            background: #166fe5;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div id="connectionStatus" class="connection-status disconnected">
+                <span>🔴</span>
+                <span>Disconnected</span>
+            </div>
+
+            <div class="auth-section">
+                <textarea id="tokenInput" placeholder="JWT Token..." rows="2"></textarea>
+                <input type="text" id="serverUrl" value="http://localhost:3000" placeholder="Server URL">
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button id="connectBtn" class="btn btn-primary">Connect</button>
+                    <button id="disconnectBtn" class="btn btn-danger" disabled>Disconnect</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversations-header">
+            <span>Conversations</span>
+            <button class="refresh-btn" id="refreshConversations" title="Refresh">🔄</button>
+        </div>
+
+        <div class="conversations-list" id="conversationsList">
+            <div class="empty-state">
+                <h3>No conversations</h3>
+                <p>Connect to load your conversations</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Main -->
+    <div class="chat-main">
+        <div id="chatContent" class="empty-state">
+            <h3>Welcome to Chat</h3>
+            <p>Select a conversation to start messaging</p>
+        </div>
+    </div>
+</div>
+
+<!-- File input hidden -->
+<input type="file" id="fileInput" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt" style="display: none;">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+<script>
+    class ChatApp {
+        constructor() {
+            this.socket = null;
+            this.currentConversation = null;
+            this.conversations = new Map();
+            this.messages = new Map();
+            this.currentUser = null;
+            this.isTyping = false;
+            this.typingTimeout = null;
+            this.selectedFiles = [];
+
+            this.initializeElements();
+            this.bindEvents();
+            this.loadFromStorage();
+        }
+
+        initializeElements() {
+            this.elements = {
+                // Connection
+                tokenInput: document.getElementById('tokenInput'),
+                serverUrl: document.getElementById('serverUrl'),
+                connectBtn: document.getElementById('connectBtn'),
+                disconnectBtn: document.getElementById('disconnectBtn'),
+                connectionStatus: document.getElementById('connectionStatus'),
+
+                // Sidebar
+                sidebar: document.getElementById('sidebar'),
+                conversationsList: document.getElementById('conversationsList'),
+                refreshConversations: document.getElementById('refreshConversations'),
+
+                // Chat
+                chatContent: document.getElementById('chatContent'),
+                fileInput: document.getElementById('fileInput')
+            };
+        }
+
+        bindEvents() {
+            // Connection events
+            this.elements.connectBtn.addEventListener('click', () => this.connect());
+            this.elements.disconnectBtn.addEventListener('click', () => this.disconnect());
+            this.elements.refreshConversations.addEventListener('click', () => this.loadConversations());
+
+            // File input
+            this.elements.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        }
+
+        loadFromStorage() {
+            const token = localStorage.getItem('chat_token');
+            const serverUrl = localStorage.getItem('chat_server_url');
+
+            if (token) this.elements.tokenInput.value = token;
+            if (serverUrl) this.elements.serverUrl.value = serverUrl;
+        }
+
+        saveToStorage() {
+            localStorage.setItem('chat_token', this.elements.tokenInput.value);
+            localStorage.setItem('chat_server_url', this.elements.serverUrl.value);
+        }
+
+        async connect() {
+            const token = this.elements.tokenInput.value.trim();
+            const url = this.elements.serverUrl.value.trim();
+
+            if (!token) {
+                alert('Please enter a JWT token');
+                return;
+            }
+
+            this.saveToStorage();
+            this.updateConnectionStatus('Connecting...', 'connecting');
+
+            this.socket = io(url, {
+                auth: { token },
+                transports: ['websocket', 'polling']
+            });
+
+            this.setupSocketEvents();
+        }
+
+        disconnect() {
+            if (this.socket) {
+                this.socket.disconnect();
+                this.socket = null;
+            }
+            this.updateConnectionStatus('Disconnected', 'disconnected');
+            this.updateButtons(false);
+        }
+
+        setupSocketEvents() {
+            this.socket.on('connect', () => {
+                this.updateConnectionStatus('Connected', 'connected');
+                this.updateButtons(true);
+                this.loadConversations();
+            });
+
+            this.socket.on('disconnect', (reason) => {
+                this.updateConnectionStatus('Disconnected', 'disconnected');
+                this.updateButtons(false);
+                console.log('Disconnected:', reason);
+            });
+
+            this.socket.on('connect_error', (error) => {
+                this.updateConnectionStatus('Connection Error', 'error');
+                this.updateButtons(false);
+                console.error('Connection error:', error);
+            });
+
+            this.socket.on('newMessage', (message) => this.handleNewMessage(message));
+            this.socket.on('messageSent', (message) => this.handleMessageSent(message));
+            this.socket.on('messageRead', (data) => this.handleMessageRead(data));
+            this.socket.on('typing', (data) => this.handleTyping(data));
+            this.socket.on('doctorOnline', (data) => this.handleDoctorOnline(data));
+            this.socket.on('doctorOffline', (data) => this.handleDoctorOffline(data));
+        }
+
+        updateConnectionStatus(text, type) {
+            const status = this.elements.connectionStatus;
+            status.className = `connection-status ${type}`;
+
+            const emoji = type === 'connected' ? '🟢' : type === 'connecting' ? '🟡' : '🔴';
+            status.innerHTML = `<span>${emoji}</span><span>${text}</span>`;
+        }
+
+        updateButtons(connected) {
+            this.elements.connectBtn.disabled = connected;
+            this.elements.disconnectBtn.disabled = !connected;
+        }
+
+        async loadConversations() {
+            if (!this.socket || !this.socket.connected) return;
+
+            try {
+                const response = await fetch('/chat/conversations', {
+                    headers: {
+                        'Authorization': `Bearer ${this.elements.tokenInput.value}`
+                    }
+                });
+
+                if (response.ok) {
+                    const conversations = await response.json();
+                    this.renderConversations(conversations);
+                } else {
+                    console.error('Failed to load conversations');
+                }
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+            }
+        }
+
+        renderConversations(conversations) {
+            const container = this.elements.conversationsList;
+
+            if (conversations.length === 0) {
+                container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No conversations</h3>
+                            <p>Start a new conversation</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            container.innerHTML = conversations.map(conv => {
+                const doctor = conv.doctor;
+                const lastMessage = conv.lastMessage;
+                const unreadCount = conv.unreadCount || 0;
+
+                const avatarText = `${doctor.first_name?.[0] || ''}${doctor.last_name?.[0] || ''}`.toUpperCase();
+                const fullName = `${doctor.first_name || ''} ${doctor.last_name || ''}`.trim();
+
+                let preview = 'No messages yet';
+                let timeText = '';
+
+                if (lastMessage) {
+                    preview = lastMessage.content || 'Attachment';
+                    timeText = this.formatTime(lastMessage.createdAt);
+                }
+
+                return `
+                        <div class="conversation-item" data-doctor-id="${doctor.id}" onclick="chatApp.selectConversation('${doctor.id}')">
+                            <div class="conversation-avatar">${avatarText}</div>
+                            <div class="conversation-info">
+                                <div class="conversation-name">${fullName}</div>
+                                <div class="conversation-preview">${preview}</div>
+                            </div>
+                            <div class="conversation-meta">
+                                ${timeText ? `<div class="conversation-time">${timeText}</div>` : ''}
+                                ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+
+            // Store conversations data
+            conversations.forEach(conv => {
+                this.conversations.set(conv.doctor.id, conv);
+            });
+        }
+
+        async selectConversation(doctorId) {
+            // Update UI
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-doctor-id="${doctorId}"]`)?.classList.add('active');
+
+            this.currentConversation = doctorId;
+
+            // Load conversation messages
+            await this.loadMessages(doctorId);
+            this.renderChatInterface(doctorId);
+        }
+
+        async loadMessages(doctorId, cursor = null) {
+            if (!this.socket || !this.socket.connected) return;
+
+            try {
+                const url = new URL('/chat/messages', window.location.origin);
+                url.searchParams.set('doctorId', doctorId);
+                url.searchParams.set('limit', '50');
+                if (cursor) url.searchParams.set('cursor', cursor);
+
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${this.elements.tokenInput.value}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (!this.messages.has(doctorId)) {
+                        this.messages.set(doctorId, []);
+                    }
+
+                    const existingMessages = this.messages.get(doctorId);
+
+                    if (cursor) {
+                        // Prepend older messages
+                        this.messages.set(doctorId, [...data.messages.reverse(), ...existingMessages]);
+                    } else {
+                        // Initial load
+                        this.messages.set(doctorId, data.messages.reverse());
+                    }
+
+                    this.renderMessages(doctorId, !cursor);
+                    return data;
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+            return null;
+        }
+
+        renderChatInterface(doctorId) {
+            const conversation = this.conversations.get(doctorId);
+            if (!conversation) return;
+
+            const doctor = conversation.doctor;
+            const avatarText = `${doctor.first_name?.[0] || ''}${doctor.last_name?.[0] || ''}`.toUpperCase();
+            const fullName = `${doctor.first_name || ''} ${doctor.last_name || ''}`.trim();
+
+            this.elements.chatContent.innerHTML = `
+                    <div class="chat-header">
+                        <div class="chat-avatar">${avatarText}</div>
+                        <div class="chat-info">
+                            <h3>${fullName}</h3>
+                            <div class="chat-status">${doctor.specialty || 'Doctor'}</div>
+                        </div>
+                    </div>
+
+                    <div class="messages-container" id="messagesContainer">
+                        <div id="messagesContent"></div>
+                        <div class="typing-indicator" id="typingIndicator">
+                            <div class="typing-bubble">
+                                <div class="typing-dots">
+                                    <div class="typing-dot"></div>
+                                    <div class="typing-dot"></div>
+                                    <div class="typing-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-input-container">
+                        <div class="file-preview" id="filePreview"></div>
+                        <div class="message-input-wrapper">
+                            <div class="input-actions">
+                                <button class="action-btn" onclick="chatApp.selectFiles()" title="Attach file">📎</button>
+                            </div>
+                            <textarea
+                                class="message-input"
+                                id="messageInput"
+                                placeholder="Type a message..."
+                                rows="1"
+                                onkeydown="chatApp.handleInputKeydown(event)"
+                                oninput="chatApp.handleInputChange(event)"
+                            ></textarea>
+                            <div class="input-actions">
+                                <button class="action-btn send-btn" id="sendBtn" onclick="chatApp.sendMessage()" title="Send message">➤</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="scroll-to-bottom" id="scrollToBottom" onclick="chatApp.scrollToBottom()">↓</button>
+                `;
+
+            // Setup message container scroll events
+            const container = document.getElementById('messagesContainer');
+            container.addEventListener('scroll', () => this.handleScroll());
+        }
+
+        renderMessages(doctorId, scrollToBottom = true) {
+            const messages = this.messages.get(doctorId) || [];
+            const container = document.getElementById('messagesContent');
+            if (!container) return;
+
+            if (messages.length === 0) {
+                container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No messages yet</h3>
+                            <p>Start the conversation!</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            let html = '';
+            let currentDate = '';
+
+            messages.forEach((message, index) => {
+                const messageDate = new Date(message.createdAt).toDateString();
+
+                if (messageDate !== currentDate) {
+                    currentDate = messageDate;
+                    html += `<div class="message-date">${this.formatDate(message.createdAt)}</div>`;
+                }
+
+                const isOwn = message.senderId === this.getCurrentUserId();
+                const time = this.formatTime(message.createdAt);
+
+                html += `
+                        <div class="message ${isOwn ? 'own' : ''}" data-message-id="${message.id}">
+                            <div class="message-bubble">
+                                ${message.content}
+                                ${this.renderAttachments(message.attachments)}
+                            </div>
+                            <div class="message-time">${time}</div>
+                        </div>
+                    `;
+            });
+
+            container.innerHTML = html;
+
+            if (scrollToBottom) {
+                this.scrollToBottom();
+            }
+        }
+
+        renderAttachments(attachments) {
+            if (!attachments || attachments.length === 0) return '';
+            
+            return `
+                <div class="message-attachments">
+                    ${attachments.map(attachment => `
+                        <div class="attachment-item">
+                            <span>📎</span>
+                            <span>${attachment.name}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        formatDate(date) {
+            const d = new Date(date);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (d.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (d.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return d.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: d.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+                });
+            }
+        }
+
+        formatTime(date) {
+            return new Date(date).toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+
+        getCurrentUserId() {
+            // This should be implemented based on your authentication system
+            // For now, we'll return a placeholder
+            return 'current-user-id';
+        }
+
+        handleScroll() {
+            const container = document.getElementById('messagesContainer');
+            if (!container) return;
+
+            const scrollToBottom = document.getElementById('scrollToBottom');
+            if (scrollToBottom) {
+                const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+                scrollToBottom.classList.toggle('show', !isNearBottom);
+            }
+
+            // Load more messages when scrolling to top
+            if (container.scrollTop === 0 && this.currentConversation) {
+                const messages = this.messages.get(this.currentConversation);
+                if (messages && messages.length > 0) {
+                    const oldestMessage = messages[0];
+                    this.loadMessages(this.currentConversation, oldestMessage.id);
+                }
+            }
+        }
+
+        scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        handleInputKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                this.sendMessage();
+            }
+        }
+
+        handleInputChange(event) {
+            const input = event.target;
+            input.style.height = 'auto';
+            input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+
+            // Handle typing indicator
+            if (!this.isTyping) {
+                this.isTyping = true;
+                this.socket.emit('typing', { doctorId: this.currentConversation });
+            }
+
+            clearTimeout(this.typingTimeout);
+            this.typingTimeout = setTimeout(() => {
+                this.isTyping = false;
+                this.socket.emit('stopTyping', { doctorId: this.currentConversation });
+            }, 1000);
+        }
+
+        selectFiles() {
+            this.elements.fileInput.click();
+        }
+
+        handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            this.selectedFiles = [...this.selectedFiles, ...files];
+            this.renderFilePreview();
+        }
+
+        renderFilePreview() {
+            const container = document.getElementById('filePreview');
+            if (!container) return;
+
+            if (this.selectedFiles.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = this.selectedFiles.map((file, index) => `
+                <div class="file-item">
+                    <div class="file-info">
+                        <span>📎</span>
+                        <span>${file.name}</span>
+                    </div>
+                    <button class="remove-file" onclick="chatApp.removeFile(${index})">×</button>
+                </div>
+            `).join('');
+        }
+
+        removeFile(index) {
+            this.selectedFiles.splice(index, 1);
+            this.renderFilePreview();
+        }
+
+        async sendMessage() {
+            if (!this.socket || !this.socket.connected || !this.currentConversation) return;
+
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+            
+            if (!content && this.selectedFiles.length === 0) return;
+
+            try {
+                // Handle file uploads first if any
+                const attachments = [];
+                if (this.selectedFiles.length > 0) {
+                    const formData = new FormData();
+                    this.selectedFiles.forEach(file => {
+                        formData.append('files', file);
+                    });
+
+                    const uploadResponse = await fetch('/chat/upload', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.elements.tokenInput.value}`
+                        },
+                        body: formData
+                    });
+
+                    if (uploadResponse.ok) {
+                        const uploadResult = await uploadResponse.json();
+                        attachments.push(...uploadResult.files);
+                    }
+                }
+
+                // Send message with content and attachments
+                this.socket.emit('sendMessage', {
+                    content,
+                    receiverId: this.currentConversation,
+                    attachments
+                });
+
+                // Clear input and files
+                input.value = '';
+                input.style.height = 'auto';
+                this.selectedFiles = [];
+                this.renderFilePreview();
+
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        handleNewMessage(message) {
+            if (message.senderId === this.currentConversation) {
+                const messages = this.messages.get(this.currentConversation) || [];
+                messages.push(message);
+                this.messages.set(this.currentConversation, messages);
+                this.renderMessages(this.currentConversation);
+            }
+            // Update conversation list
+            this.loadConversations();
+        }
+
+        handleMessageSent(message) {
+            if (message.receiverId === this.currentConversation) {
+                const messages = this.messages.get(this.currentConversation) || [];
+                messages.push(message);
+                this.messages.set(this.currentConversation, messages);
+                this.renderMessages(this.currentConversation);
+            }
+            // Update conversation list
+            this.loadConversations();
+        }
+
+        handleMessageRead(data) {
+            // Update message read status in UI
+            const messageElement = document.querySelector(`[data-message-id="${data.messageId}"]`);
+            if (messageElement) {
+                messageElement.classList.add('read');
+            }
+        }
+
+        handleTyping(data) {
+            if (data.doctorId === this.currentConversation) {
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) {
+                    indicator.classList.add('show');
+                    clearTimeout(this.typingTimeout);
+                    this.typingTimeout = setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 3000);
+                }
+            }
+        }
+
+        handleDoctorOnline(data) {
+            // Update doctor online status in UI
+            const conversation = document.querySelector(`[data-doctor-id="${data.doctorId}"]`);
+            if (conversation) {
+                conversation.classList.add('online');
+            }
+        }
+
+        handleDoctorOffline(data) {
+            // Update doctor offline status in UI
+            const conversation = document.querySelector(`[data-doctor-id="${data.doctorId}"]`);
+            if (conversation) {
+                conversation.classList.remove('online');
+            }
+        }
+    }
+
+    // Initialize the chat application
+    const chatApp = new ChatApp();
+</script>
+</body>
+</html>

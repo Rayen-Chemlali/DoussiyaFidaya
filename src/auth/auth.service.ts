@@ -2,7 +2,6 @@ import { BadRequestException, ConflictException, HttpException, Injectable, NotF
 import { JwtService } from '@nestjs/jwt';
 import {  doctors, patients, Prisma, users, users_role_enum } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'prisma.service';
 import { NotFoundError } from 'rxjs';
 import { MailerService } from 'src/mailer/mailer.service';
 import { VerificationService } from 'src/utils/verification/verification.service';
@@ -13,7 +12,7 @@ import { PatientRegistrationInput } from './dtos/patient-registration.input';
 import { UserPayload } from './interfaces/payload.interface';
 import { AssociatedData } from './interfaces/payload.interface';
 import { send } from 'process';
-
+import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class AuthService {
     constructor(private readonly prisma : PrismaService,
@@ -27,10 +26,10 @@ export class AuthService {
         
         const { role} = body;
         let dtoClass
-        if(role === users_role_enum.Doctor) {
+        if(role === users_role_enum.DOCTOR) {
             dtoClass = DoctorRegistrationInput;
         }
-        else if(role === users_role_enum.Patient) { 
+        else if(role === users_role_enum.PATIENT) {
             dtoClass = PatientRegistrationInput;
         }
         else {
@@ -89,7 +88,7 @@ export class AuthService {
             if (!user) {
                 throw new ConflictException('User creation failed');
             }
-            if (role ===  users_role_enum.Patient) {
+            if (role ===  users_role_enum.PATIENT) {
                 let patient : patients;
                 try {
                     patient = await tx.patients.create({
@@ -109,7 +108,7 @@ export class AuthService {
                     where: { id: user.id },
                     data: { associated_id: patient.id },
                 });
-            } else if (role === users_role_enum.Doctor) {
+            } else if (role === users_role_enum.DOCTOR) {
                 let doctor: doctors; 
                 try {
                     doctor = await tx.doctors.create({
@@ -274,7 +273,7 @@ export class AuthService {
 
     let associated_data: AssociatedData;
 
-    if (foundUser.role === users_role_enum.Patient) {
+    if (foundUser.role === users_role_enum.PATIENT) {
         const patient = await this.prisma.patients.findUnique({
             where: { id: associatedId },
         });
@@ -282,7 +281,7 @@ export class AuthService {
             throw new NotFoundException('Patient not found');
         }
         associated_data = {...patient }; // Include patient data if needed
-    } else if (foundUser.role === users_role_enum.Doctor) {
+    } else if (foundUser.role === users_role_enum.DOCTOR) {
         const doctor = await this.prisma.doctors.findUnique({
             where: { id: associatedId },
         });
@@ -357,7 +356,7 @@ export class AuthService {
                     salt,
                     address,
                     phone,
-                    role: users_role_enum.Patient,
+                    role: users_role_enum.PATIENT,
                     is_verified: false,
                 },
             });
@@ -407,7 +406,7 @@ export class AuthService {
                     salt,
                     address,
                     phone,
-                    role: users_role_enum.Doctor,
+                    role: users_role_enum.DOCTOR,
                     is_verified: false,
                 },
             });

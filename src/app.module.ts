@@ -15,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggerMiddleware } from './middlemare';
+import { ChatModule } from './chat/chat.module';
 
 
 @Module({
@@ -35,8 +36,7 @@ import { LoggerMiddleware } from './middlemare';
     AuthModule,
     MailerModule,
     PrismaModule,
-    PrismaModule,
-    
+    ChatModule,
   ],
   controllers: [],
   providers: [],

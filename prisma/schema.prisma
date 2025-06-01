@@ -4,23 +4,23 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") 
+  url      = env("DATABASE_URL")
 }
 
 model GeneralMedicalRecords {
-  id                                                                 String    @id(map: "PK_0c72dc98f0fdc6563edabd82a11") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                                                                 String    @id @default(uuid()) @db.Uuid
   allergies                                                          String[]
   bloodType                                                          String?   @db.VarChar
   birthDate                                                          DateTime? @db.Date
   height                                                             Float?
   weight                                                             Float?
-  patient_id                                                         String    @unique(map: "REL_fc0aa986eb176d1d55f5cfb0c3") @db.Uuid
-  patients_GeneralMedicalRecords_patient_idTopatients                patients  @relation("GeneralMedicalRecords_patient_idTopatients", fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_fc0aa986eb176d1d55f5cfb0c3e")
+  patient_id                                                         String    @unique @db.Uuid
+  patients_GeneralMedicalRecords_patient_idTopatients                patients  @relation("GeneralMedicalRecords_patient_idTopatients", fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   patients_patients_general_medical_record_idToGeneralMedicalRecords patients? @relation("patients_general_medical_record_idToGeneralMedicalRecords")
 }
 
 model analysis_results {
-  id              String                            @id(map: "PK_56560e3511c57e1db64a3ad93eb") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String                            @id @default(uuid()) @db.Uuid
   is_abnormal     Boolean
   description     String?
   title           String
@@ -29,32 +29,32 @@ model analysis_results {
   unit            String
   value           String
   lab_document_id String                            @db.Uuid
-  lab_documents   lab_documents                     @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_751aa670dc6bc8f76879257eef2")
+  lab_documents   lab_documents                     @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model authorizations {
-  id                  String                    @id(map: "PK_03e79e63bef1d024d38b8556b8c") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                  String                    @id @default(uuid()) @db.Uuid
   level               authorizations_level_enum
   institut_medical_id String?                   @db.Uuid
   patient_id          String                    @db.Uuid
-  instituts_medicaux  instituts_medicaux?       @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c59f4fa471f9e3df2212dc5f97e")
-  patients            patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f60a74399aab50d46845e626583")
+  instituts_medicaux  instituts_medicaux?       @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients            patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model certificates {
-  id          String    @id(map: "PK_e4c7e31e2144300bea7d89eb165") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
   type        String
   start_date  DateTime? @db.Timestamptz(6)
   end_date    DateTime? @db.Timestamptz(6)
   description String?
   doctor_id   String?   @db.Uuid
   patient_id  String    @db.Uuid
-  doctors     doctors?  @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_915549e4fcec56325e24074a5cc")
-  patients    patients  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_96a9cc6b35bb7aa3f56172571e2")
+  doctors     doctors?  @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients    patients  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model cliniques {
-  id      String              @id(map: "PK_1fd8166b85453bbd58c57a73736") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id      String              @id @default(uuid()) @db.Uuid
   type    cliniques_type_enum
   name    String
   address String?
@@ -74,31 +74,31 @@ model consultation_lab_requests {
 }
 
 model consultations {
-  id                        String                      @id(map: "PK_c5b78e9424d9bc68464f6a12103") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                        String                      @id @default(uuid()) @db.Uuid
   section                   String?
   date                      DateTime                    @db.Timestamptz(6)
   notes                     String[]
   measures                  Json?
   doctor_id                 String?                     @db.Uuid
   institut_medical_id       String?                     @db.Uuid
-  prescription_id           String?                     @unique(map: "REL_488cc5c61fa845f715c76450a1") @db.Uuid
+  prescription_id           String?                     @unique @db.Uuid
   patient_id                String                      @db.Uuid
   consultation_lab_requests consultation_lab_requests[]
-  prescriptions             prescriptions?              @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_488cc5c61fa845f715c76450a17")
-  instituts_medicaux        instituts_medicaux?         @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_6bc76193c5d2560bdc53cd919e7")
-  patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ee6c335246d3b937f11c329c837")
-  doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f8fd24eb3ea75583c650cc3c0c8")
+  prescriptions             prescriptions?              @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  instituts_medicaux        instituts_medicaux?         @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   rdvs                      rdvs?
 }
 
 model ctscan_results {
-  id              String                          @id(map: "PK_e94fdce58c4f310055979604f2b") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String                          @id @default(uuid()) @db.Uuid
   is_abnormal     Boolean
   description     String?
   title           String
   result_type     ctscan_results_result_type_enum
   lab_document_id String                          @db.Uuid
-  lab_documents   lab_documents                   @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_cf0b41100cc512aaa487b4d8099")
+  lab_documents   lab_documents                   @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model doctor_instituts {
@@ -113,30 +113,32 @@ model doctor_instituts {
 }
 
 model doctors {
-  id               String                 @id(map: "PK_8207e7889b50ee3695c2b8154ff") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  type             doctors_type_enum
-  is_license_verified   Boolean  @default(false)
-  bio              String?
-  education        String[]
-  experience       String[]
-  first_name       String
-  languages        String[]
-  last_name        String
-  profile_image    String?
-  specialty        doctors_specialty_enum
-  user_id          String                 @unique(map: "REL_653c27d1b10652eb0c7bbbc442") @db.Uuid
-  certificates     certificates[]
-  consultations    consultations[]
-  doctor_instituts doctor_instituts[]
-  users            users                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_653c27d1b10652eb0c7bbbc4427")
-  lab_requests     lab_requests[]
-  prescriptions    prescriptions[]
-  rdv_requests     rdv_requests[]
-  rdvs             rdvs[]
+  id                  String                 @id @default(uuid()) @db.Uuid
+  type                doctors_type_enum
+  is_license_verified Boolean                @default(false)
+  bio                 String?
+  education           String[]
+  experience          String[]
+  first_name          String
+  languages           String[]
+  last_name           String
+  profile_image       String?
+  specialty           doctors_specialty_enum
+  user_id             String                 @unique @db.Uuid
+  certificates        certificates[]
+  consultations       consultations[]
+  doctor_instituts    doctor_instituts[]
+  users               users                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lab_requests        lab_requests[]
+  prescriptions       prescriptions[]
+  rdv_requests        rdv_requests[]
+  rdvs                rdvs[]
+  sentMessages        Message[]              @relation("SentMessages")
+  receivedMessages    Message[]              @relation("ReceivedMessages")
 }
 
 model hopitaux {
-  id      String             @id(map: "PK_e01bb1c91929f72e3e86bc22eed") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id      String             @id @default(uuid()) @db.Uuid
   type    hopitaux_type_enum
   name    String
   address String?
@@ -145,7 +147,7 @@ model hopitaux {
 }
 
 model instituts_medicaux {
-  id               String                       @id(map: "PK_6e99d87df61d5e11b59037799ad") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id               String                       @id @default(uuid()) @db.Uuid
   type             instituts_medicaux_type_enum
   authorizations   authorizations[]
   consultations    consultations[]
@@ -153,16 +155,16 @@ model instituts_medicaux {
 }
 
 model lab_attachments {
-  id              String        @id(map: "PK_9ca0438ce83469143d955f3f847") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String        @id @default(uuid()) @db.Uuid
   name            String
   type            String
   url             String
   lab_document_id String        @db.Uuid
-  lab_documents   lab_documents @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3008b666afffce313e48b749730")
+  lab_documents   lab_documents @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model lab_documents {
-  id               String                    @id(map: "PK_c171023e527cd69c804651a5f0c") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id               String                    @id @default(uuid()) @db.Uuid
   completed_at     DateTime?                 @db.Timestamptz(6)
   created_at       DateTime                  @default(now()) @db.Timestamp(6)
   notes            String?
@@ -175,15 +177,15 @@ model lab_documents {
   analysis_results analysis_results[]
   ctscan_results   ctscan_results[]
   lab_attachments  lab_attachments[]
-  laboratories     laboratories?             @relation(fields: [laboratory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_6b0924ddd3edf174e37aaa3701d")
-  patients         patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a12be1e329d31e57771d3ea4f71")
-  lab_requests     lab_requests?             @relation(fields: [lab_request_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a45399a4c22fcadfc4a41c71ed4")
+  laboratories     laboratories?             @relation(fields: [laboratory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients         patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lab_requests     lab_requests?             @relation(fields: [lab_request_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   lab_results      lab_results[]
   xray_results     xray_results[]
 }
 
 model lab_requests {
-  id                        String                      @id(map: "PK_5210e52d2ed16e4edc5ef1b68ab") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                        String                      @id @default(uuid()) @db.Uuid
   type                      String
   priority                  lab_requests_priority_enum?
   description               String?
@@ -191,22 +193,22 @@ model lab_requests {
   patient_id                String                      @db.Uuid
   consultation_lab_requests consultation_lab_requests[]
   lab_documents             lab_documents[]
-  doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9d74157a7327c3ee105975b6575")
-  patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ca8b7bab5fe23747323f8f70b2f")
+  doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model lab_results {
-  id              String                       @id(map: "PK_4f1c5b3b5813c98fb531e5db738") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String                       @id @default(uuid()) @db.Uuid
   is_abnormal     Boolean
   description     String?
   title           String
   result_type     lab_results_result_type_enum
   lab_document_id String                       @db.Uuid
-  lab_documents   lab_documents                @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7961e72fa3f5d49f2cefd93c00f")
+  lab_documents   lab_documents                @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model laboratories {
-  id            String          @id(map: "PK_095d956b8c0841845525483188c") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String          @id @default(uuid()) @db.Uuid
   address       String?
   phone         String?
   email         String?
@@ -215,32 +217,32 @@ model laboratories {
 }
 
 model medications {
-  id              String        @id(map: "PK_cdee49fe7cd79db13340150d356") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String        @id @default(uuid()) @db.Uuid
   dosage          String
   duration        String
   frequency       String
   name            String
   quantity        Float
   prescription_id String        @db.Uuid
-  prescriptions   prescriptions @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ef551ea9f33bc2b04609b034287")
+  prescriptions   prescriptions @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model patients {
-  id                                                                              String                 @id(map: "PK_a7f0b9fcbb3469d5ec0b0aceaa7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  cin                                                                             Int                  @unique(map: "UQ_a0d78441c0c6cf0f1753a1fb139")
+  id                                                                              String                 @id @default(uuid()) @db.Uuid
+  cin                                                                             Int                    @unique
   date_of_birth                                                                   DateTime               @db.Timestamptz(6)
   gender                                                                          patients_gender_enum
   profile_image                                                                   String?
-  general_medical_record_id                                                       String?                @unique(map: "REL_92850f3e2173ea4c3f2ef90f82") @db.Uuid
-  user_id                                                                         String?                @unique(map: "REL_7fe1518dc780fd777669b5cb7a") @db.Uuid
+  general_medical_record_id                                                       String?                @unique @db.Uuid
+  user_id                                                                         String?                @unique @db.Uuid
   GeneralMedicalRecords_GeneralMedicalRecords_patient_idTopatients                GeneralMedicalRecords? @relation("GeneralMedicalRecords_patient_idTopatients")
   authorizations                                                                  authorizations[]
   certificates                                                                    certificates[]
   consultations                                                                   consultations[]
   lab_documents                                                                   lab_documents[]
   lab_requests                                                                    lab_requests[]
-  users                                                                           users?                 @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7fe1518dc780fd777669b5cb7a0")
-  GeneralMedicalRecords_patients_general_medical_record_idToGeneralMedicalRecords GeneralMedicalRecords? @relation("patients_general_medical_record_idToGeneralMedicalRecords", fields: [general_medical_record_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_92850f3e2173ea4c3f2ef90f829")
+  users                                                                           users?                 @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  GeneralMedicalRecords_patients_general_medical_record_idToGeneralMedicalRecords GeneralMedicalRecords? @relation("patients_general_medical_record_idToGeneralMedicalRecords", fields: [general_medical_record_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   prescriptions                                                                   prescriptions[]
   rdv_requests                                                                    rdv_requests[]
   rdvs                                                                            rdvs[]
@@ -255,7 +257,7 @@ model pharmacies {
 }
 
 model prescriptions {
-  id            String                    @id(map: "PK_097b2cc2f2b7e56825468188503") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String                    @id @default(uuid()) @db.Uuid
   date          DateTime                  @db.Timestamptz(6)
   instructions  String?
   is_signed     Boolean
@@ -264,202 +266,216 @@ model prescriptions {
   updated_at    DateTime                  @default(now()) @db.Timestamp(6)
   doctor_id     String?                   @db.Uuid
   patient_id    String                    @db.Uuid
-  consultations consultations?
+  consultations consultations[]
   medications   medications[]
-  doctors       doctors?                  @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_2d6a1941bd705056030c2b9e07d")
-  patients      patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9389db557647131856661f7d7b5")
+  doctors       doctors?                  @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients      patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model rdv_requests {
-  id                                     String   @id(map: "PK_9d054d5913dd0a81049ec372d61") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                                     String   @id @default(uuid()) @db.Uuid
   date                                   DateTime @db.Timestamptz(6)
   time                                   DateTime @db.Time(6)
   Motif                                  String
   Status                                 String
   patient_id                             String   @db.Uuid
   doctor_id                              String?  @db.Uuid
-  rdv_id                                 String?  @unique(map: "REL_0a9fb03e689d36a4163019e5c9") @db.Uuid
-  rdvs_rdv_requests_rdv_idTordvs         rdvs?    @relation("rdv_requests_rdv_idTordvs", fields: [rdv_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_0a9fb03e689d36a4163019e5c90")
-  patients                               patients @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_0d2c8945b70565d0fc7fc53f501")
-  doctors                                doctors? @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ad6feaadb577025021a92dd7b61")
+  rdv_id                                 String?  @unique @db.Uuid
+  rdvs_rdv_requests_rdv_idTordvs         rdvs?    @relation("rdv_requests_rdv_idTordvs", fields: [rdv_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                               patients @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  doctors                                doctors? @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   rdvs_rdvs_rdv_request_idTordv_requests rdvs?    @relation("rdvs_rdv_request_idTordv_requests")
 
   @@map("rdv-requests")
 }
 
 model rdvs {
-  id                                             String         @id(map: "PK_c28558f0450a7fa06f9f0d601da") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                                             String         @id @default(uuid()) @db.Uuid
   date                                           DateTime       @db.Timestamptz(6)
   time                                           DateTime       @db.Time(6)
   patient_id                                     String         @db.Uuid
   doctor_id                                      String?        @db.Uuid
-  consultation_id                                String?        @unique(map: "REL_5619912f44fbef1dac6d0b3e6c") @db.Uuid
-  rdv_request_id                                 String?        @unique(map: "REL_8732bfa92e090503707e6b0a1c") @db.Uuid
+  consultation_id                                String?        @unique @db.Uuid
+  rdv_request_id                                 String?        @unique @db.Uuid
   rdv_requests_rdv_requests_rdv_idTordvs         rdv_requests?  @relation("rdv_requests_rdv_idTordvs")
-  consultations                                  consultations? @relation(fields: [consultation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5619912f44fbef1dac6d0b3e6c4")
-  patients                                       patients       @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_61d99cbdd95a688a4339d68fd30")
-  rdv_requests_rdvs_rdv_request_idTordv_requests rdv_requests?  @relation("rdvs_rdv_request_idTordv_requests", fields: [rdv_request_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_8732bfa92e090503707e6b0a1c4")
-  doctors                                        doctors?       @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_8d166336614515b411c9e26ebc4")
+  consultations                                  consultations? @relation(fields: [consultation_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients                                       patients       @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rdv_requests_rdvs_rdv_request_idTordv_requests rdv_requests?  @relation("rdvs_rdv_request_idTordv_requests", fields: [rdv_request_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  doctors                                        doctors?       @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model users {
-  id              String          @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  address         String?
-  created_at      DateTime        @default(now()) @db.Timestamp(6)
-  email           String          @unique(map: "UQ_97672ac88f789774dd47f7c8be3")
-  first_name      String
-  last_name       String
-  validation_token verification_tokens? 
-  is_verified     Boolean
-  password        String
-  salt            String
-  last_login      DateTime?       @db.Timestamptz(6)
-  phone           String?
-  profile_picture String?
-  role            users_role_enum
-  associated_id   String?         @db.Uuid
-  updated_at      DateTime        @default(now()) @db.Timestamp(6)
-  doctors         doctors?
-  patients        patients?
+  id                String              @id @default(uuid()) @db.Uuid
+  address           String?
+  created_at        DateTime           @default(now()) @db.Timestamp(6)
+  email             String              @unique
+  first_name        String
+  last_name         String
+  validation_token  verification_tokens?
+  is_verified       Boolean
+  password          String
+  salt              String
+  last_login        DateTime?          @db.Timestamptz(6)
+  phone             String?
+  profile_picture   String?
+  role              users_role_enum
+  associated_id     String?            @db.Uuid
+  updated_at        DateTime           @default(now()) @db.Timestamp(6)
+  doctors           doctors[]
+  patients          patients[]
 }
 
 model xray_results {
-  id              String                        @id(map: "PK_09c381c601c108a04a9d68830ff") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String                       @id @default(uuid()) @db.Uuid
   is_abnormal     Boolean
   description     String?
   title           String
   result_type     xray_results_result_type_enum
-  lab_document_id String                        @db.Uuid
-  lab_documents   lab_documents                 @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_e63a8ea15fa5242f9c9c31c9ca4")
+  lab_document_id String                       @db.Uuid
+  lab_documents   lab_documents                @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum analysis_results_result_type_enum {
-  analysis
-  xray
-  ctscan
+  NORMAL
+  ABNORMAL
+  CRITICAL
 }
 
 enum authorizations_level_enum {
-  general
-  speciality
-  full_access
+  READ
+  WRITE
+  ADMIN
 }
 
 enum cliniques_type_enum {
-  doctor
-  clinique
-  hopital
+  PRIVATE
+  PUBLIC
 }
 
 enum ctscan_results_result_type_enum {
-  analysis
-  xray
-  ctscan
+  NORMAL
+  ABNORMAL
+  CRITICAL
 }
 
 enum doctors_specialty_enum {
-  generaliste
-  cardiologue
-  dermatologue
-  gynecologue
-  pediatre
-  orthopediste
-  psychiatre
-  ophtalmologue
-  otorhinolaryngologue
-  neurologue
-  urologue
-  endocrinologue
-  gastroenterologue
-  rheumatologue
-  anesthesiste
-  radiologue
-  oncologue
-  chirurgien
-  nutritionniste
-  physiotherapeute
-  psychologue
-  sexologue
-  geriatre
-  allergologue
-  hematologue
-  nephrologue
-  pneumologue
-  dentiste
-  orthodontiste
-  autre
+  GENERAL_PRACTITIONER
+  CARDIOLOGIST
+  DERMATOLOGIST
+  ENDOCRINOLOGIST
+  GASTROENTEROLOGIST
+  GYNECOLOGIST
+  HEMATOLOGIST
+  INFECTIOUS_DISEASE
+  INTERNIST
+  NEPHROLOGIST
+  NEUROLOGIST
+  OBSTETRICIAN
+  ONCOLOGIST
+  OPHTHALMOLOGIST
+  ORTHOPEDIST
+  OTOLARYNGOLOGIST
+  PEDIATRICIAN
+  PSYCHIATRIST
+  PULMONOLOGIST
+  RHEUMATOLOGIST
+  UROLOGIST
 }
 
 enum doctors_type_enum {
-  doctor
-  clinique
-  hopital
+  GENERAL_PRACTITIONER
+  SPECIALIST
+  SURGEON
 }
 
 enum hopitaux_type_enum {
-  doctor
-  clinique
-  hopital
+  PUBLIC
+  PRIVATE
 }
 
 enum instituts_medicaux_type_enum {
-  doctor
-  clinique
-  hopital
+  CLINIC
+  HOSPITAL
+  LABORATORY
 }
 
 enum lab_documents_status_enum {
-  pending
-  in_progress
-  completed
-  cancelled
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
 
 enum lab_requests_priority_enum {
-  low
-  medium
-  high
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }
 
 enum lab_results_result_type_enum {
-  analysis
-  xray
-  ctscan
+  NORMAL
+  ABNORMAL
+  CRITICAL
 }
 
 enum patients_gender_enum {
-  Male
-  Female
+  MALE
+  FEMALE
+  OTHER
 }
 
 enum prescriptions_status_enum {
-  Pending
-  Approved
-  Rejected
+  ACTIVE
+  COMPLETED
+  CANCELLED
 }
 
 enum users_role_enum {
-  Patient
-  Doctor
-  Pharmacy
-  Laboratory
-  Insurance
-  Assistant
-  Admin
+  ADMIN
+  DOCTOR
+  PATIENT
+  LABORATORY
+  HOSPITAL
+  CLINIC
 }
 
 enum xray_results_result_type_enum {
-  analysis
-  xray
-  ctscan
+  NORMAL
+  ABNORMAL
+  CRITICAL
 }
 
 model verification_tokens {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userId     String   @unique @db.Uuid
-  token      String
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @unique @db.Uuid
+  token         String
   numberofTries Int      @default(0)
-  createdAt  DateTime @default(now()) @db.Timestamp(6)
-  expireAt   DateTime @db.Timestamp(6)
-  user       users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  expireAt      DateTime @db.Timestamp(6)
+  user          users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id           String             @id @default(uuid()) @db.Uuid
+  content      String
+  createdAt    DateTime           @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime           @updatedAt @db.Timestamp(6)
+  senderId     String             @db.Uuid
+  receiverId   String             @db.Uuid
+  isRead       Boolean            @default(false)
+  sender       doctors            @relation("SentMessages", fields: [senderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  receiver     doctors            @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  attachments  MessageAttachment[]
+}
+
+model MessageAttachment {
+  id        String   @id @default(uuid()) @db.Uuid
+  filename  String
+  path      String
+  mimeType  String
+  size      Int
+  messageId String   @db.Uuid
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
 }

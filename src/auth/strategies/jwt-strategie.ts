@@ -3,12 +3,12 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { config } from "dotenv";
 import { Strategy } from "passport-jwt";
-import { PrismaService } from 'prisma.service';
 import { ExtractJwt } from "passport-jwt";
 
 import { UserPayload } from "../interfaces/payload.interface";
 
 import * as env from 'dotenv';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
