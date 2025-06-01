@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { AuthorizationsListRelationFilter } from "../inputs/AuthorizationsListRelationFilter";
 import { ConsultationsListRelationFilter } from "../inputs/ConsultationsListRelationFilter";
-import { Doctor_institutsListRelationFilter } from "../inputs/Doctor_institutsListRelationFilter";
+import { DoctorsListRelationFilter } from "../inputs/DoctorsListRelationFilter";
 import { Enuminstituts_medicaux_type_enumFilter } from "../inputs/Enuminstituts_medicaux_type_enumFilter";
 import { UuidFilter } from "../inputs/UuidFilter";
 
@@ -45,8 +45,8 @@ export class Instituts_medicauxWhereInput {
   })
   consultations?: ConsultationsListRelationFilter | undefined;
 
-  @TypeGraphQL.Field(_type => Doctor_institutsListRelationFilter, {
+  @TypeGraphQL.Field(_type => DoctorsListRelationFilter, {
     nullable: true
   })
-  doctor_instituts?: Doctor_institutsListRelationFilter | undefined;
+  doctors?: DoctorsListRelationFilter | undefined;
 }

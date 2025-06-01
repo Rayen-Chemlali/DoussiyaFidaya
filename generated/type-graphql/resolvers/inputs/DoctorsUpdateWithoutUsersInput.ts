@@ -4,12 +4,12 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { CertificatesUpdateManyWithoutDoctorsNestedInput } from "../inputs/CertificatesUpdateManyWithoutDoctorsNestedInput";
 import { ConsultationsUpdateManyWithoutDoctorsNestedInput } from "../inputs/ConsultationsUpdateManyWithoutDoctorsNestedInput";
-import { Doctor_institutsUpdateManyWithoutDoctorsNestedInput } from "../inputs/Doctor_institutsUpdateManyWithoutDoctorsNestedInput";
 import { DoctorsUpdateeducationInput } from "../inputs/DoctorsUpdateeducationInput";
 import { DoctorsUpdateexperienceInput } from "../inputs/DoctorsUpdateexperienceInput";
 import { DoctorsUpdatelanguagesInput } from "../inputs/DoctorsUpdatelanguagesInput";
 import { Enumdoctors_specialty_enumFieldUpdateOperationsInput } from "../inputs/Enumdoctors_specialty_enumFieldUpdateOperationsInput";
 import { Enumdoctors_type_enumFieldUpdateOperationsInput } from "../inputs/Enumdoctors_type_enumFieldUpdateOperationsInput";
+import { Instituts_medicauxUpdateManyWithoutDoctorsNestedInput } from "../inputs/Instituts_medicauxUpdateManyWithoutDoctorsNestedInput";
 import { Lab_requestsUpdateManyWithoutDoctorsNestedInput } from "../inputs/Lab_requestsUpdateManyWithoutDoctorsNestedInput";
 import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
 import { PrescriptionsUpdateManyWithoutDoctorsNestedInput } from "../inputs/PrescriptionsUpdateManyWithoutDoctorsNestedInput";
@@ -79,10 +79,10 @@ export class DoctorsUpdateWithoutUsersInput {
   })
   consultations?: ConsultationsUpdateManyWithoutDoctorsNestedInput | undefined;
 
-  @TypeGraphQL.Field(_type => Doctor_institutsUpdateManyWithoutDoctorsNestedInput, {
+  @TypeGraphQL.Field(_type => Instituts_medicauxUpdateManyWithoutDoctorsNestedInput, {
     nullable: true
   })
-  doctor_instituts?: Doctor_institutsUpdateManyWithoutDoctorsNestedInput | undefined;
+  instituts_medicaux?: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput | undefined;
 
   @TypeGraphQL.Field(_type => Lab_requestsUpdateManyWithoutDoctorsNestedInput, {
     nullable: true

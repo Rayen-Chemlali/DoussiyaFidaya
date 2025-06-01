@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { AuthorizationsUpdateManyWithoutInstituts_medicauxNestedInput } from "../inputs/AuthorizationsUpdateManyWithoutInstituts_medicauxNestedInput";
 import { ConsultationsUpdateManyWithoutInstituts_medicauxNestedInput } from "../inputs/ConsultationsUpdateManyWithoutInstituts_medicauxNestedInput";
-import { Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput } from "../inputs/Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput";
+import { DoctorsUpdateManyWithoutInstituts_medicauxNestedInput } from "../inputs/DoctorsUpdateManyWithoutInstituts_medicauxNestedInput";
 import { Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput } from "../inputs/Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput";
 import { StringFieldUpdateOperationsInput } from "../inputs/StringFieldUpdateOperationsInput";
 
@@ -30,8 +30,8 @@ export class Instituts_medicauxUpdateInput {
   })
   consultations?: ConsultationsUpdateManyWithoutInstituts_medicauxNestedInput | undefined;
 
-  @TypeGraphQL.Field(_type => Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput, {
+  @TypeGraphQL.Field(_type => DoctorsUpdateManyWithoutInstituts_medicauxNestedInput, {
     nullable: true
   })
-  doctor_instituts?: Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput | undefined;
+  doctors?: DoctorsUpdateManyWithoutInstituts_medicauxNestedInput | undefined;
 }

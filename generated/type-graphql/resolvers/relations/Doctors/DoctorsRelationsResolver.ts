@@ -2,8 +2,8 @@ import * as TypeGraphQL from "type-graphql";
 import type { GraphQLResolveInfo } from "graphql";
 import { Certificates } from "../../../models/Certificates";
 import { Consultations } from "../../../models/Consultations";
-import { Doctor_instituts } from "../../../models/Doctor_instituts";
 import { Doctors } from "../../../models/Doctors";
+import { Instituts_medicaux } from "../../../models/Instituts_medicaux";
 import { Lab_requests } from "../../../models/Lab_requests";
 import { Prescriptions } from "../../../models/Prescriptions";
 import { Rdv_requests } from "../../../models/Rdv_requests";
@@ -11,7 +11,7 @@ import { Rdvs } from "../../../models/Rdvs";
 import { Users } from "../../../models/Users";
 import { DoctorsCertificatesArgs } from "./args/DoctorsCertificatesArgs";
 import { DoctorsConsultationsArgs } from "./args/DoctorsConsultationsArgs";
-import { DoctorsDoctor_institutsArgs } from "./args/DoctorsDoctor_institutsArgs";
+import { DoctorsInstituts_medicauxArgs } from "./args/DoctorsInstituts_medicauxArgs";
 import { DoctorsLab_requestsArgs } from "./args/DoctorsLab_requestsArgs";
 import { DoctorsPrescriptionsArgs } from "./args/DoctorsPrescriptionsArgs";
 import { DoctorsRdv_requestsArgs } from "./args/DoctorsRdv_requestsArgs";
@@ -50,16 +50,16 @@ export class DoctorsRelationsResolver {
     });
   }
 
-  @TypeGraphQL.FieldResolver(_type => [Doctor_instituts], {
+  @TypeGraphQL.FieldResolver(_type => [Instituts_medicaux], {
     nullable: false
   })
-  async doctor_instituts(@TypeGraphQL.Root() doctors: Doctors, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: DoctorsDoctor_institutsArgs): Promise<Doctor_instituts[]> {
+  async instituts_medicaux(@TypeGraphQL.Root() doctors: Doctors, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: DoctorsInstituts_medicauxArgs): Promise<Instituts_medicaux[]> {
     const { _count } = transformInfoIntoPrismaArgs(info);
     return getPrismaFromContext(ctx).doctors.findUniqueOrThrow({
       where: {
         id: doctors.id,
       },
-    }).doctor_instituts({
+    }).instituts_medicaux({
       ...args,
       ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
     });

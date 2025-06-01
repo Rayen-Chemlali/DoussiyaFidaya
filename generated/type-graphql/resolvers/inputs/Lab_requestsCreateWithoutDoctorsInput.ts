@@ -2,7 +2,7 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput } from "../inputs/Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput";
+import { ConsultationsCreateNestedManyWithoutLab_requestsInput } from "../inputs/ConsultationsCreateNestedManyWithoutLab_requestsInput";
 import { Lab_documentsCreateNestedManyWithoutLab_requestsInput } from "../inputs/Lab_documentsCreateNestedManyWithoutLab_requestsInput";
 import { PatientsCreateNestedOneWithoutLab_requestsInput } from "../inputs/PatientsCreateNestedOneWithoutLab_requestsInput";
 import { lab_requests_priority_enum } from "../../enums/lab_requests_priority_enum";
@@ -29,10 +29,10 @@ export class Lab_requestsCreateWithoutDoctorsInput {
   })
   description?: string | undefined;
 
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput, {
+  @TypeGraphQL.Field(_type => ConsultationsCreateNestedManyWithoutLab_requestsInput, {
     nullable: true
   })
-  consultation_lab_requests?: Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput | undefined;
+  consultations?: ConsultationsCreateNestedManyWithoutLab_requestsInput | undefined;
 
   @TypeGraphQL.Field(_type => Lab_documentsCreateNestedManyWithoutLab_requestsInput, {
     nullable: true

@@ -1,10 +1,8 @@
 export { Analysis_resultsRelationsResolver } from "./Analysis_results/Analysis_resultsRelationsResolver";
 export { AuthorizationsRelationsResolver } from "./Authorizations/AuthorizationsRelationsResolver";
 export { CertificatesRelationsResolver } from "./Certificates/CertificatesRelationsResolver";
-export { Consultation_lab_requestsRelationsResolver } from "./Consultation_lab_requests/Consultation_lab_requestsRelationsResolver";
 export { ConsultationsRelationsResolver } from "./Consultations/ConsultationsRelationsResolver";
 export { Ctscan_resultsRelationsResolver } from "./Ctscan_results/Ctscan_resultsRelationsResolver";
-export { Doctor_institutsRelationsResolver } from "./Doctor_instituts/Doctor_institutsRelationsResolver";
 export { DoctorsRelationsResolver } from "./Doctors/DoctorsRelationsResolver";
 export { GeneralMedicalRecordsRelationsResolver } from "./GeneralMedicalRecords/GeneralMedicalRecordsRelationsResolver";
 export { Instituts_medicauxRelationsResolver } from "./Instituts_medicaux/Instituts_medicauxRelationsResolver";

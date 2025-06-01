@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { CertificatesOrderByRelationAggregateInput } from "../inputs/CertificatesOrderByRelationAggregateInput";
 import { ConsultationsOrderByRelationAggregateInput } from "../inputs/ConsultationsOrderByRelationAggregateInput";
-import { Doctor_institutsOrderByRelationAggregateInput } from "../inputs/Doctor_institutsOrderByRelationAggregateInput";
+import { Instituts_medicauxOrderByRelationAggregateInput } from "../inputs/Instituts_medicauxOrderByRelationAggregateInput";
 import { Lab_requestsOrderByRelationAggregateInput } from "../inputs/Lab_requestsOrderByRelationAggregateInput";
 import { PrescriptionsOrderByRelationAggregateInput } from "../inputs/PrescriptionsOrderByRelationAggregateInput";
 import { Rdv_requestsOrderByRelationAggregateInput } from "../inputs/Rdv_requestsOrderByRelationAggregateInput";
@@ -80,10 +80,10 @@ export class DoctorsOrderByWithRelationInput {
   })
   consultations?: ConsultationsOrderByRelationAggregateInput | undefined;
 
-  @TypeGraphQL.Field(_type => Doctor_institutsOrderByRelationAggregateInput, {
+  @TypeGraphQL.Field(_type => Instituts_medicauxOrderByRelationAggregateInput, {
     nullable: true
   })
-  doctor_instituts?: Doctor_institutsOrderByRelationAggregateInput | undefined;
+  instituts_medicaux?: Instituts_medicauxOrderByRelationAggregateInput | undefined;
 
   @TypeGraphQL.Field(_type => UsersOrderByWithRelationInput, {
     nullable: true

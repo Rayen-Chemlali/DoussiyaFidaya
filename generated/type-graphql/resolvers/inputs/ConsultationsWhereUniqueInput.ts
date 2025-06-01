@@ -2,12 +2,12 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsListRelationFilter } from "../inputs/Consultation_lab_requestsListRelationFilter";
 import { ConsultationsWhereInput } from "../inputs/ConsultationsWhereInput";
 import { DateTimeFilter } from "../inputs/DateTimeFilter";
 import { DoctorsNullableRelationFilter } from "../inputs/DoctorsNullableRelationFilter";
 import { Instituts_medicauxNullableRelationFilter } from "../inputs/Instituts_medicauxNullableRelationFilter";
 import { JsonNullableFilter } from "../inputs/JsonNullableFilter";
+import { Lab_requestsListRelationFilter } from "../inputs/Lab_requestsListRelationFilter";
 import { PatientsRelationFilter } from "../inputs/PatientsRelationFilter";
 import { PrescriptionsNullableRelationFilter } from "../inputs/PrescriptionsNullableRelationFilter";
 import { RdvsNullableRelationFilter } from "../inputs/RdvsNullableRelationFilter";
@@ -78,10 +78,10 @@ export class ConsultationsWhereUniqueInput {
   })
   patient_id?: UuidFilter | undefined;
 
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsListRelationFilter, {
+  @TypeGraphQL.Field(_type => Lab_requestsListRelationFilter, {
     nullable: true
   })
-  consultation_lab_requests?: Consultation_lab_requestsListRelationFilter | undefined;
+  lab_requests?: Lab_requestsListRelationFilter | undefined;
 
   @TypeGraphQL.Field(_type => PrescriptionsNullableRelationFilter, {
     nullable: true

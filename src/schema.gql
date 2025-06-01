@@ -31,12 +31,6 @@ type AggregateCliniques {
   _min: CliniquesMinAggregate
 }
 
-type AggregateConsultation_lab_requests {
-  _count: Consultation_lab_requestsCountAggregate
-  _max: Consultation_lab_requestsMaxAggregate
-  _min: Consultation_lab_requestsMinAggregate
-}
-
 type AggregateConsultations {
   _count: ConsultationsCountAggregate
   _max: ConsultationsMaxAggregate
@@ -47,12 +41,6 @@ type AggregateCtscan_results {
   _count: Ctscan_resultsCountAggregate
   _max: Ctscan_resultsMaxAggregate
   _min: Ctscan_resultsMinAggregate
-}
-
-type AggregateDoctor_instituts {
-  _count: Doctor_institutsCountAggregate
-  _max: Doctor_institutsMaxAggregate
-  _min: Doctor_institutsMinAggregate
 }
 
 type AggregateDoctors {
@@ -67,12 +55,6 @@ type AggregateGeneralMedicalRecords {
   _max: GeneralMedicalRecordsMaxAggregate
   _min: GeneralMedicalRecordsMinAggregate
   _sum: GeneralMedicalRecordsSumAggregate
-}
-
-type AggregateHopitaux {
-  _count: HopitauxCountAggregate
-  _max: HopitauxMaxAggregate
-  _min: HopitauxMinAggregate
 }
 
 type AggregateInstituts_medicaux {
@@ -1369,266 +1351,15 @@ input CliniquesWhereUniqueInput {
   type: Enumcliniques_type_enumFilter
 }
 
-type Consultation_lab_requests {
-  consultation_id: String!
-  consultations: Consultations!
-  lab_request_id: String!
-  lab_requests: Lab_requests!
-}
-
-type Consultation_lab_requestsCountAggregate {
-  _all: Int!
-  consultation_id: Int!
-  lab_request_id: Int!
-}
-
-input Consultation_lab_requestsCountOrderByAggregateInput {
-  consultation_id: SortOrder
-  lab_request_id: SortOrder
-}
-
-input Consultation_lab_requestsCreateInput {
-  consultations: ConsultationsCreateNestedOneWithoutConsultation_lab_requestsInput!
-  lab_requests: Lab_requestsCreateNestedOneWithoutConsultation_lab_requestsInput!
-}
-
-input Consultation_lab_requestsCreateManyConsultationsInput {
-  lab_request_id: String!
-}
-
-input Consultation_lab_requestsCreateManyConsultationsInputEnvelope {
-  data: [Consultation_lab_requestsCreateManyConsultationsInput!]!
-  skipDuplicates: Boolean
-}
-
-input Consultation_lab_requestsCreateManyInput {
-  consultation_id: String!
-  lab_request_id: String!
-}
-
-input Consultation_lab_requestsCreateManyLab_requestsInput {
-  consultation_id: String!
-}
-
-input Consultation_lab_requestsCreateManyLab_requestsInputEnvelope {
-  data: [Consultation_lab_requestsCreateManyLab_requestsInput!]!
-  skipDuplicates: Boolean
-}
-
-input Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput {
-  connect: [Consultation_lab_requestsWhereUniqueInput!]
-  connectOrCreate: [Consultation_lab_requestsCreateOrConnectWithoutConsultationsInput!]
-  create: [Consultation_lab_requestsCreateWithoutConsultationsInput!]
-  createMany: Consultation_lab_requestsCreateManyConsultationsInputEnvelope
-}
-
-input Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput {
-  connect: [Consultation_lab_requestsWhereUniqueInput!]
-  connectOrCreate: [Consultation_lab_requestsCreateOrConnectWithoutLab_requestsInput!]
-  create: [Consultation_lab_requestsCreateWithoutLab_requestsInput!]
-  createMany: Consultation_lab_requestsCreateManyLab_requestsInputEnvelope
-}
-
-input Consultation_lab_requestsCreateOrConnectWithoutConsultationsInput {
-  create: Consultation_lab_requestsCreateWithoutConsultationsInput!
-  where: Consultation_lab_requestsWhereUniqueInput!
-}
-
-input Consultation_lab_requestsCreateOrConnectWithoutLab_requestsInput {
-  create: Consultation_lab_requestsCreateWithoutLab_requestsInput!
-  where: Consultation_lab_requestsWhereUniqueInput!
-}
-
-input Consultation_lab_requestsCreateWithoutConsultationsInput {
-  lab_requests: Lab_requestsCreateNestedOneWithoutConsultation_lab_requestsInput!
-}
-
-input Consultation_lab_requestsCreateWithoutLab_requestsInput {
-  consultations: ConsultationsCreateNestedOneWithoutConsultation_lab_requestsInput!
-}
-
-type Consultation_lab_requestsGroupBy {
-  _count: Consultation_lab_requestsCountAggregate
-  _max: Consultation_lab_requestsMaxAggregate
-  _min: Consultation_lab_requestsMinAggregate
-  consultation_id: String!
-  lab_request_id: String!
-}
-
-input Consultation_lab_requestsListRelationFilter {
-  every: Consultation_lab_requestsWhereInput
-  none: Consultation_lab_requestsWhereInput
-  some: Consultation_lab_requestsWhereInput
-}
-
-type Consultation_lab_requestsMaxAggregate {
-  consultation_id: String
-  lab_request_id: String
-}
-
-input Consultation_lab_requestsMaxOrderByAggregateInput {
-  consultation_id: SortOrder
-  lab_request_id: SortOrder
-}
-
-type Consultation_lab_requestsMinAggregate {
-  consultation_id: String
-  lab_request_id: String
-}
-
-input Consultation_lab_requestsMinOrderByAggregateInput {
-  consultation_id: SortOrder
-  lab_request_id: SortOrder
-}
-
-input Consultation_lab_requestsOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
-input Consultation_lab_requestsOrderByWithAggregationInput {
-  _count: Consultation_lab_requestsCountOrderByAggregateInput
-  _max: Consultation_lab_requestsMaxOrderByAggregateInput
-  _min: Consultation_lab_requestsMinOrderByAggregateInput
-  consultation_id: SortOrder
-  lab_request_id: SortOrder
-}
-
-input Consultation_lab_requestsOrderByWithRelationInput {
-  consultation_id: SortOrder
-  consultations: ConsultationsOrderByWithRelationInput
-  lab_request_id: SortOrder
-  lab_requests: Lab_requestsOrderByWithRelationInput
-}
-
-enum Consultation_lab_requestsScalarFieldEnum {
-  consultation_id
-  lab_request_id
-}
-
-input Consultation_lab_requestsScalarWhereInput {
-  AND: [Consultation_lab_requestsScalarWhereInput!]
-  NOT: [Consultation_lab_requestsScalarWhereInput!]
-  OR: [Consultation_lab_requestsScalarWhereInput!]
-  consultation_id: UuidFilter
-  lab_request_id: UuidFilter
-}
-
-input Consultation_lab_requestsScalarWhereWithAggregatesInput {
-  AND: [Consultation_lab_requestsScalarWhereWithAggregatesInput!]
-  NOT: [Consultation_lab_requestsScalarWhereWithAggregatesInput!]
-  OR: [Consultation_lab_requestsScalarWhereWithAggregatesInput!]
-  consultation_id: UuidWithAggregatesFilter
-  lab_request_id: UuidWithAggregatesFilter
-}
-
-input Consultation_lab_requestsUpdateInput {
-  consultations: ConsultationsUpdateOneRequiredWithoutConsultation_lab_requestsNestedInput
-  lab_requests: Lab_requestsUpdateOneRequiredWithoutConsultation_lab_requestsNestedInput
-}
-
-input Consultation_lab_requestsUpdateManyMutationInput {
-  consultation_id: String
-  lab_request_id: String
-}
-
-input Consultation_lab_requestsUpdateManyWithWhereWithoutConsultationsInput {
-  data: Consultation_lab_requestsUpdateManyMutationInput!
-  where: Consultation_lab_requestsScalarWhereInput!
-}
-
-input Consultation_lab_requestsUpdateManyWithWhereWithoutLab_requestsInput {
-  data: Consultation_lab_requestsUpdateManyMutationInput!
-  where: Consultation_lab_requestsScalarWhereInput!
-}
-
-input Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput {
-  connect: [Consultation_lab_requestsWhereUniqueInput!]
-  connectOrCreate: [Consultation_lab_requestsCreateOrConnectWithoutConsultationsInput!]
-  create: [Consultation_lab_requestsCreateWithoutConsultationsInput!]
-  createMany: Consultation_lab_requestsCreateManyConsultationsInputEnvelope
-  delete: [Consultation_lab_requestsWhereUniqueInput!]
-  deleteMany: [Consultation_lab_requestsScalarWhereInput!]
-  disconnect: [Consultation_lab_requestsWhereUniqueInput!]
-  set: [Consultation_lab_requestsWhereUniqueInput!]
-  update: [Consultation_lab_requestsUpdateWithWhereUniqueWithoutConsultationsInput!]
-  updateMany: [Consultation_lab_requestsUpdateManyWithWhereWithoutConsultationsInput!]
-  upsert: [Consultation_lab_requestsUpsertWithWhereUniqueWithoutConsultationsInput!]
-}
-
-input Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput {
-  connect: [Consultation_lab_requestsWhereUniqueInput!]
-  connectOrCreate: [Consultation_lab_requestsCreateOrConnectWithoutLab_requestsInput!]
-  create: [Consultation_lab_requestsCreateWithoutLab_requestsInput!]
-  createMany: Consultation_lab_requestsCreateManyLab_requestsInputEnvelope
-  delete: [Consultation_lab_requestsWhereUniqueInput!]
-  deleteMany: [Consultation_lab_requestsScalarWhereInput!]
-  disconnect: [Consultation_lab_requestsWhereUniqueInput!]
-  set: [Consultation_lab_requestsWhereUniqueInput!]
-  update: [Consultation_lab_requestsUpdateWithWhereUniqueWithoutLab_requestsInput!]
-  updateMany: [Consultation_lab_requestsUpdateManyWithWhereWithoutLab_requestsInput!]
-  upsert: [Consultation_lab_requestsUpsertWithWhereUniqueWithoutLab_requestsInput!]
-}
-
-input Consultation_lab_requestsUpdateWithWhereUniqueWithoutConsultationsInput {
-  data: Consultation_lab_requestsUpdateWithoutConsultationsInput!
-  where: Consultation_lab_requestsWhereUniqueInput!
-}
-
-input Consultation_lab_requestsUpdateWithWhereUniqueWithoutLab_requestsInput {
-  data: Consultation_lab_requestsUpdateWithoutLab_requestsInput!
-  where: Consultation_lab_requestsWhereUniqueInput!
-}
-
-input Consultation_lab_requestsUpdateWithoutConsultationsInput {
-  lab_requests: Lab_requestsUpdateOneRequiredWithoutConsultation_lab_requestsNestedInput
-}
-
-input Consultation_lab_requestsUpdateWithoutLab_requestsInput {
-  consultations: ConsultationsUpdateOneRequiredWithoutConsultation_lab_requestsNestedInput
-}
-
-input Consultation_lab_requestsUpsertWithWhereUniqueWithoutConsultationsInput {
-  create: Consultation_lab_requestsCreateWithoutConsultationsInput!
-  update: Consultation_lab_requestsUpdateWithoutConsultationsInput!
-  where: Consultation_lab_requestsWhereUniqueInput!
-}
-
-input Consultation_lab_requestsUpsertWithWhereUniqueWithoutLab_requestsInput {
-  create: Consultation_lab_requestsCreateWithoutLab_requestsInput!
-  update: Consultation_lab_requestsUpdateWithoutLab_requestsInput!
-  where: Consultation_lab_requestsWhereUniqueInput!
-}
-
-input Consultation_lab_requestsWhereInput {
-  AND: [Consultation_lab_requestsWhereInput!]
-  NOT: [Consultation_lab_requestsWhereInput!]
-  OR: [Consultation_lab_requestsWhereInput!]
-  consultation_id: UuidFilter
-  consultations: ConsultationsRelationFilter
-  lab_request_id: UuidFilter
-  lab_requests: Lab_requestsRelationFilter
-}
-
-input Consultation_lab_requestsWhereUniqueInput {
-  AND: [Consultation_lab_requestsWhereInput!]
-  NOT: [Consultation_lab_requestsWhereInput!]
-  OR: [Consultation_lab_requestsWhereInput!]
-  consultation_id: UuidFilter
-  consultation_id_lab_request_id: consultation_lab_requestsConsultation_idLab_request_idCompoundUniqueInput
-  consultations: ConsultationsRelationFilter
-  lab_request_id: UuidFilter
-  lab_requests: Lab_requestsRelationFilter
-}
-
 type Consultations {
   _count: ConsultationsCount
-  consultation_lab_requests(cursor: Consultation_lab_requestsWhereUniqueInput, distinct: [Consultation_lab_requestsScalarFieldEnum!], orderBy: [Consultation_lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Consultation_lab_requestsWhereInput): [Consultation_lab_requests!]!
   date: DateTimeISO!
   doctor_id: String
   doctors(where: DoctorsWhereInput): Doctors
   id: String!
   institut_medical_id: String
   instituts_medicaux(where: Instituts_medicauxWhereInput): Instituts_medicaux
+  lab_requests(cursor: Lab_requestsWhereUniqueInput, distinct: [Lab_requestsScalarFieldEnum!], orderBy: [Lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Lab_requestsWhereInput): [Lab_requests!]!
   measures: JSON
   notes: [String!]!
   patient_id: String!
@@ -1640,7 +1371,7 @@ type Consultations {
 }
 
 type ConsultationsCount {
-  consultation_lab_requests(where: Consultation_lab_requestsWhereInput): Int!
+  lab_requests(where: Lab_requestsWhereInput): Int!
 }
 
 type ConsultationsCountAggregate {
@@ -1669,11 +1400,11 @@ input ConsultationsCountOrderByAggregateInput {
 }
 
 input ConsultationsCreateInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput
   date: DateTimeISO!
   doctors: DoctorsCreateNestedOneWithoutConsultationsInput
   id: String
   instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutConsultationsInput
+  lab_requests: Lab_requestsCreateNestedManyWithoutConsultationsInput
   measures: JSON
   notes: ConsultationsCreatenotesInput
   patients: PatientsCreateNestedOneWithoutConsultationsInput!
@@ -1756,17 +1487,17 @@ input ConsultationsCreateNestedManyWithoutInstituts_medicauxInput {
   createMany: ConsultationsCreateManyInstituts_medicauxInputEnvelope
 }
 
+input ConsultationsCreateNestedManyWithoutLab_requestsInput {
+  connect: [ConsultationsWhereUniqueInput!]
+  connectOrCreate: [ConsultationsCreateOrConnectWithoutLab_requestsInput!]
+  create: [ConsultationsCreateWithoutLab_requestsInput!]
+}
+
 input ConsultationsCreateNestedManyWithoutPatientsInput {
   connect: [ConsultationsWhereUniqueInput!]
   connectOrCreate: [ConsultationsCreateOrConnectWithoutPatientsInput!]
   create: [ConsultationsCreateWithoutPatientsInput!]
   createMany: ConsultationsCreateManyPatientsInputEnvelope
-}
-
-input ConsultationsCreateNestedOneWithoutConsultation_lab_requestsInput {
-  connect: ConsultationsWhereUniqueInput
-  connectOrCreate: ConsultationsCreateOrConnectWithoutConsultation_lab_requestsInput
-  create: ConsultationsCreateWithoutConsultation_lab_requestsInput
 }
 
 input ConsultationsCreateNestedOneWithoutPrescriptionsInput {
@@ -1781,11 +1512,6 @@ input ConsultationsCreateNestedOneWithoutRdvsInput {
   create: ConsultationsCreateWithoutRdvsInput
 }
 
-input ConsultationsCreateOrConnectWithoutConsultation_lab_requestsInput {
-  create: ConsultationsCreateWithoutConsultation_lab_requestsInput!
-  where: ConsultationsWhereUniqueInput!
-}
-
 input ConsultationsCreateOrConnectWithoutDoctorsInput {
   create: ConsultationsCreateWithoutDoctorsInput!
   where: ConsultationsWhereUniqueInput!
@@ -1793,6 +1519,11 @@ input ConsultationsCreateOrConnectWithoutDoctorsInput {
 
 input ConsultationsCreateOrConnectWithoutInstituts_medicauxInput {
   create: ConsultationsCreateWithoutInstituts_medicauxInput!
+  where: ConsultationsWhereUniqueInput!
+}
+
+input ConsultationsCreateOrConnectWithoutLab_requestsInput {
+  create: ConsultationsCreateWithoutLab_requestsInput!
   where: ConsultationsWhereUniqueInput!
 }
 
@@ -1811,24 +1542,11 @@ input ConsultationsCreateOrConnectWithoutRdvsInput {
   where: ConsultationsWhereUniqueInput!
 }
 
-input ConsultationsCreateWithoutConsultation_lab_requestsInput {
-  date: DateTimeISO!
-  doctors: DoctorsCreateNestedOneWithoutConsultationsInput
-  id: String
-  instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutConsultationsInput
-  measures: JSON
-  notes: ConsultationsCreatenotesInput
-  patients: PatientsCreateNestedOneWithoutConsultationsInput!
-  prescriptions: PrescriptionsCreateNestedOneWithoutConsultationsInput
-  rdvs: RdvsCreateNestedOneWithoutConsultationsInput
-  section: String
-}
-
 input ConsultationsCreateWithoutDoctorsInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput
   date: DateTimeISO!
   id: String
   instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutConsultationsInput
+  lab_requests: Lab_requestsCreateNestedManyWithoutConsultationsInput
   measures: JSON
   notes: ConsultationsCreatenotesInput
   patients: PatientsCreateNestedOneWithoutConsultationsInput!
@@ -1838,10 +1556,23 @@ input ConsultationsCreateWithoutDoctorsInput {
 }
 
 input ConsultationsCreateWithoutInstituts_medicauxInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput
   date: DateTimeISO!
   doctors: DoctorsCreateNestedOneWithoutConsultationsInput
   id: String
+  lab_requests: Lab_requestsCreateNestedManyWithoutConsultationsInput
+  measures: JSON
+  notes: ConsultationsCreatenotesInput
+  patients: PatientsCreateNestedOneWithoutConsultationsInput!
+  prescriptions: PrescriptionsCreateNestedOneWithoutConsultationsInput
+  rdvs: RdvsCreateNestedOneWithoutConsultationsInput
+  section: String
+}
+
+input ConsultationsCreateWithoutLab_requestsInput {
+  date: DateTimeISO!
+  doctors: DoctorsCreateNestedOneWithoutConsultationsInput
+  id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutConsultationsInput
   measures: JSON
   notes: ConsultationsCreatenotesInput
   patients: PatientsCreateNestedOneWithoutConsultationsInput!
@@ -1851,11 +1582,11 @@ input ConsultationsCreateWithoutInstituts_medicauxInput {
 }
 
 input ConsultationsCreateWithoutPatientsInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput
   date: DateTimeISO!
   doctors: DoctorsCreateNestedOneWithoutConsultationsInput
   id: String
   instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutConsultationsInput
+  lab_requests: Lab_requestsCreateNestedManyWithoutConsultationsInput
   measures: JSON
   notes: ConsultationsCreatenotesInput
   prescriptions: PrescriptionsCreateNestedOneWithoutConsultationsInput
@@ -1864,11 +1595,11 @@ input ConsultationsCreateWithoutPatientsInput {
 }
 
 input ConsultationsCreateWithoutPrescriptionsInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput
   date: DateTimeISO!
   doctors: DoctorsCreateNestedOneWithoutConsultationsInput
   id: String
   instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutConsultationsInput
+  lab_requests: Lab_requestsCreateNestedManyWithoutConsultationsInput
   measures: JSON
   notes: ConsultationsCreatenotesInput
   patients: PatientsCreateNestedOneWithoutConsultationsInput!
@@ -1877,11 +1608,11 @@ input ConsultationsCreateWithoutPrescriptionsInput {
 }
 
 input ConsultationsCreateWithoutRdvsInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput
   date: DateTimeISO!
   doctors: DoctorsCreateNestedOneWithoutConsultationsInput
   id: String
   instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutConsultationsInput
+  lab_requests: Lab_requestsCreateNestedManyWithoutConsultationsInput
   measures: JSON
   notes: ConsultationsCreatenotesInput
   patients: PatientsCreateNestedOneWithoutConsultationsInput!
@@ -1979,13 +1710,13 @@ input ConsultationsOrderByWithAggregationInput {
 }
 
 input ConsultationsOrderByWithRelationInput {
-  consultation_lab_requests: Consultation_lab_requestsOrderByRelationAggregateInput
   date: SortOrder
   doctor_id: SortOrderInput
   doctors: DoctorsOrderByWithRelationInput
   id: SortOrder
   institut_medical_id: SortOrderInput
   instituts_medicaux: Instituts_medicauxOrderByWithRelationInput
+  lab_requests: Lab_requestsOrderByRelationAggregateInput
   measures: SortOrderInput
   notes: SortOrder
   patient_id: SortOrder
@@ -1994,11 +1725,6 @@ input ConsultationsOrderByWithRelationInput {
   prescriptions: PrescriptionsOrderByWithRelationInput
   rdvs: RdvsOrderByWithRelationInput
   section: SortOrderInput
-}
-
-input ConsultationsRelationFilter {
-  is: ConsultationsWhereInput
-  isNot: ConsultationsWhereInput
 }
 
 enum ConsultationsScalarFieldEnum {
@@ -2044,11 +1770,11 @@ input ConsultationsScalarWhereWithAggregatesInput {
 }
 
 input ConsultationsUpdateInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput
   date: DateTimeFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutConsultationsNestedInput
   id: StringFieldUpdateOperationsInput
   instituts_medicaux: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput
+  lab_requests: Lab_requestsUpdateManyWithoutConsultationsNestedInput
   measures: JSON
   notes: ConsultationsUpdatenotesInput
   patients: PatientsUpdateOneRequiredWithoutConsultationsNestedInput
@@ -2071,6 +1797,11 @@ input ConsultationsUpdateManyWithWhereWithoutDoctorsInput {
 }
 
 input ConsultationsUpdateManyWithWhereWithoutInstituts_medicauxInput {
+  data: ConsultationsUpdateManyMutationInput!
+  where: ConsultationsScalarWhereInput!
+}
+
+input ConsultationsUpdateManyWithWhereWithoutLab_requestsInput {
   data: ConsultationsUpdateManyMutationInput!
   where: ConsultationsScalarWhereInput!
 }
@@ -2108,6 +1839,19 @@ input ConsultationsUpdateManyWithoutInstituts_medicauxNestedInput {
   upsert: [ConsultationsUpsertWithWhereUniqueWithoutInstituts_medicauxInput!]
 }
 
+input ConsultationsUpdateManyWithoutLab_requestsNestedInput {
+  connect: [ConsultationsWhereUniqueInput!]
+  connectOrCreate: [ConsultationsCreateOrConnectWithoutLab_requestsInput!]
+  create: [ConsultationsCreateWithoutLab_requestsInput!]
+  delete: [ConsultationsWhereUniqueInput!]
+  deleteMany: [ConsultationsScalarWhereInput!]
+  disconnect: [ConsultationsWhereUniqueInput!]
+  set: [ConsultationsWhereUniqueInput!]
+  update: [ConsultationsUpdateWithWhereUniqueWithoutLab_requestsInput!]
+  updateMany: [ConsultationsUpdateManyWithWhereWithoutLab_requestsInput!]
+  upsert: [ConsultationsUpsertWithWhereUniqueWithoutLab_requestsInput!]
+}
+
 input ConsultationsUpdateManyWithoutPatientsNestedInput {
   connect: [ConsultationsWhereUniqueInput!]
   connectOrCreate: [ConsultationsCreateOrConnectWithoutPatientsInput!]
@@ -2120,14 +1864,6 @@ input ConsultationsUpdateManyWithoutPatientsNestedInput {
   update: [ConsultationsUpdateWithWhereUniqueWithoutPatientsInput!]
   updateMany: [ConsultationsUpdateManyWithWhereWithoutPatientsInput!]
   upsert: [ConsultationsUpsertWithWhereUniqueWithoutPatientsInput!]
-}
-
-input ConsultationsUpdateOneRequiredWithoutConsultation_lab_requestsNestedInput {
-  connect: ConsultationsWhereUniqueInput
-  connectOrCreate: ConsultationsCreateOrConnectWithoutConsultation_lab_requestsInput
-  create: ConsultationsCreateWithoutConsultation_lab_requestsInput
-  update: ConsultationsUpdateToOneWithWhereWithoutConsultation_lab_requestsInput
-  upsert: ConsultationsUpsertWithoutConsultation_lab_requestsInput
 }
 
 input ConsultationsUpdateOneWithoutPrescriptionsNestedInput {
@@ -2150,11 +1886,6 @@ input ConsultationsUpdateOneWithoutRdvsNestedInput {
   upsert: ConsultationsUpsertWithoutRdvsInput
 }
 
-input ConsultationsUpdateToOneWithWhereWithoutConsultation_lab_requestsInput {
-  data: ConsultationsUpdateWithoutConsultation_lab_requestsInput!
-  where: ConsultationsWhereInput
-}
-
 input ConsultationsUpdateToOneWithWhereWithoutPrescriptionsInput {
   data: ConsultationsUpdateWithoutPrescriptionsInput!
   where: ConsultationsWhereInput
@@ -2175,29 +1906,21 @@ input ConsultationsUpdateWithWhereUniqueWithoutInstituts_medicauxInput {
   where: ConsultationsWhereUniqueInput!
 }
 
+input ConsultationsUpdateWithWhereUniqueWithoutLab_requestsInput {
+  data: ConsultationsUpdateWithoutLab_requestsInput!
+  where: ConsultationsWhereUniqueInput!
+}
+
 input ConsultationsUpdateWithWhereUniqueWithoutPatientsInput {
   data: ConsultationsUpdateWithoutPatientsInput!
   where: ConsultationsWhereUniqueInput!
 }
 
-input ConsultationsUpdateWithoutConsultation_lab_requestsInput {
-  date: DateTimeFieldUpdateOperationsInput
-  doctors: DoctorsUpdateOneWithoutConsultationsNestedInput
-  id: StringFieldUpdateOperationsInput
-  instituts_medicaux: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput
-  measures: JSON
-  notes: ConsultationsUpdatenotesInput
-  patients: PatientsUpdateOneRequiredWithoutConsultationsNestedInput
-  prescriptions: PrescriptionsUpdateOneWithoutConsultationsNestedInput
-  rdvs: RdvsUpdateOneWithoutConsultationsNestedInput
-  section: NullableStringFieldUpdateOperationsInput
-}
-
 input ConsultationsUpdateWithoutDoctorsInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput
   date: DateTimeFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   instituts_medicaux: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput
+  lab_requests: Lab_requestsUpdateManyWithoutConsultationsNestedInput
   measures: JSON
   notes: ConsultationsUpdatenotesInput
   patients: PatientsUpdateOneRequiredWithoutConsultationsNestedInput
@@ -2207,10 +1930,23 @@ input ConsultationsUpdateWithoutDoctorsInput {
 }
 
 input ConsultationsUpdateWithoutInstituts_medicauxInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput
   date: DateTimeFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutConsultationsNestedInput
   id: StringFieldUpdateOperationsInput
+  lab_requests: Lab_requestsUpdateManyWithoutConsultationsNestedInput
+  measures: JSON
+  notes: ConsultationsUpdatenotesInput
+  patients: PatientsUpdateOneRequiredWithoutConsultationsNestedInput
+  prescriptions: PrescriptionsUpdateOneWithoutConsultationsNestedInput
+  rdvs: RdvsUpdateOneWithoutConsultationsNestedInput
+  section: NullableStringFieldUpdateOperationsInput
+}
+
+input ConsultationsUpdateWithoutLab_requestsInput {
+  date: DateTimeFieldUpdateOperationsInput
+  doctors: DoctorsUpdateOneWithoutConsultationsNestedInput
+  id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput
   measures: JSON
   notes: ConsultationsUpdatenotesInput
   patients: PatientsUpdateOneRequiredWithoutConsultationsNestedInput
@@ -2220,11 +1956,11 @@ input ConsultationsUpdateWithoutInstituts_medicauxInput {
 }
 
 input ConsultationsUpdateWithoutPatientsInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput
   date: DateTimeFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutConsultationsNestedInput
   id: StringFieldUpdateOperationsInput
   instituts_medicaux: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput
+  lab_requests: Lab_requestsUpdateManyWithoutConsultationsNestedInput
   measures: JSON
   notes: ConsultationsUpdatenotesInput
   prescriptions: PrescriptionsUpdateOneWithoutConsultationsNestedInput
@@ -2233,11 +1969,11 @@ input ConsultationsUpdateWithoutPatientsInput {
 }
 
 input ConsultationsUpdateWithoutPrescriptionsInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput
   date: DateTimeFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutConsultationsNestedInput
   id: StringFieldUpdateOperationsInput
   instituts_medicaux: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput
+  lab_requests: Lab_requestsUpdateManyWithoutConsultationsNestedInput
   measures: JSON
   notes: ConsultationsUpdatenotesInput
   patients: PatientsUpdateOneRequiredWithoutConsultationsNestedInput
@@ -2246,11 +1982,11 @@ input ConsultationsUpdateWithoutPrescriptionsInput {
 }
 
 input ConsultationsUpdateWithoutRdvsInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput
   date: DateTimeFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutConsultationsNestedInput
   id: StringFieldUpdateOperationsInput
   instituts_medicaux: Instituts_medicauxUpdateOneWithoutConsultationsNestedInput
+  lab_requests: Lab_requestsUpdateManyWithoutConsultationsNestedInput
   measures: JSON
   notes: ConsultationsUpdatenotesInput
   patients: PatientsUpdateOneRequiredWithoutConsultationsNestedInput
@@ -2275,16 +2011,16 @@ input ConsultationsUpsertWithWhereUniqueWithoutInstituts_medicauxInput {
   where: ConsultationsWhereUniqueInput!
 }
 
+input ConsultationsUpsertWithWhereUniqueWithoutLab_requestsInput {
+  create: ConsultationsCreateWithoutLab_requestsInput!
+  update: ConsultationsUpdateWithoutLab_requestsInput!
+  where: ConsultationsWhereUniqueInput!
+}
+
 input ConsultationsUpsertWithWhereUniqueWithoutPatientsInput {
   create: ConsultationsCreateWithoutPatientsInput!
   update: ConsultationsUpdateWithoutPatientsInput!
   where: ConsultationsWhereUniqueInput!
-}
-
-input ConsultationsUpsertWithoutConsultation_lab_requestsInput {
-  create: ConsultationsCreateWithoutConsultation_lab_requestsInput!
-  update: ConsultationsUpdateWithoutConsultation_lab_requestsInput!
-  where: ConsultationsWhereInput
 }
 
 input ConsultationsUpsertWithoutPrescriptionsInput {
@@ -2303,13 +2039,13 @@ input ConsultationsWhereInput {
   AND: [ConsultationsWhereInput!]
   NOT: [ConsultationsWhereInput!]
   OR: [ConsultationsWhereInput!]
-  consultation_lab_requests: Consultation_lab_requestsListRelationFilter
   date: DateTimeFilter
   doctor_id: UuidNullableFilter
   doctors: DoctorsNullableRelationFilter
   id: UuidFilter
   institut_medical_id: UuidNullableFilter
   instituts_medicaux: Instituts_medicauxNullableRelationFilter
+  lab_requests: Lab_requestsListRelationFilter
   measures: JsonNullableFilter
   notes: StringNullableListFilter
   patient_id: UuidFilter
@@ -2324,13 +2060,13 @@ input ConsultationsWhereUniqueInput {
   AND: [ConsultationsWhereInput!]
   NOT: [ConsultationsWhereInput!]
   OR: [ConsultationsWhereInput!]
-  consultation_lab_requests: Consultation_lab_requestsListRelationFilter
   date: DateTimeFilter
   doctor_id: UuidNullableFilter
   doctors: DoctorsNullableRelationFilter
   id: String
   institut_medical_id: UuidNullableFilter
   instituts_medicaux: Instituts_medicauxNullableRelationFilter
+  lab_requests: Lab_requestsListRelationFilter
   measures: JsonNullableFilter
   notes: StringNullableListFilter
   patient_id: UuidFilter
@@ -2384,13 +2120,6 @@ type CreateManyAndReturnCliniques {
   type: cliniques_type_enum!
 }
 
-type CreateManyAndReturnConsultation_lab_requests {
-  consultation_id: String!
-  consultations: Consultations!
-  lab_request_id: String!
-  lab_requests: Lab_requests!
-}
-
 type CreateManyAndReturnConsultations {
   date: DateTimeISO!
   doctor_id: String
@@ -2417,13 +2146,6 @@ type CreateManyAndReturnCtscan_results {
   title: String!
 }
 
-type CreateManyAndReturnDoctor_instituts {
-  doctor_id: String!
-  doctors: Doctors!
-  institut_medical_id: String!
-  instituts_medicaux: Instituts_medicaux!
-}
-
 type CreateManyAndReturnDoctors {
   bio: String
   education: [String!]
@@ -2448,15 +2170,6 @@ type CreateManyAndReturnGeneralMedicalRecords {
   patient_id: String!
   patients_GeneralMedicalRecords_patient_idTopatients: Patients!
   weight: Float
-}
-
-type CreateManyAndReturnHopitaux {
-  address: String
-  email: String
-  id: String!
-  name: String!
-  phone: String
-  type: hopitaux_type_enum!
 }
 
 type CreateManyAndReturnInstituts_medicaux {
@@ -2950,267 +2663,16 @@ input DateTimeWithAggregatesFilter {
   notIn: [DateTimeISO!]
 }
 
-type Doctor_instituts {
-  doctor_id: String!
-  doctors: Doctors!
-  institut_medical_id: String!
-  instituts_medicaux: Instituts_medicaux!
-}
-
-type Doctor_institutsCountAggregate {
-  _all: Int!
-  doctor_id: Int!
-  institut_medical_id: Int!
-}
-
-input Doctor_institutsCountOrderByAggregateInput {
-  doctor_id: SortOrder
-  institut_medical_id: SortOrder
-}
-
-input Doctor_institutsCreateInput {
-  doctors: DoctorsCreateNestedOneWithoutDoctor_institutsInput!
-  instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutDoctor_institutsInput!
-}
-
-input Doctor_institutsCreateManyDoctorsInput {
-  institut_medical_id: String!
-}
-
-input Doctor_institutsCreateManyDoctorsInputEnvelope {
-  data: [Doctor_institutsCreateManyDoctorsInput!]!
-  skipDuplicates: Boolean
-}
-
-input Doctor_institutsCreateManyInput {
-  doctor_id: String!
-  institut_medical_id: String!
-}
-
-input Doctor_institutsCreateManyInstituts_medicauxInput {
-  doctor_id: String!
-}
-
-input Doctor_institutsCreateManyInstituts_medicauxInputEnvelope {
-  data: [Doctor_institutsCreateManyInstituts_medicauxInput!]!
-  skipDuplicates: Boolean
-}
-
-input Doctor_institutsCreateNestedManyWithoutDoctorsInput {
-  connect: [Doctor_institutsWhereUniqueInput!]
-  connectOrCreate: [Doctor_institutsCreateOrConnectWithoutDoctorsInput!]
-  create: [Doctor_institutsCreateWithoutDoctorsInput!]
-  createMany: Doctor_institutsCreateManyDoctorsInputEnvelope
-}
-
-input Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput {
-  connect: [Doctor_institutsWhereUniqueInput!]
-  connectOrCreate: [Doctor_institutsCreateOrConnectWithoutInstituts_medicauxInput!]
-  create: [Doctor_institutsCreateWithoutInstituts_medicauxInput!]
-  createMany: Doctor_institutsCreateManyInstituts_medicauxInputEnvelope
-}
-
-input Doctor_institutsCreateOrConnectWithoutDoctorsInput {
-  create: Doctor_institutsCreateWithoutDoctorsInput!
-  where: Doctor_institutsWhereUniqueInput!
-}
-
-input Doctor_institutsCreateOrConnectWithoutInstituts_medicauxInput {
-  create: Doctor_institutsCreateWithoutInstituts_medicauxInput!
-  where: Doctor_institutsWhereUniqueInput!
-}
-
-input Doctor_institutsCreateWithoutDoctorsInput {
-  instituts_medicaux: Instituts_medicauxCreateNestedOneWithoutDoctor_institutsInput!
-}
-
-input Doctor_institutsCreateWithoutInstituts_medicauxInput {
-  doctors: DoctorsCreateNestedOneWithoutDoctor_institutsInput!
-}
-
-type Doctor_institutsGroupBy {
-  _count: Doctor_institutsCountAggregate
-  _max: Doctor_institutsMaxAggregate
-  _min: Doctor_institutsMinAggregate
-  doctor_id: String!
-  institut_medical_id: String!
-}
-
-input Doctor_institutsListRelationFilter {
-  every: Doctor_institutsWhereInput
-  none: Doctor_institutsWhereInput
-  some: Doctor_institutsWhereInput
-}
-
-type Doctor_institutsMaxAggregate {
-  doctor_id: String
-  institut_medical_id: String
-}
-
-input Doctor_institutsMaxOrderByAggregateInput {
-  doctor_id: SortOrder
-  institut_medical_id: SortOrder
-}
-
-type Doctor_institutsMinAggregate {
-  doctor_id: String
-  institut_medical_id: String
-}
-
-input Doctor_institutsMinOrderByAggregateInput {
-  doctor_id: SortOrder
-  institut_medical_id: SortOrder
-}
-
-input Doctor_institutsOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
-input Doctor_institutsOrderByWithAggregationInput {
-  _count: Doctor_institutsCountOrderByAggregateInput
-  _max: Doctor_institutsMaxOrderByAggregateInput
-  _min: Doctor_institutsMinOrderByAggregateInput
-  doctor_id: SortOrder
-  institut_medical_id: SortOrder
-}
-
-input Doctor_institutsOrderByWithRelationInput {
-  doctor_id: SortOrder
-  doctors: DoctorsOrderByWithRelationInput
-  institut_medical_id: SortOrder
-  instituts_medicaux: Instituts_medicauxOrderByWithRelationInput
-}
-
-enum Doctor_institutsScalarFieldEnum {
-  doctor_id
-  institut_medical_id
-}
-
-input Doctor_institutsScalarWhereInput {
-  AND: [Doctor_institutsScalarWhereInput!]
-  NOT: [Doctor_institutsScalarWhereInput!]
-  OR: [Doctor_institutsScalarWhereInput!]
-  doctor_id: UuidFilter
-  institut_medical_id: UuidFilter
-}
-
-input Doctor_institutsScalarWhereWithAggregatesInput {
-  AND: [Doctor_institutsScalarWhereWithAggregatesInput!]
-  NOT: [Doctor_institutsScalarWhereWithAggregatesInput!]
-  OR: [Doctor_institutsScalarWhereWithAggregatesInput!]
-  doctor_id: UuidWithAggregatesFilter
-  institut_medical_id: UuidWithAggregatesFilter
-}
-
-input Doctor_institutsUpdateInput {
-  doctors: DoctorsUpdateOneRequiredWithoutDoctor_institutsNestedInput
-  instituts_medicaux: Instituts_medicauxUpdateOneRequiredWithoutDoctor_institutsNestedInput
-}
-
-input Doctor_institutsUpdateManyMutationInput {
-  doctor_id: String
-  instituts_id: String
-}
-
-input Doctor_institutsUpdateManyWithWhereWithoutDoctorsInput {
-  data: Doctor_institutsUpdateManyMutationInput!
-  where: Doctor_institutsScalarWhereInput!
-}
-
-input Doctor_institutsUpdateManyWithWhereWithoutInstituts_medicauxInput {
-  data: Doctor_institutsUpdateManyMutationInput!
-  where: Doctor_institutsScalarWhereInput!
-}
-
-input Doctor_institutsUpdateManyWithoutDoctorsNestedInput {
-  connect: [Doctor_institutsWhereUniqueInput!]
-  connectOrCreate: [Doctor_institutsCreateOrConnectWithoutDoctorsInput!]
-  create: [Doctor_institutsCreateWithoutDoctorsInput!]
-  createMany: Doctor_institutsCreateManyDoctorsInputEnvelope
-  delete: [Doctor_institutsWhereUniqueInput!]
-  deleteMany: [Doctor_institutsScalarWhereInput!]
-  disconnect: [Doctor_institutsWhereUniqueInput!]
-  set: [Doctor_institutsWhereUniqueInput!]
-  update: [Doctor_institutsUpdateWithWhereUniqueWithoutDoctorsInput!]
-  updateMany: [Doctor_institutsUpdateManyWithWhereWithoutDoctorsInput!]
-  upsert: [Doctor_institutsUpsertWithWhereUniqueWithoutDoctorsInput!]
-}
-
-input Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput {
-  connect: [Doctor_institutsWhereUniqueInput!]
-  connectOrCreate: [Doctor_institutsCreateOrConnectWithoutInstituts_medicauxInput!]
-  create: [Doctor_institutsCreateWithoutInstituts_medicauxInput!]
-  createMany: Doctor_institutsCreateManyInstituts_medicauxInputEnvelope
-  delete: [Doctor_institutsWhereUniqueInput!]
-  deleteMany: [Doctor_institutsScalarWhereInput!]
-  disconnect: [Doctor_institutsWhereUniqueInput!]
-  set: [Doctor_institutsWhereUniqueInput!]
-  update: [Doctor_institutsUpdateWithWhereUniqueWithoutInstituts_medicauxInput!]
-  updateMany: [Doctor_institutsUpdateManyWithWhereWithoutInstituts_medicauxInput!]
-  upsert: [Doctor_institutsUpsertWithWhereUniqueWithoutInstituts_medicauxInput!]
-}
-
-input Doctor_institutsUpdateWithWhereUniqueWithoutDoctorsInput {
-  data: Doctor_institutsUpdateWithoutDoctorsInput!
-  where: Doctor_institutsWhereUniqueInput!
-}
-
-input Doctor_institutsUpdateWithWhereUniqueWithoutInstituts_medicauxInput {
-  data: Doctor_institutsUpdateWithoutInstituts_medicauxInput!
-  where: Doctor_institutsWhereUniqueInput!
-}
-
-input Doctor_institutsUpdateWithoutDoctorsInput {
-  instituts_medicaux: Instituts_medicauxUpdateOneRequiredWithoutDoctor_institutsNestedInput
-}
-
-input Doctor_institutsUpdateWithoutInstituts_medicauxInput {
-  doctors: DoctorsUpdateOneRequiredWithoutDoctor_institutsNestedInput
-}
-
-input Doctor_institutsUpsertWithWhereUniqueWithoutDoctorsInput {
-  create: Doctor_institutsCreateWithoutDoctorsInput!
-  update: Doctor_institutsUpdateWithoutDoctorsInput!
-  where: Doctor_institutsWhereUniqueInput!
-}
-
-input Doctor_institutsUpsertWithWhereUniqueWithoutInstituts_medicauxInput {
-  create: Doctor_institutsCreateWithoutInstituts_medicauxInput!
-  update: Doctor_institutsUpdateWithoutInstituts_medicauxInput!
-  where: Doctor_institutsWhereUniqueInput!
-}
-
-input Doctor_institutsWhereInput {
-  AND: [Doctor_institutsWhereInput!]
-  NOT: [Doctor_institutsWhereInput!]
-  OR: [Doctor_institutsWhereInput!]
-  doctor_id: UuidFilter
-  doctors: DoctorsRelationFilter
-  institut_medical_id: UuidFilter
-  instituts_medicaux: Instituts_medicauxRelationFilter
-}
-
-input Doctor_institutsWhereUniqueInput {
-  AND: [Doctor_institutsWhereInput!]
-  NOT: [Doctor_institutsWhereInput!]
-  OR: [Doctor_institutsWhereInput!]
-  doctor_id: UuidFilter
-  doctor_id_institut_medical_id: doctor_institutsDoctor_idInstitut_medical_idCompoundUniqueInput
-  doctors: DoctorsRelationFilter
-  institut_medical_id: UuidFilter
-  instituts_medicaux: Instituts_medicauxRelationFilter
-}
-
 type Doctors {
   _count: DoctorsCount
   bio: String
   certificates(cursor: CertificatesWhereUniqueInput, distinct: [CertificatesScalarFieldEnum!], orderBy: [CertificatesOrderByWithRelationInput!], skip: Int, take: Int, where: CertificatesWhereInput): [Certificates!]!
   consultations(cursor: ConsultationsWhereUniqueInput, distinct: [ConsultationsScalarFieldEnum!], orderBy: [ConsultationsOrderByWithRelationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): [Consultations!]!
-  doctor_instituts(cursor: Doctor_institutsWhereUniqueInput, distinct: [Doctor_institutsScalarFieldEnum!], orderBy: [Doctor_institutsOrderByWithRelationInput!], skip: Int, take: Int, where: Doctor_institutsWhereInput): [Doctor_instituts!]!
   education: [String!]!
   experience: [String!]!
   first_name: String!
   id: String!
+  instituts_medicaux(cursor: Instituts_medicauxWhereUniqueInput, distinct: [Instituts_medicauxScalarFieldEnum!], orderBy: [Instituts_medicauxOrderByWithRelationInput!], skip: Int, take: Int, where: Instituts_medicauxWhereInput): [Instituts_medicaux!]!
   lab_requests(cursor: Lab_requestsWhereUniqueInput, distinct: [Lab_requestsScalarFieldEnum!], orderBy: [Lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Lab_requestsWhereInput): [Lab_requests!]!
   languages: [String!]!
   last_name: String!
@@ -3227,7 +2689,7 @@ type Doctors {
 type DoctorsCount {
   certificates(where: CertificatesWhereInput): Int!
   consultations(where: ConsultationsWhereInput): Int!
-  doctor_instituts(where: Doctor_institutsWhereInput): Int!
+  instituts_medicaux(where: Instituts_medicauxWhereInput): Int!
   lab_requests(where: Lab_requestsWhereInput): Int!
   prescriptions(where: PrescriptionsWhereInput): Int!
   rdv_requests(where: Rdv_requestsWhereInput): Int!
@@ -3267,11 +2729,11 @@ input DoctorsCreateInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
@@ -3298,6 +2760,12 @@ input DoctorsCreateManyInput {
   user_id: String!
 }
 
+input DoctorsCreateNestedManyWithoutInstituts_medicauxInput {
+  connect: [DoctorsWhereUniqueInput!]
+  connectOrCreate: [DoctorsCreateOrConnectWithoutInstituts_medicauxInput!]
+  create: [DoctorsCreateWithoutInstituts_medicauxInput!]
+}
+
 input DoctorsCreateNestedOneWithoutCertificatesInput {
   connect: DoctorsWhereUniqueInput
   connectOrCreate: DoctorsCreateOrConnectWithoutCertificatesInput
@@ -3308,12 +2776,6 @@ input DoctorsCreateNestedOneWithoutConsultationsInput {
   connect: DoctorsWhereUniqueInput
   connectOrCreate: DoctorsCreateOrConnectWithoutConsultationsInput
   create: DoctorsCreateWithoutConsultationsInput
-}
-
-input DoctorsCreateNestedOneWithoutDoctor_institutsInput {
-  connect: DoctorsWhereUniqueInput
-  connectOrCreate: DoctorsCreateOrConnectWithoutDoctor_institutsInput
-  create: DoctorsCreateWithoutDoctor_institutsInput
 }
 
 input DoctorsCreateNestedOneWithoutLab_requestsInput {
@@ -3356,8 +2818,8 @@ input DoctorsCreateOrConnectWithoutConsultationsInput {
   where: DoctorsWhereUniqueInput!
 }
 
-input DoctorsCreateOrConnectWithoutDoctor_institutsInput {
-  create: DoctorsCreateWithoutDoctor_institutsInput!
+input DoctorsCreateOrConnectWithoutInstituts_medicauxInput {
+  create: DoctorsCreateWithoutInstituts_medicauxInput!
   where: DoctorsWhereUniqueInput!
 }
 
@@ -3389,11 +2851,11 @@ input DoctorsCreateOrConnectWithoutUsersInput {
 input DoctorsCreateWithoutCertificatesInput {
   bio: String
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
@@ -3409,11 +2871,11 @@ input DoctorsCreateWithoutCertificatesInput {
 input DoctorsCreateWithoutConsultationsInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
@@ -3426,7 +2888,7 @@ input DoctorsCreateWithoutConsultationsInput {
   users: UsersCreateNestedOneWithoutDoctorsInput!
 }
 
-input DoctorsCreateWithoutDoctor_institutsInput {
+input DoctorsCreateWithoutInstituts_medicauxInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
@@ -3450,11 +2912,11 @@ input DoctorsCreateWithoutLab_requestsInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
   prescriptions: PrescriptionsCreateNestedManyWithoutDoctorsInput
@@ -3470,11 +2932,11 @@ input DoctorsCreateWithoutPrescriptionsInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
@@ -3490,11 +2952,11 @@ input DoctorsCreateWithoutRdv_requestsInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
@@ -3510,11 +2972,11 @@ input DoctorsCreateWithoutRdvsInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
@@ -3530,11 +2992,11 @@ input DoctorsCreateWithoutUsersInput {
   bio: String
   certificates: CertificatesCreateNestedManyWithoutDoctorsInput
   consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutDoctorsInput
   education: DoctorsCreateeducationInput
   experience: DoctorsCreateexperienceInput
   first_name: String!
   id: String
+  instituts_medicaux: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
   lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
   languages: DoctorsCreatelanguagesInput
   last_name: String!
@@ -3573,6 +3035,12 @@ type DoctorsGroupBy {
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   user_id: String!
+}
+
+input DoctorsListRelationFilter {
+  every: DoctorsWhereInput
+  none: DoctorsWhereInput
+  some: DoctorsWhereInput
 }
 
 type DoctorsMaxAggregate {
@@ -3624,6 +3092,10 @@ input DoctorsNullableRelationFilter {
   isNot: DoctorsWhereInput
 }
 
+input DoctorsOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input DoctorsOrderByWithAggregationInput {
   _count: DoctorsCountOrderByAggregateInput
   _max: DoctorsMaxOrderByAggregateInput
@@ -3645,11 +3117,11 @@ input DoctorsOrderByWithRelationInput {
   bio: SortOrderInput
   certificates: CertificatesOrderByRelationAggregateInput
   consultations: ConsultationsOrderByRelationAggregateInput
-  doctor_instituts: Doctor_institutsOrderByRelationAggregateInput
   education: SortOrder
   experience: SortOrder
   first_name: SortOrder
   id: SortOrder
+  instituts_medicaux: Instituts_medicauxOrderByRelationAggregateInput
   lab_requests: Lab_requestsOrderByRelationAggregateInput
   languages: SortOrder
   last_name: SortOrder
@@ -3661,11 +3133,6 @@ input DoctorsOrderByWithRelationInput {
   type: SortOrder
   user_id: SortOrder
   users: UsersOrderByWithRelationInput
-}
-
-input DoctorsRelationFilter {
-  is: DoctorsWhereInput
-  isNot: DoctorsWhereInput
 }
 
 enum DoctorsScalarFieldEnum {
@@ -3680,6 +3147,23 @@ enum DoctorsScalarFieldEnum {
   specialty
   type
   user_id
+}
+
+input DoctorsScalarWhereInput {
+  AND: [DoctorsScalarWhereInput!]
+  NOT: [DoctorsScalarWhereInput!]
+  OR: [DoctorsScalarWhereInput!]
+  bio: StringNullableFilter
+  education: StringNullableListFilter
+  experience: StringNullableListFilter
+  first_name: StringFilter
+  id: UuidFilter
+  languages: StringNullableListFilter
+  last_name: StringFilter
+  profile_image: StringNullableFilter
+  specialty: Enumdoctors_specialty_enumFilter
+  type: Enumdoctors_type_enumFilter
+  user_id: UuidFilter
 }
 
 input DoctorsScalarWhereWithAggregatesInput {
@@ -3703,11 +3187,11 @@ input DoctorsUpdateInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
@@ -3733,12 +3217,22 @@ input DoctorsUpdateManyMutationInput {
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
 }
 
-input DoctorsUpdateOneRequiredWithoutDoctor_institutsNestedInput {
-  connect: DoctorsWhereUniqueInput
-  connectOrCreate: DoctorsCreateOrConnectWithoutDoctor_institutsInput
-  create: DoctorsCreateWithoutDoctor_institutsInput
-  update: DoctorsUpdateToOneWithWhereWithoutDoctor_institutsInput
-  upsert: DoctorsUpsertWithoutDoctor_institutsInput
+input DoctorsUpdateManyWithWhereWithoutInstituts_medicauxInput {
+  data: DoctorsUpdateManyMutationInput!
+  where: DoctorsScalarWhereInput!
+}
+
+input DoctorsUpdateManyWithoutInstituts_medicauxNestedInput {
+  connect: [DoctorsWhereUniqueInput!]
+  connectOrCreate: [DoctorsCreateOrConnectWithoutInstituts_medicauxInput!]
+  create: [DoctorsCreateWithoutInstituts_medicauxInput!]
+  delete: [DoctorsWhereUniqueInput!]
+  deleteMany: [DoctorsScalarWhereInput!]
+  disconnect: [DoctorsWhereUniqueInput!]
+  set: [DoctorsWhereUniqueInput!]
+  update: [DoctorsUpdateWithWhereUniqueWithoutInstituts_medicauxInput!]
+  updateMany: [DoctorsUpdateManyWithWhereWithoutInstituts_medicauxInput!]
+  upsert: [DoctorsUpsertWithWhereUniqueWithoutInstituts_medicauxInput!]
 }
 
 input DoctorsUpdateOneWithoutCertificatesNestedInput {
@@ -3821,11 +3315,6 @@ input DoctorsUpdateToOneWithWhereWithoutConsultationsInput {
   where: DoctorsWhereInput
 }
 
-input DoctorsUpdateToOneWithWhereWithoutDoctor_institutsInput {
-  data: DoctorsUpdateWithoutDoctor_institutsInput!
-  where: DoctorsWhereInput
-}
-
 input DoctorsUpdateToOneWithWhereWithoutLab_requestsInput {
   data: DoctorsUpdateWithoutLab_requestsInput!
   where: DoctorsWhereInput
@@ -3851,14 +3340,19 @@ input DoctorsUpdateToOneWithWhereWithoutUsersInput {
   where: DoctorsWhereInput
 }
 
+input DoctorsUpdateWithWhereUniqueWithoutInstituts_medicauxInput {
+  data: DoctorsUpdateWithoutInstituts_medicauxInput!
+  where: DoctorsWhereUniqueInput!
+}
+
 input DoctorsUpdateWithoutCertificatesInput {
   bio: NullableStringFieldUpdateOperationsInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
@@ -3874,11 +3368,11 @@ input DoctorsUpdateWithoutCertificatesInput {
 input DoctorsUpdateWithoutConsultationsInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
@@ -3891,7 +3385,7 @@ input DoctorsUpdateWithoutConsultationsInput {
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
 }
 
-input DoctorsUpdateWithoutDoctor_institutsInput {
+input DoctorsUpdateWithoutInstituts_medicauxInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
@@ -3915,11 +3409,11 @@ input DoctorsUpdateWithoutLab_requestsInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
   prescriptions: PrescriptionsUpdateManyWithoutDoctorsNestedInput
@@ -3935,11 +3429,11 @@ input DoctorsUpdateWithoutPrescriptionsInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
@@ -3955,11 +3449,11 @@ input DoctorsUpdateWithoutRdv_requestsInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
@@ -3975,11 +3469,11 @@ input DoctorsUpdateWithoutRdvsInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
@@ -3995,11 +3489,11 @@ input DoctorsUpdateWithoutUsersInput {
   bio: NullableStringFieldUpdateOperationsInput
   certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
   consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutDoctorsNestedInput
   education: DoctorsUpdateeducationInput
   experience: DoctorsUpdateexperienceInput
   first_name: StringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
+  instituts_medicaux: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
   lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
   languages: DoctorsUpdatelanguagesInput
   last_name: StringFieldUpdateOperationsInput
@@ -4026,6 +3520,12 @@ input DoctorsUpdatelanguagesInput {
   set: [String!]
 }
 
+input DoctorsUpsertWithWhereUniqueWithoutInstituts_medicauxInput {
+  create: DoctorsCreateWithoutInstituts_medicauxInput!
+  update: DoctorsUpdateWithoutInstituts_medicauxInput!
+  where: DoctorsWhereUniqueInput!
+}
+
 input DoctorsUpsertWithoutCertificatesInput {
   create: DoctorsCreateWithoutCertificatesInput!
   update: DoctorsUpdateWithoutCertificatesInput!
@@ -4035,12 +3535,6 @@ input DoctorsUpsertWithoutCertificatesInput {
 input DoctorsUpsertWithoutConsultationsInput {
   create: DoctorsCreateWithoutConsultationsInput!
   update: DoctorsUpdateWithoutConsultationsInput!
-  where: DoctorsWhereInput
-}
-
-input DoctorsUpsertWithoutDoctor_institutsInput {
-  create: DoctorsCreateWithoutDoctor_institutsInput!
-  update: DoctorsUpdateWithoutDoctor_institutsInput!
   where: DoctorsWhereInput
 }
 
@@ -4081,11 +3575,11 @@ input DoctorsWhereInput {
   bio: StringNullableFilter
   certificates: CertificatesListRelationFilter
   consultations: ConsultationsListRelationFilter
-  doctor_instituts: Doctor_institutsListRelationFilter
   education: StringNullableListFilter
   experience: StringNullableListFilter
   first_name: StringFilter
   id: UuidFilter
+  instituts_medicaux: Instituts_medicauxListRelationFilter
   lab_requests: Lab_requestsListRelationFilter
   languages: StringNullableListFilter
   last_name: StringFilter
@@ -4106,11 +3600,11 @@ input DoctorsWhereUniqueInput {
   bio: StringNullableFilter
   certificates: CertificatesListRelationFilter
   consultations: ConsultationsListRelationFilter
-  doctor_instituts: Doctor_institutsListRelationFilter
   education: StringNullableListFilter
   experience: StringNullableListFilter
   first_name: StringFilter
   id: String
+  instituts_medicaux: Instituts_medicauxListRelationFilter
   lab_requests: Lab_requestsListRelationFilter
   languages: StringNullableListFilter
   last_name: StringFilter
@@ -4248,27 +3742,6 @@ input Enumdoctors_type_enumWithAggregatesFilter {
   in: [doctors_type_enum!]
   not: NestedEnumdoctors_type_enumWithAggregatesFilter
   notIn: [doctors_type_enum!]
-}
-
-input Enumhopitaux_type_enumFieldUpdateOperationsInput {
-  set: hopitaux_type_enum
-}
-
-input Enumhopitaux_type_enumFilter {
-  equals: hopitaux_type_enum
-  in: [hopitaux_type_enum!]
-  not: NestedEnumhopitaux_type_enumFilter
-  notIn: [hopitaux_type_enum!]
-}
-
-input Enumhopitaux_type_enumWithAggregatesFilter {
-  _count: NestedIntFilter
-  _max: NestedEnumhopitaux_type_enumFilter
-  _min: NestedEnumhopitaux_type_enumFilter
-  equals: hopitaux_type_enum
-  in: [hopitaux_type_enum!]
-  not: NestedEnumhopitaux_type_enumWithAggregatesFilter
-  notIn: [hopitaux_type_enum!]
 }
 
 input Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput {
@@ -4840,189 +4313,11 @@ input GeneralMedicalRecordsWhereUniqueInput {
   weight: FloatNullableFilter
 }
 
-type Hopitaux {
-  address: String
-  email: String
-  id: String!
-  name: String!
-  phone: String
-  type: hopitaux_type_enum!
-}
-
-type HopitauxCountAggregate {
-  _all: Int!
-  address: Int!
-  email: Int!
-  id: Int!
-  name: Int!
-  phone: Int!
-  type: Int!
-}
-
-input HopitauxCountOrderByAggregateInput {
-  address: SortOrder
-  email: SortOrder
-  id: SortOrder
-  name: SortOrder
-  phone: SortOrder
-  type: SortOrder
-}
-
-input HopitauxCreateInput {
-  address: String
-  email: String
-  id: String
-  name: String!
-  phone: String
-  type: hopitaux_type_enum!
-}
-
-input HopitauxCreateManyInput {
-  address: String
-  email: String
-  id: String
-  name: String!
-  phone: String
-  type: hopitaux_type_enum!
-}
-
-type HopitauxGroupBy {
-  _count: HopitauxCountAggregate
-  _max: HopitauxMaxAggregate
-  _min: HopitauxMinAggregate
-  address: String
-  email: String
-  id: String!
-  name: String!
-  phone: String
-  type: hopitaux_type_enum!
-}
-
-type HopitauxMaxAggregate {
-  address: String
-  email: String
-  id: String
-  name: String
-  phone: String
-  type: hopitaux_type_enum
-}
-
-input HopitauxMaxOrderByAggregateInput {
-  address: SortOrder
-  email: SortOrder
-  id: SortOrder
-  name: SortOrder
-  phone: SortOrder
-  type: SortOrder
-}
-
-type HopitauxMinAggregate {
-  address: String
-  email: String
-  id: String
-  name: String
-  phone: String
-  type: hopitaux_type_enum
-}
-
-input HopitauxMinOrderByAggregateInput {
-  address: SortOrder
-  email: SortOrder
-  id: SortOrder
-  name: SortOrder
-  phone: SortOrder
-  type: SortOrder
-}
-
-input HopitauxOrderByWithAggregationInput {
-  _count: HopitauxCountOrderByAggregateInput
-  _max: HopitauxMaxOrderByAggregateInput
-  _min: HopitauxMinOrderByAggregateInput
-  address: SortOrderInput
-  email: SortOrderInput
-  id: SortOrder
-  name: SortOrder
-  phone: SortOrderInput
-  type: SortOrder
-}
-
-input HopitauxOrderByWithRelationInput {
-  address: SortOrderInput
-  email: SortOrderInput
-  id: SortOrder
-  name: SortOrder
-  phone: SortOrderInput
-  type: SortOrder
-}
-
-enum HopitauxScalarFieldEnum {
-  address
-  email
-  id
-  name
-  phone
-  type
-}
-
-input HopitauxScalarWhereWithAggregatesInput {
-  AND: [HopitauxScalarWhereWithAggregatesInput!]
-  NOT: [HopitauxScalarWhereWithAggregatesInput!]
-  OR: [HopitauxScalarWhereWithAggregatesInput!]
-  address: StringNullableWithAggregatesFilter
-  email: StringNullableWithAggregatesFilter
-  id: UuidWithAggregatesFilter
-  name: StringWithAggregatesFilter
-  phone: StringNullableWithAggregatesFilter
-  type: Enumhopitaux_type_enumWithAggregatesFilter
-}
-
-input HopitauxUpdateInput {
-  address: NullableStringFieldUpdateOperationsInput
-  email: NullableStringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  name: StringFieldUpdateOperationsInput
-  phone: NullableStringFieldUpdateOperationsInput
-  type: Enumhopitaux_type_enumFieldUpdateOperationsInput
-}
-
-input HopitauxUpdateManyMutationInput {
-  address: NullableStringFieldUpdateOperationsInput
-  email: NullableStringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  name: StringFieldUpdateOperationsInput
-  phone: NullableStringFieldUpdateOperationsInput
-  type: Enumhopitaux_type_enumFieldUpdateOperationsInput
-}
-
-input HopitauxWhereInput {
-  AND: [HopitauxWhereInput!]
-  NOT: [HopitauxWhereInput!]
-  OR: [HopitauxWhereInput!]
-  address: StringNullableFilter
-  email: StringNullableFilter
-  id: UuidFilter
-  name: StringFilter
-  phone: StringNullableFilter
-  type: Enumhopitaux_type_enumFilter
-}
-
-input HopitauxWhereUniqueInput {
-  AND: [HopitauxWhereInput!]
-  NOT: [HopitauxWhereInput!]
-  OR: [HopitauxWhereInput!]
-  address: StringNullableFilter
-  email: StringNullableFilter
-  id: String
-  name: StringFilter
-  phone: StringNullableFilter
-  type: Enumhopitaux_type_enumFilter
-}
-
 type Instituts_medicaux {
   _count: Instituts_medicauxCount
   authorizations(cursor: AuthorizationsWhereUniqueInput, distinct: [AuthorizationsScalarFieldEnum!], orderBy: [AuthorizationsOrderByWithRelationInput!], skip: Int, take: Int, where: AuthorizationsWhereInput): [Authorizations!]!
   consultations(cursor: ConsultationsWhereUniqueInput, distinct: [ConsultationsScalarFieldEnum!], orderBy: [ConsultationsOrderByWithRelationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): [Consultations!]!
-  doctor_instituts(cursor: Doctor_institutsWhereUniqueInput, distinct: [Doctor_institutsScalarFieldEnum!], orderBy: [Doctor_institutsOrderByWithRelationInput!], skip: Int, take: Int, where: Doctor_institutsWhereInput): [Doctor_instituts!]!
+  doctors(cursor: DoctorsWhereUniqueInput, distinct: [DoctorsScalarFieldEnum!], orderBy: [DoctorsOrderByWithRelationInput!], skip: Int, take: Int, where: DoctorsWhereInput): [Doctors!]!
   id: String!
   type: instituts_medicaux_type_enum!
 }
@@ -5030,7 +4325,7 @@ type Instituts_medicaux {
 type Instituts_medicauxCount {
   authorizations(where: AuthorizationsWhereInput): Int!
   consultations(where: ConsultationsWhereInput): Int!
-  doctor_instituts(where: Doctor_institutsWhereInput): Int!
+  doctors(where: DoctorsWhereInput): Int!
 }
 
 type Instituts_medicauxCountAggregate {
@@ -5047,7 +4342,7 @@ input Instituts_medicauxCountOrderByAggregateInput {
 input Instituts_medicauxCreateInput {
   authorizations: AuthorizationsCreateNestedManyWithoutInstituts_medicauxInput
   consultations: ConsultationsCreateNestedManyWithoutInstituts_medicauxInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput
+  doctors: DoctorsCreateNestedManyWithoutInstituts_medicauxInput
   id: String
   type: instituts_medicaux_type_enum!
 }
@@ -5055,6 +4350,12 @@ input Instituts_medicauxCreateInput {
 input Instituts_medicauxCreateManyInput {
   id: String
   type: instituts_medicaux_type_enum!
+}
+
+input Instituts_medicauxCreateNestedManyWithoutDoctorsInput {
+  connect: [Instituts_medicauxWhereUniqueInput!]
+  connectOrCreate: [Instituts_medicauxCreateOrConnectWithoutDoctorsInput!]
+  create: [Instituts_medicauxCreateWithoutDoctorsInput!]
 }
 
 input Instituts_medicauxCreateNestedOneWithoutAuthorizationsInput {
@@ -5069,12 +4370,6 @@ input Instituts_medicauxCreateNestedOneWithoutConsultationsInput {
   create: Instituts_medicauxCreateWithoutConsultationsInput
 }
 
-input Instituts_medicauxCreateNestedOneWithoutDoctor_institutsInput {
-  connect: Instituts_medicauxWhereUniqueInput
-  connectOrCreate: Instituts_medicauxCreateOrConnectWithoutDoctor_institutsInput
-  create: Instituts_medicauxCreateWithoutDoctor_institutsInput
-}
-
 input Instituts_medicauxCreateOrConnectWithoutAuthorizationsInput {
   create: Instituts_medicauxCreateWithoutAuthorizationsInput!
   where: Instituts_medicauxWhereUniqueInput!
@@ -5085,26 +4380,26 @@ input Instituts_medicauxCreateOrConnectWithoutConsultationsInput {
   where: Instituts_medicauxWhereUniqueInput!
 }
 
-input Instituts_medicauxCreateOrConnectWithoutDoctor_institutsInput {
-  create: Instituts_medicauxCreateWithoutDoctor_institutsInput!
+input Instituts_medicauxCreateOrConnectWithoutDoctorsInput {
+  create: Instituts_medicauxCreateWithoutDoctorsInput!
   where: Instituts_medicauxWhereUniqueInput!
 }
 
 input Instituts_medicauxCreateWithoutAuthorizationsInput {
   consultations: ConsultationsCreateNestedManyWithoutInstituts_medicauxInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput
+  doctors: DoctorsCreateNestedManyWithoutInstituts_medicauxInput
   id: String
   type: instituts_medicaux_type_enum!
 }
 
 input Instituts_medicauxCreateWithoutConsultationsInput {
   authorizations: AuthorizationsCreateNestedManyWithoutInstituts_medicauxInput
-  doctor_instituts: Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput
+  doctors: DoctorsCreateNestedManyWithoutInstituts_medicauxInput
   id: String
   type: instituts_medicaux_type_enum!
 }
 
-input Instituts_medicauxCreateWithoutDoctor_institutsInput {
+input Instituts_medicauxCreateWithoutDoctorsInput {
   authorizations: AuthorizationsCreateNestedManyWithoutInstituts_medicauxInput
   consultations: ConsultationsCreateNestedManyWithoutInstituts_medicauxInput
   id: String
@@ -5117,6 +4412,12 @@ type Instituts_medicauxGroupBy {
   _min: Instituts_medicauxMinAggregate
   id: String!
   type: instituts_medicaux_type_enum!
+}
+
+input Instituts_medicauxListRelationFilter {
+  every: Instituts_medicauxWhereInput
+  none: Instituts_medicauxWhereInput
+  some: Instituts_medicauxWhereInput
 }
 
 type Instituts_medicauxMaxAggregate {
@@ -5144,6 +4445,10 @@ input Instituts_medicauxNullableRelationFilter {
   isNot: Instituts_medicauxWhereInput
 }
 
+input Instituts_medicauxOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input Instituts_medicauxOrderByWithAggregationInput {
   _count: Instituts_medicauxCountOrderByAggregateInput
   _max: Instituts_medicauxMaxOrderByAggregateInput
@@ -5155,19 +4460,22 @@ input Instituts_medicauxOrderByWithAggregationInput {
 input Instituts_medicauxOrderByWithRelationInput {
   authorizations: AuthorizationsOrderByRelationAggregateInput
   consultations: ConsultationsOrderByRelationAggregateInput
-  doctor_instituts: Doctor_institutsOrderByRelationAggregateInput
+  doctors: DoctorsOrderByRelationAggregateInput
   id: SortOrder
   type: SortOrder
-}
-
-input Instituts_medicauxRelationFilter {
-  is: Instituts_medicauxWhereInput
-  isNot: Instituts_medicauxWhereInput
 }
 
 enum Instituts_medicauxScalarFieldEnum {
   id
   type
+}
+
+input Instituts_medicauxScalarWhereInput {
+  AND: [Instituts_medicauxScalarWhereInput!]
+  NOT: [Instituts_medicauxScalarWhereInput!]
+  OR: [Instituts_medicauxScalarWhereInput!]
+  id: UuidFilter
+  type: Enuminstituts_medicaux_type_enumFilter
 }
 
 input Instituts_medicauxScalarWhereWithAggregatesInput {
@@ -5181,7 +4489,7 @@ input Instituts_medicauxScalarWhereWithAggregatesInput {
 input Instituts_medicauxUpdateInput {
   authorizations: AuthorizationsUpdateManyWithoutInstituts_medicauxNestedInput
   consultations: ConsultationsUpdateManyWithoutInstituts_medicauxNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput
+  doctors: DoctorsUpdateManyWithoutInstituts_medicauxNestedInput
   id: StringFieldUpdateOperationsInput
   type: Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput
 }
@@ -5191,12 +4499,22 @@ input Instituts_medicauxUpdateManyMutationInput {
   type: Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput
 }
 
-input Instituts_medicauxUpdateOneRequiredWithoutDoctor_institutsNestedInput {
-  connect: Instituts_medicauxWhereUniqueInput
-  connectOrCreate: Instituts_medicauxCreateOrConnectWithoutDoctor_institutsInput
-  create: Instituts_medicauxCreateWithoutDoctor_institutsInput
-  update: Instituts_medicauxUpdateToOneWithWhereWithoutDoctor_institutsInput
-  upsert: Instituts_medicauxUpsertWithoutDoctor_institutsInput
+input Instituts_medicauxUpdateManyWithWhereWithoutDoctorsInput {
+  data: Instituts_medicauxUpdateManyMutationInput!
+  where: Instituts_medicauxScalarWhereInput!
+}
+
+input Instituts_medicauxUpdateManyWithoutDoctorsNestedInput {
+  connect: [Instituts_medicauxWhereUniqueInput!]
+  connectOrCreate: [Instituts_medicauxCreateOrConnectWithoutDoctorsInput!]
+  create: [Instituts_medicauxCreateWithoutDoctorsInput!]
+  delete: [Instituts_medicauxWhereUniqueInput!]
+  deleteMany: [Instituts_medicauxScalarWhereInput!]
+  disconnect: [Instituts_medicauxWhereUniqueInput!]
+  set: [Instituts_medicauxWhereUniqueInput!]
+  update: [Instituts_medicauxUpdateWithWhereUniqueWithoutDoctorsInput!]
+  updateMany: [Instituts_medicauxUpdateManyWithWhereWithoutDoctorsInput!]
+  upsert: [Instituts_medicauxUpsertWithWhereUniqueWithoutDoctorsInput!]
 }
 
 input Instituts_medicauxUpdateOneWithoutAuthorizationsNestedInput {
@@ -5229,30 +4547,36 @@ input Instituts_medicauxUpdateToOneWithWhereWithoutConsultationsInput {
   where: Instituts_medicauxWhereInput
 }
 
-input Instituts_medicauxUpdateToOneWithWhereWithoutDoctor_institutsInput {
-  data: Instituts_medicauxUpdateWithoutDoctor_institutsInput!
-  where: Instituts_medicauxWhereInput
+input Instituts_medicauxUpdateWithWhereUniqueWithoutDoctorsInput {
+  data: Instituts_medicauxUpdateWithoutDoctorsInput!
+  where: Instituts_medicauxWhereUniqueInput!
 }
 
 input Instituts_medicauxUpdateWithoutAuthorizationsInput {
   consultations: ConsultationsUpdateManyWithoutInstituts_medicauxNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput
+  doctors: DoctorsUpdateManyWithoutInstituts_medicauxNestedInput
   id: StringFieldUpdateOperationsInput
   type: Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput
 }
 
 input Instituts_medicauxUpdateWithoutConsultationsInput {
   authorizations: AuthorizationsUpdateManyWithoutInstituts_medicauxNestedInput
-  doctor_instituts: Doctor_institutsUpdateManyWithoutInstituts_medicauxNestedInput
+  doctors: DoctorsUpdateManyWithoutInstituts_medicauxNestedInput
   id: StringFieldUpdateOperationsInput
   type: Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput
 }
 
-input Instituts_medicauxUpdateWithoutDoctor_institutsInput {
+input Instituts_medicauxUpdateWithoutDoctorsInput {
   authorizations: AuthorizationsUpdateManyWithoutInstituts_medicauxNestedInput
   consultations: ConsultationsUpdateManyWithoutInstituts_medicauxNestedInput
   id: StringFieldUpdateOperationsInput
   type: Enuminstituts_medicaux_type_enumFieldUpdateOperationsInput
+}
+
+input Instituts_medicauxUpsertWithWhereUniqueWithoutDoctorsInput {
+  create: Instituts_medicauxCreateWithoutDoctorsInput!
+  update: Instituts_medicauxUpdateWithoutDoctorsInput!
+  where: Instituts_medicauxWhereUniqueInput!
 }
 
 input Instituts_medicauxUpsertWithoutAuthorizationsInput {
@@ -5267,19 +4591,13 @@ input Instituts_medicauxUpsertWithoutConsultationsInput {
   where: Instituts_medicauxWhereInput
 }
 
-input Instituts_medicauxUpsertWithoutDoctor_institutsInput {
-  create: Instituts_medicauxCreateWithoutDoctor_institutsInput!
-  update: Instituts_medicauxUpdateWithoutDoctor_institutsInput!
-  where: Instituts_medicauxWhereInput
-}
-
 input Instituts_medicauxWhereInput {
   AND: [Instituts_medicauxWhereInput!]
   NOT: [Instituts_medicauxWhereInput!]
   OR: [Instituts_medicauxWhereInput!]
   authorizations: AuthorizationsListRelationFilter
   consultations: ConsultationsListRelationFilter
-  doctor_instituts: Doctor_institutsListRelationFilter
+  doctors: DoctorsListRelationFilter
   id: UuidFilter
   type: Enuminstituts_medicaux_type_enumFilter
 }
@@ -5290,7 +4608,7 @@ input Instituts_medicauxWhereUniqueInput {
   OR: [Instituts_medicauxWhereInput!]
   authorizations: AuthorizationsListRelationFilter
   consultations: ConsultationsListRelationFilter
-  doctor_instituts: Doctor_institutsListRelationFilter
+  doctors: DoctorsListRelationFilter
   id: String
   type: Enuminstituts_medicaux_type_enumFilter
 }
@@ -6544,7 +5862,7 @@ input Lab_documentsWhereUniqueInput {
 
 type Lab_requests {
   _count: Lab_requestsCount
-  consultation_lab_requests(cursor: Consultation_lab_requestsWhereUniqueInput, distinct: [Consultation_lab_requestsScalarFieldEnum!], orderBy: [Consultation_lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Consultation_lab_requestsWhereInput): [Consultation_lab_requests!]!
+  consultations(cursor: ConsultationsWhereUniqueInput, distinct: [ConsultationsScalarFieldEnum!], orderBy: [ConsultationsOrderByWithRelationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): [Consultations!]!
   description: String
   doctor_id: String
   doctors(where: DoctorsWhereInput): Doctors
@@ -6557,7 +5875,7 @@ type Lab_requests {
 }
 
 type Lab_requestsCount {
-  consultation_lab_requests(where: Consultation_lab_requestsWhereInput): Int!
+  consultations(where: ConsultationsWhereInput): Int!
   lab_documents(where: Lab_documentsWhereInput): Int!
 }
 
@@ -6581,7 +5899,7 @@ input Lab_requestsCountOrderByAggregateInput {
 }
 
 input Lab_requestsCreateInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput
+  consultations: ConsultationsCreateNestedManyWithoutLab_requestsInput
   description: String
   doctors: DoctorsCreateNestedOneWithoutLab_requestsInput
   id: String
@@ -6626,6 +5944,12 @@ input Lab_requestsCreateManyPatientsInputEnvelope {
   skipDuplicates: Boolean
 }
 
+input Lab_requestsCreateNestedManyWithoutConsultationsInput {
+  connect: [Lab_requestsWhereUniqueInput!]
+  connectOrCreate: [Lab_requestsCreateOrConnectWithoutConsultationsInput!]
+  create: [Lab_requestsCreateWithoutConsultationsInput!]
+}
+
 input Lab_requestsCreateNestedManyWithoutDoctorsInput {
   connect: [Lab_requestsWhereUniqueInput!]
   connectOrCreate: [Lab_requestsCreateOrConnectWithoutDoctorsInput!]
@@ -6640,20 +5964,14 @@ input Lab_requestsCreateNestedManyWithoutPatientsInput {
   createMany: Lab_requestsCreateManyPatientsInputEnvelope
 }
 
-input Lab_requestsCreateNestedOneWithoutConsultation_lab_requestsInput {
-  connect: Lab_requestsWhereUniqueInput
-  connectOrCreate: Lab_requestsCreateOrConnectWithoutConsultation_lab_requestsInput
-  create: Lab_requestsCreateWithoutConsultation_lab_requestsInput
-}
-
 input Lab_requestsCreateNestedOneWithoutLab_documentsInput {
   connect: Lab_requestsWhereUniqueInput
   connectOrCreate: Lab_requestsCreateOrConnectWithoutLab_documentsInput
   create: Lab_requestsCreateWithoutLab_documentsInput
 }
 
-input Lab_requestsCreateOrConnectWithoutConsultation_lab_requestsInput {
-  create: Lab_requestsCreateWithoutConsultation_lab_requestsInput!
+input Lab_requestsCreateOrConnectWithoutConsultationsInput {
+  create: Lab_requestsCreateWithoutConsultationsInput!
   where: Lab_requestsWhereUniqueInput!
 }
 
@@ -6672,7 +5990,7 @@ input Lab_requestsCreateOrConnectWithoutPatientsInput {
   where: Lab_requestsWhereUniqueInput!
 }
 
-input Lab_requestsCreateWithoutConsultation_lab_requestsInput {
+input Lab_requestsCreateWithoutConsultationsInput {
   description: String
   doctors: DoctorsCreateNestedOneWithoutLab_requestsInput
   id: String
@@ -6683,7 +6001,7 @@ input Lab_requestsCreateWithoutConsultation_lab_requestsInput {
 }
 
 input Lab_requestsCreateWithoutDoctorsInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput
+  consultations: ConsultationsCreateNestedManyWithoutLab_requestsInput
   description: String
   id: String
   lab_documents: Lab_documentsCreateNestedManyWithoutLab_requestsInput
@@ -6693,7 +6011,7 @@ input Lab_requestsCreateWithoutDoctorsInput {
 }
 
 input Lab_requestsCreateWithoutLab_documentsInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput
+  consultations: ConsultationsCreateNestedManyWithoutLab_requestsInput
   description: String
   doctors: DoctorsCreateNestedOneWithoutLab_requestsInput
   id: String
@@ -6703,7 +6021,7 @@ input Lab_requestsCreateWithoutLab_documentsInput {
 }
 
 input Lab_requestsCreateWithoutPatientsInput {
-  consultation_lab_requests: Consultation_lab_requestsCreateNestedManyWithoutLab_requestsInput
+  consultations: ConsultationsCreateNestedManyWithoutLab_requestsInput
   description: String
   doctors: DoctorsCreateNestedOneWithoutLab_requestsInput
   id: String
@@ -6788,7 +6106,7 @@ input Lab_requestsOrderByWithAggregationInput {
 }
 
 input Lab_requestsOrderByWithRelationInput {
-  consultation_lab_requests: Consultation_lab_requestsOrderByRelationAggregateInput
+  consultations: ConsultationsOrderByRelationAggregateInput
   description: SortOrderInput
   doctor_id: SortOrderInput
   doctors: DoctorsOrderByWithRelationInput
@@ -6798,11 +6116,6 @@ input Lab_requestsOrderByWithRelationInput {
   patients: PatientsOrderByWithRelationInput
   priority: SortOrderInput
   type: SortOrder
-}
-
-input Lab_requestsRelationFilter {
-  is: Lab_requestsWhereInput
-  isNot: Lab_requestsWhereInput
 }
 
 enum Lab_requestsScalarFieldEnum {
@@ -6839,7 +6152,7 @@ input Lab_requestsScalarWhereWithAggregatesInput {
 }
 
 input Lab_requestsUpdateInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput
+  consultations: ConsultationsUpdateManyWithoutLab_requestsNestedInput
   description: NullableStringFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutLab_requestsNestedInput
   id: StringFieldUpdateOperationsInput
@@ -6856,6 +6169,11 @@ input Lab_requestsUpdateManyMutationInput {
   type: StringFieldUpdateOperationsInput
 }
 
+input Lab_requestsUpdateManyWithWhereWithoutConsultationsInput {
+  data: Lab_requestsUpdateManyMutationInput!
+  where: Lab_requestsScalarWhereInput!
+}
+
 input Lab_requestsUpdateManyWithWhereWithoutDoctorsInput {
   data: Lab_requestsUpdateManyMutationInput!
   where: Lab_requestsScalarWhereInput!
@@ -6864,6 +6182,19 @@ input Lab_requestsUpdateManyWithWhereWithoutDoctorsInput {
 input Lab_requestsUpdateManyWithWhereWithoutPatientsInput {
   data: Lab_requestsUpdateManyMutationInput!
   where: Lab_requestsScalarWhereInput!
+}
+
+input Lab_requestsUpdateManyWithoutConsultationsNestedInput {
+  connect: [Lab_requestsWhereUniqueInput!]
+  connectOrCreate: [Lab_requestsCreateOrConnectWithoutConsultationsInput!]
+  create: [Lab_requestsCreateWithoutConsultationsInput!]
+  delete: [Lab_requestsWhereUniqueInput!]
+  deleteMany: [Lab_requestsScalarWhereInput!]
+  disconnect: [Lab_requestsWhereUniqueInput!]
+  set: [Lab_requestsWhereUniqueInput!]
+  update: [Lab_requestsUpdateWithWhereUniqueWithoutConsultationsInput!]
+  updateMany: [Lab_requestsUpdateManyWithWhereWithoutConsultationsInput!]
+  upsert: [Lab_requestsUpsertWithWhereUniqueWithoutConsultationsInput!]
 }
 
 input Lab_requestsUpdateManyWithoutDoctorsNestedInput {
@@ -6894,14 +6225,6 @@ input Lab_requestsUpdateManyWithoutPatientsNestedInput {
   upsert: [Lab_requestsUpsertWithWhereUniqueWithoutPatientsInput!]
 }
 
-input Lab_requestsUpdateOneRequiredWithoutConsultation_lab_requestsNestedInput {
-  connect: Lab_requestsWhereUniqueInput
-  connectOrCreate: Lab_requestsCreateOrConnectWithoutConsultation_lab_requestsInput
-  create: Lab_requestsCreateWithoutConsultation_lab_requestsInput
-  update: Lab_requestsUpdateToOneWithWhereWithoutConsultation_lab_requestsInput
-  upsert: Lab_requestsUpsertWithoutConsultation_lab_requestsInput
-}
-
 input Lab_requestsUpdateOneWithoutLab_documentsNestedInput {
   connect: Lab_requestsWhereUniqueInput
   connectOrCreate: Lab_requestsCreateOrConnectWithoutLab_documentsInput
@@ -6912,14 +6235,14 @@ input Lab_requestsUpdateOneWithoutLab_documentsNestedInput {
   upsert: Lab_requestsUpsertWithoutLab_documentsInput
 }
 
-input Lab_requestsUpdateToOneWithWhereWithoutConsultation_lab_requestsInput {
-  data: Lab_requestsUpdateWithoutConsultation_lab_requestsInput!
-  where: Lab_requestsWhereInput
-}
-
 input Lab_requestsUpdateToOneWithWhereWithoutLab_documentsInput {
   data: Lab_requestsUpdateWithoutLab_documentsInput!
   where: Lab_requestsWhereInput
+}
+
+input Lab_requestsUpdateWithWhereUniqueWithoutConsultationsInput {
+  data: Lab_requestsUpdateWithoutConsultationsInput!
+  where: Lab_requestsWhereUniqueInput!
 }
 
 input Lab_requestsUpdateWithWhereUniqueWithoutDoctorsInput {
@@ -6932,7 +6255,7 @@ input Lab_requestsUpdateWithWhereUniqueWithoutPatientsInput {
   where: Lab_requestsWhereUniqueInput!
 }
 
-input Lab_requestsUpdateWithoutConsultation_lab_requestsInput {
+input Lab_requestsUpdateWithoutConsultationsInput {
   description: NullableStringFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutLab_requestsNestedInput
   id: StringFieldUpdateOperationsInput
@@ -6943,7 +6266,7 @@ input Lab_requestsUpdateWithoutConsultation_lab_requestsInput {
 }
 
 input Lab_requestsUpdateWithoutDoctorsInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput
+  consultations: ConsultationsUpdateManyWithoutLab_requestsNestedInput
   description: NullableStringFieldUpdateOperationsInput
   id: StringFieldUpdateOperationsInput
   lab_documents: Lab_documentsUpdateManyWithoutLab_requestsNestedInput
@@ -6953,7 +6276,7 @@ input Lab_requestsUpdateWithoutDoctorsInput {
 }
 
 input Lab_requestsUpdateWithoutLab_documentsInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput
+  consultations: ConsultationsUpdateManyWithoutLab_requestsNestedInput
   description: NullableStringFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutLab_requestsNestedInput
   id: StringFieldUpdateOperationsInput
@@ -6963,13 +6286,19 @@ input Lab_requestsUpdateWithoutLab_documentsInput {
 }
 
 input Lab_requestsUpdateWithoutPatientsInput {
-  consultation_lab_requests: Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput
+  consultations: ConsultationsUpdateManyWithoutLab_requestsNestedInput
   description: NullableStringFieldUpdateOperationsInput
   doctors: DoctorsUpdateOneWithoutLab_requestsNestedInput
   id: StringFieldUpdateOperationsInput
   lab_documents: Lab_documentsUpdateManyWithoutLab_requestsNestedInput
   priority: NullableEnumlab_requests_priority_enumFieldUpdateOperationsInput
   type: StringFieldUpdateOperationsInput
+}
+
+input Lab_requestsUpsertWithWhereUniqueWithoutConsultationsInput {
+  create: Lab_requestsCreateWithoutConsultationsInput!
+  update: Lab_requestsUpdateWithoutConsultationsInput!
+  where: Lab_requestsWhereUniqueInput!
 }
 
 input Lab_requestsUpsertWithWhereUniqueWithoutDoctorsInput {
@@ -6984,12 +6313,6 @@ input Lab_requestsUpsertWithWhereUniqueWithoutPatientsInput {
   where: Lab_requestsWhereUniqueInput!
 }
 
-input Lab_requestsUpsertWithoutConsultation_lab_requestsInput {
-  create: Lab_requestsCreateWithoutConsultation_lab_requestsInput!
-  update: Lab_requestsUpdateWithoutConsultation_lab_requestsInput!
-  where: Lab_requestsWhereInput
-}
-
 input Lab_requestsUpsertWithoutLab_documentsInput {
   create: Lab_requestsCreateWithoutLab_documentsInput!
   update: Lab_requestsUpdateWithoutLab_documentsInput!
@@ -7000,7 +6323,7 @@ input Lab_requestsWhereInput {
   AND: [Lab_requestsWhereInput!]
   NOT: [Lab_requestsWhereInput!]
   OR: [Lab_requestsWhereInput!]
-  consultation_lab_requests: Consultation_lab_requestsListRelationFilter
+  consultations: ConsultationsListRelationFilter
   description: StringNullableFilter
   doctor_id: UuidNullableFilter
   doctors: DoctorsNullableRelationFilter
@@ -7016,7 +6339,7 @@ input Lab_requestsWhereUniqueInput {
   AND: [Lab_requestsWhereInput!]
   NOT: [Lab_requestsWhereInput!]
   OR: [Lab_requestsWhereInput!]
-  consultation_lab_requests: Consultation_lab_requestsListRelationFilter
+  consultations: ConsultationsListRelationFilter
   description: StringNullableFilter
   doctor_id: UuidNullableFilter
   doctors: DoctorsNullableRelationFilter
@@ -7848,13 +7171,10 @@ type Mutation {
   createManyAndReturnAuthorizations(data: [AuthorizationsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnAuthorizations!]!
   createManyAndReturnCertificates(data: [CertificatesCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnCertificates!]!
   createManyAndReturnCliniques(data: [CliniquesCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnCliniques!]!
-  createManyAndReturnConsultation_lab_requests(data: [Consultation_lab_requestsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnConsultation_lab_requests!]!
   createManyAndReturnConsultations(data: [ConsultationsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnConsultations!]!
   createManyAndReturnCtscan_results(data: [Ctscan_resultsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnCtscan_results!]!
-  createManyAndReturnDoctor_instituts(data: [Doctor_institutsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnDoctor_instituts!]!
   createManyAndReturnDoctors(data: [DoctorsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnDoctors!]!
   createManyAndReturnGeneralMedicalRecords(data: [GeneralMedicalRecordsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnGeneralMedicalRecords!]!
-  createManyAndReturnHopitaux(data: [HopitauxCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnHopitaux!]!
   createManyAndReturnInstituts_medicaux(data: [Instituts_medicauxCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnInstituts_medicaux!]!
   createManyAndReturnLab_attachments(data: [Lab_attachmentsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnLab_attachments!]!
   createManyAndReturnLab_documents(data: [Lab_documentsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnLab_documents!]!
@@ -7872,13 +7192,10 @@ type Mutation {
   createManyAuthorizations(data: [AuthorizationsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyCertificates(data: [CertificatesCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyCliniques(data: [CliniquesCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
-  createManyConsultation_lab_requests(data: [Consultation_lab_requestsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyConsultations(data: [ConsultationsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyCtscan_results(data: [Ctscan_resultsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
-  createManyDoctor_instituts(data: [Doctor_institutsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyDoctors(data: [DoctorsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyGeneralMedicalRecords(data: [GeneralMedicalRecordsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
-  createManyHopitaux(data: [HopitauxCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyInstituts_medicaux(data: [Instituts_medicauxCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyLab_attachments(data: [Lab_attachmentsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyLab_documents(data: [Lab_documentsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
@@ -7897,13 +7214,10 @@ type Mutation {
   createOneAuthorizations(data: AuthorizationsCreateInput!): Authorizations!
   createOneCertificates(data: CertificatesCreateInput!): Certificates!
   createOneCliniques(data: CliniquesCreateInput!): Cliniques!
-  createOneConsultation_lab_requests(data: Consultation_lab_requestsCreateInput!): Consultation_lab_requests!
   createOneConsultations(data: ConsultationsCreateInput!): Consultations!
   createOneCtscan_results(data: Ctscan_resultsCreateInput!): Ctscan_results!
-  createOneDoctor_instituts(data: Doctor_institutsCreateInput!): Doctor_instituts!
   createOneDoctors(data: DoctorsCreateInput!): Doctors!
   createOneGeneralMedicalRecords(data: GeneralMedicalRecordsCreateInput!): GeneralMedicalRecords!
-  createOneHopitaux(data: HopitauxCreateInput!): Hopitaux!
   createOneInstituts_medicaux(data: Instituts_medicauxCreateInput!): Instituts_medicaux!
   createOneLab_attachments(data: Lab_attachmentsCreateInput!): Lab_attachments!
   createOneLab_documents(data: Lab_documentsCreateInput!): Lab_documents!
@@ -7922,13 +7236,10 @@ type Mutation {
   deleteManyAuthorizations(where: AuthorizationsWhereInput): AffectedRowsOutput!
   deleteManyCertificates(where: CertificatesWhereInput): AffectedRowsOutput!
   deleteManyCliniques(where: CliniquesWhereInput): AffectedRowsOutput!
-  deleteManyConsultation_lab_requests(where: Consultation_lab_requestsWhereInput): AffectedRowsOutput!
   deleteManyConsultations(where: ConsultationsWhereInput): AffectedRowsOutput!
   deleteManyCtscan_results(where: Ctscan_resultsWhereInput): AffectedRowsOutput!
-  deleteManyDoctor_instituts(where: Doctor_institutsWhereInput): AffectedRowsOutput!
   deleteManyDoctors(where: DoctorsWhereInput): AffectedRowsOutput!
   deleteManyGeneralMedicalRecords(where: GeneralMedicalRecordsWhereInput): AffectedRowsOutput!
-  deleteManyHopitaux(where: HopitauxWhereInput): AffectedRowsOutput!
   deleteManyInstituts_medicaux(where: Instituts_medicauxWhereInput): AffectedRowsOutput!
   deleteManyLab_attachments(where: Lab_attachmentsWhereInput): AffectedRowsOutput!
   deleteManyLab_documents(where: Lab_documentsWhereInput): AffectedRowsOutput!
@@ -7947,13 +7258,10 @@ type Mutation {
   deleteOneAuthorizations(where: AuthorizationsWhereUniqueInput!): Authorizations
   deleteOneCertificates(where: CertificatesWhereUniqueInput!): Certificates
   deleteOneCliniques(where: CliniquesWhereUniqueInput!): Cliniques
-  deleteOneConsultation_lab_requests(where: Consultation_lab_requestsWhereUniqueInput!): Consultation_lab_requests
   deleteOneConsultations(where: ConsultationsWhereUniqueInput!): Consultations
   deleteOneCtscan_results(where: Ctscan_resultsWhereUniqueInput!): Ctscan_results
-  deleteOneDoctor_instituts(where: Doctor_institutsWhereUniqueInput!): Doctor_instituts
   deleteOneDoctors(where: DoctorsWhereUniqueInput!): Doctors
   deleteOneGeneralMedicalRecords(where: GeneralMedicalRecordsWhereUniqueInput!): GeneralMedicalRecords
-  deleteOneHopitaux(where: HopitauxWhereUniqueInput!): Hopitaux
   deleteOneInstituts_medicaux(where: Instituts_medicauxWhereUniqueInput!): Instituts_medicaux
   deleteOneLab_attachments(where: Lab_attachmentsWhereUniqueInput!): Lab_attachments
   deleteOneLab_documents(where: Lab_documentsWhereUniqueInput!): Lab_documents
@@ -7972,13 +7280,10 @@ type Mutation {
   updateManyAuthorizations(data: AuthorizationsUpdateManyMutationInput!, where: AuthorizationsWhereInput): AffectedRowsOutput!
   updateManyCertificates(data: CertificatesUpdateManyMutationInput!, where: CertificatesWhereInput): AffectedRowsOutput!
   updateManyCliniques(data: CliniquesUpdateManyMutationInput!, where: CliniquesWhereInput): AffectedRowsOutput!
-  updateManyConsultation_lab_requests(data: Consultation_lab_requestsUpdateManyMutationInput!, where: Consultation_lab_requestsWhereInput): AffectedRowsOutput!
   updateManyConsultations(data: ConsultationsUpdateManyMutationInput!, where: ConsultationsWhereInput): AffectedRowsOutput!
   updateManyCtscan_results(data: Ctscan_resultsUpdateManyMutationInput!, where: Ctscan_resultsWhereInput): AffectedRowsOutput!
-  updateManyDoctor_instituts(data: Doctor_institutsUpdateManyMutationInput!, where: Doctor_institutsWhereInput): AffectedRowsOutput!
   updateManyDoctors(data: DoctorsUpdateManyMutationInput!, where: DoctorsWhereInput): AffectedRowsOutput!
   updateManyGeneralMedicalRecords(data: GeneralMedicalRecordsUpdateManyMutationInput!, where: GeneralMedicalRecordsWhereInput): AffectedRowsOutput!
-  updateManyHopitaux(data: HopitauxUpdateManyMutationInput!, where: HopitauxWhereInput): AffectedRowsOutput!
   updateManyInstituts_medicaux(data: Instituts_medicauxUpdateManyMutationInput!, where: Instituts_medicauxWhereInput): AffectedRowsOutput!
   updateManyLab_attachments(data: Lab_attachmentsUpdateManyMutationInput!, where: Lab_attachmentsWhereInput): AffectedRowsOutput!
   updateManyLab_documents(data: Lab_documentsUpdateManyMutationInput!, where: Lab_documentsWhereInput): AffectedRowsOutput!
@@ -7997,13 +7302,10 @@ type Mutation {
   updateOneAuthorizations(data: AuthorizationsUpdateInput!, where: AuthorizationsWhereUniqueInput!): Authorizations
   updateOneCertificates(data: CertificatesUpdateInput!, where: CertificatesWhereUniqueInput!): Certificates
   updateOneCliniques(data: CliniquesUpdateInput!, where: CliniquesWhereUniqueInput!): Cliniques
-  updateOneConsultation_lab_requests(data: Consultation_lab_requestsUpdateInput!, where: Consultation_lab_requestsWhereUniqueInput!): Consultation_lab_requests
   updateOneConsultations(data: ConsultationsUpdateInput!, where: ConsultationsWhereUniqueInput!): Consultations
   updateOneCtscan_results(data: Ctscan_resultsUpdateInput!, where: Ctscan_resultsWhereUniqueInput!): Ctscan_results
-  updateOneDoctor_instituts(data: Doctor_institutsUpdateInput!, where: Doctor_institutsWhereUniqueInput!): Doctor_instituts
   updateOneDoctors(data: DoctorsUpdateInput!, where: DoctorsWhereUniqueInput!): Doctors
   updateOneGeneralMedicalRecords(data: GeneralMedicalRecordsUpdateInput!, where: GeneralMedicalRecordsWhereUniqueInput!): GeneralMedicalRecords
-  updateOneHopitaux(data: HopitauxUpdateInput!, where: HopitauxWhereUniqueInput!): Hopitaux
   updateOneInstituts_medicaux(data: Instituts_medicauxUpdateInput!, where: Instituts_medicauxWhereUniqueInput!): Instituts_medicaux
   updateOneLab_attachments(data: Lab_attachmentsUpdateInput!, where: Lab_attachmentsWhereUniqueInput!): Lab_attachments
   updateOneLab_documents(data: Lab_documentsUpdateInput!, where: Lab_documentsWhereUniqueInput!): Lab_documents
@@ -8022,13 +7324,10 @@ type Mutation {
   upsertOneAuthorizations(create: AuthorizationsCreateInput!, update: AuthorizationsUpdateInput!, where: AuthorizationsWhereUniqueInput!): Authorizations!
   upsertOneCertificates(create: CertificatesCreateInput!, update: CertificatesUpdateInput!, where: CertificatesWhereUniqueInput!): Certificates!
   upsertOneCliniques(create: CliniquesCreateInput!, update: CliniquesUpdateInput!, where: CliniquesWhereUniqueInput!): Cliniques!
-  upsertOneConsultation_lab_requests(create: Consultation_lab_requestsCreateInput!, update: Consultation_lab_requestsUpdateInput!, where: Consultation_lab_requestsWhereUniqueInput!): Consultation_lab_requests!
   upsertOneConsultations(create: ConsultationsCreateInput!, update: ConsultationsUpdateInput!, where: ConsultationsWhereUniqueInput!): Consultations!
   upsertOneCtscan_results(create: Ctscan_resultsCreateInput!, update: Ctscan_resultsUpdateInput!, where: Ctscan_resultsWhereUniqueInput!): Ctscan_results!
-  upsertOneDoctor_instituts(create: Doctor_institutsCreateInput!, update: Doctor_institutsUpdateInput!, where: Doctor_institutsWhereUniqueInput!): Doctor_instituts!
   upsertOneDoctors(create: DoctorsCreateInput!, update: DoctorsUpdateInput!, where: DoctorsWhereUniqueInput!): Doctors!
   upsertOneGeneralMedicalRecords(create: GeneralMedicalRecordsCreateInput!, update: GeneralMedicalRecordsUpdateInput!, where: GeneralMedicalRecordsWhereUniqueInput!): GeneralMedicalRecords!
-  upsertOneHopitaux(create: HopitauxCreateInput!, update: HopitauxUpdateInput!, where: HopitauxWhereUniqueInput!): Hopitaux!
   upsertOneInstituts_medicaux(create: Instituts_medicauxCreateInput!, update: Instituts_medicauxUpdateInput!, where: Instituts_medicauxWhereUniqueInput!): Instituts_medicaux!
   upsertOneLab_attachments(create: Lab_attachmentsCreateInput!, update: Lab_attachmentsUpdateInput!, where: Lab_attachmentsWhereUniqueInput!): Lab_attachments!
   upsertOneLab_documents(create: Lab_documentsCreateInput!, update: Lab_documentsUpdateInput!, where: Lab_documentsWhereUniqueInput!): Lab_documents!
@@ -8208,23 +7507,6 @@ input NestedEnumdoctors_type_enumWithAggregatesFilter {
   in: [doctors_type_enum!]
   not: NestedEnumdoctors_type_enumWithAggregatesFilter
   notIn: [doctors_type_enum!]
-}
-
-input NestedEnumhopitaux_type_enumFilter {
-  equals: hopitaux_type_enum
-  in: [hopitaux_type_enum!]
-  not: NestedEnumhopitaux_type_enumFilter
-  notIn: [hopitaux_type_enum!]
-}
-
-input NestedEnumhopitaux_type_enumWithAggregatesFilter {
-  _count: NestedIntFilter
-  _max: NestedEnumhopitaux_type_enumFilter
-  _min: NestedEnumhopitaux_type_enumFilter
-  equals: hopitaux_type_enum
-  in: [hopitaux_type_enum!]
-  not: NestedEnumhopitaux_type_enumWithAggregatesFilter
-  notIn: [hopitaux_type_enum!]
 }
 
 input NestedEnuminstituts_medicaux_type_enumFilter {
@@ -10381,13 +9663,10 @@ type Query {
   aggregateAuthorizations(cursor: AuthorizationsWhereUniqueInput, orderBy: [AuthorizationsOrderByWithRelationInput!], skip: Int, take: Int, where: AuthorizationsWhereInput): AggregateAuthorizations!
   aggregateCertificates(cursor: CertificatesWhereUniqueInput, orderBy: [CertificatesOrderByWithRelationInput!], skip: Int, take: Int, where: CertificatesWhereInput): AggregateCertificates!
   aggregateCliniques(cursor: CliniquesWhereUniqueInput, orderBy: [CliniquesOrderByWithRelationInput!], skip: Int, take: Int, where: CliniquesWhereInput): AggregateCliniques!
-  aggregateConsultation_lab_requests(cursor: Consultation_lab_requestsWhereUniqueInput, orderBy: [Consultation_lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Consultation_lab_requestsWhereInput): AggregateConsultation_lab_requests!
   aggregateConsultations(cursor: ConsultationsWhereUniqueInput, orderBy: [ConsultationsOrderByWithRelationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): AggregateConsultations!
   aggregateCtscan_results(cursor: Ctscan_resultsWhereUniqueInput, orderBy: [Ctscan_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Ctscan_resultsWhereInput): AggregateCtscan_results!
-  aggregateDoctor_instituts(cursor: Doctor_institutsWhereUniqueInput, orderBy: [Doctor_institutsOrderByWithRelationInput!], skip: Int, take: Int, where: Doctor_institutsWhereInput): AggregateDoctor_instituts!
   aggregateDoctors(cursor: DoctorsWhereUniqueInput, orderBy: [DoctorsOrderByWithRelationInput!], skip: Int, take: Int, where: DoctorsWhereInput): AggregateDoctors!
   aggregateGeneralMedicalRecords(cursor: GeneralMedicalRecordsWhereUniqueInput, orderBy: [GeneralMedicalRecordsOrderByWithRelationInput!], skip: Int, take: Int, where: GeneralMedicalRecordsWhereInput): AggregateGeneralMedicalRecords!
-  aggregateHopitaux(cursor: HopitauxWhereUniqueInput, orderBy: [HopitauxOrderByWithRelationInput!], skip: Int, take: Int, where: HopitauxWhereInput): AggregateHopitaux!
   aggregateInstituts_medicaux(cursor: Instituts_medicauxWhereUniqueInput, orderBy: [Instituts_medicauxOrderByWithRelationInput!], skip: Int, take: Int, where: Instituts_medicauxWhereInput): AggregateInstituts_medicaux!
   aggregateLab_attachments(cursor: Lab_attachmentsWhereUniqueInput, orderBy: [Lab_attachmentsOrderByWithRelationInput!], skip: Int, take: Int, where: Lab_attachmentsWhereInput): AggregateLab_attachments!
   aggregateLab_documents(cursor: Lab_documentsWhereUniqueInput, orderBy: [Lab_documentsOrderByWithRelationInput!], skip: Int, take: Int, where: Lab_documentsWhereInput): AggregateLab_documents!
@@ -10410,20 +9689,14 @@ type Query {
   findFirstCertificatesOrThrow(cursor: CertificatesWhereUniqueInput, distinct: [CertificatesScalarFieldEnum!], orderBy: [CertificatesOrderByWithRelationInput!], skip: Int, take: Int, where: CertificatesWhereInput): Certificates
   findFirstCliniques(cursor: CliniquesWhereUniqueInput, distinct: [CliniquesScalarFieldEnum!], orderBy: [CliniquesOrderByWithRelationInput!], skip: Int, take: Int, where: CliniquesWhereInput): Cliniques
   findFirstCliniquesOrThrow(cursor: CliniquesWhereUniqueInput, distinct: [CliniquesScalarFieldEnum!], orderBy: [CliniquesOrderByWithRelationInput!], skip: Int, take: Int, where: CliniquesWhereInput): Cliniques
-  findFirstConsultation_lab_requests(cursor: Consultation_lab_requestsWhereUniqueInput, distinct: [Consultation_lab_requestsScalarFieldEnum!], orderBy: [Consultation_lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Consultation_lab_requestsWhereInput): Consultation_lab_requests
-  findFirstConsultation_lab_requestsOrThrow(cursor: Consultation_lab_requestsWhereUniqueInput, distinct: [Consultation_lab_requestsScalarFieldEnum!], orderBy: [Consultation_lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Consultation_lab_requestsWhereInput): Consultation_lab_requests
   findFirstConsultations(cursor: ConsultationsWhereUniqueInput, distinct: [ConsultationsScalarFieldEnum!], orderBy: [ConsultationsOrderByWithRelationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): Consultations
   findFirstConsultationsOrThrow(cursor: ConsultationsWhereUniqueInput, distinct: [ConsultationsScalarFieldEnum!], orderBy: [ConsultationsOrderByWithRelationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): Consultations
   findFirstCtscan_results(cursor: Ctscan_resultsWhereUniqueInput, distinct: [Ctscan_resultsScalarFieldEnum!], orderBy: [Ctscan_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Ctscan_resultsWhereInput): Ctscan_results
   findFirstCtscan_resultsOrThrow(cursor: Ctscan_resultsWhereUniqueInput, distinct: [Ctscan_resultsScalarFieldEnum!], orderBy: [Ctscan_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Ctscan_resultsWhereInput): Ctscan_results
-  findFirstDoctor_instituts(cursor: Doctor_institutsWhereUniqueInput, distinct: [Doctor_institutsScalarFieldEnum!], orderBy: [Doctor_institutsOrderByWithRelationInput!], skip: Int, take: Int, where: Doctor_institutsWhereInput): Doctor_instituts
-  findFirstDoctor_institutsOrThrow(cursor: Doctor_institutsWhereUniqueInput, distinct: [Doctor_institutsScalarFieldEnum!], orderBy: [Doctor_institutsOrderByWithRelationInput!], skip: Int, take: Int, where: Doctor_institutsWhereInput): Doctor_instituts
   findFirstDoctors(cursor: DoctorsWhereUniqueInput, distinct: [DoctorsScalarFieldEnum!], orderBy: [DoctorsOrderByWithRelationInput!], skip: Int, take: Int, where: DoctorsWhereInput): Doctors
   findFirstDoctorsOrThrow(cursor: DoctorsWhereUniqueInput, distinct: [DoctorsScalarFieldEnum!], orderBy: [DoctorsOrderByWithRelationInput!], skip: Int, take: Int, where: DoctorsWhereInput): Doctors
   findFirstGeneralMedicalRecords(cursor: GeneralMedicalRecordsWhereUniqueInput, distinct: [GeneralMedicalRecordsScalarFieldEnum!], orderBy: [GeneralMedicalRecordsOrderByWithRelationInput!], skip: Int, take: Int, where: GeneralMedicalRecordsWhereInput): GeneralMedicalRecords
   findFirstGeneralMedicalRecordsOrThrow(cursor: GeneralMedicalRecordsWhereUniqueInput, distinct: [GeneralMedicalRecordsScalarFieldEnum!], orderBy: [GeneralMedicalRecordsOrderByWithRelationInput!], skip: Int, take: Int, where: GeneralMedicalRecordsWhereInput): GeneralMedicalRecords
-  findFirstHopitaux(cursor: HopitauxWhereUniqueInput, distinct: [HopitauxScalarFieldEnum!], orderBy: [HopitauxOrderByWithRelationInput!], skip: Int, take: Int, where: HopitauxWhereInput): Hopitaux
-  findFirstHopitauxOrThrow(cursor: HopitauxWhereUniqueInput, distinct: [HopitauxScalarFieldEnum!], orderBy: [HopitauxOrderByWithRelationInput!], skip: Int, take: Int, where: HopitauxWhereInput): Hopitaux
   findFirstInstituts_medicaux(cursor: Instituts_medicauxWhereUniqueInput, distinct: [Instituts_medicauxScalarFieldEnum!], orderBy: [Instituts_medicauxOrderByWithRelationInput!], skip: Int, take: Int, where: Instituts_medicauxWhereInput): Instituts_medicaux
   findFirstInstituts_medicauxOrThrow(cursor: Instituts_medicauxWhereUniqueInput, distinct: [Instituts_medicauxScalarFieldEnum!], orderBy: [Instituts_medicauxOrderByWithRelationInput!], skip: Int, take: Int, where: Instituts_medicauxWhereInput): Instituts_medicaux
   findFirstLab_attachments(cursor: Lab_attachmentsWhereUniqueInput, distinct: [Lab_attachmentsScalarFieldEnum!], orderBy: [Lab_attachmentsOrderByWithRelationInput!], skip: Int, take: Int, where: Lab_attachmentsWhereInput): Lab_attachments
@@ -10456,10 +9729,8 @@ type Query {
   findManyAuthorizations(cursor: AuthorizationsWhereUniqueInput, distinct: [AuthorizationsScalarFieldEnum!], orderBy: [AuthorizationsOrderByWithRelationInput!], skip: Int, take: Int, where: AuthorizationsWhereInput): [Authorizations!]!
   findManyCertificates(cursor: CertificatesWhereUniqueInput, distinct: [CertificatesScalarFieldEnum!], orderBy: [CertificatesOrderByWithRelationInput!], skip: Int, take: Int, where: CertificatesWhereInput): [Certificates!]!
   findManyCliniques(cursor: CliniquesWhereUniqueInput, distinct: [CliniquesScalarFieldEnum!], orderBy: [CliniquesOrderByWithRelationInput!], skip: Int, take: Int, where: CliniquesWhereInput): [Cliniques!]!
-  findManyConsultation_lab_requests(cursor: Consultation_lab_requestsWhereUniqueInput, distinct: [Consultation_lab_requestsScalarFieldEnum!], orderBy: [Consultation_lab_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Consultation_lab_requestsWhereInput): [Consultation_lab_requests!]!
   findManyConsultations(cursor: ConsultationsWhereUniqueInput, distinct: [ConsultationsScalarFieldEnum!], orderBy: [ConsultationsOrderByWithRelationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): [Consultations!]!
   findManyCtscan_results(cursor: Ctscan_resultsWhereUniqueInput, distinct: [Ctscan_resultsScalarFieldEnum!], orderBy: [Ctscan_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Ctscan_resultsWhereInput): [Ctscan_results!]!
-  findManyDoctor_instituts(cursor: Doctor_institutsWhereUniqueInput, distinct: [Doctor_institutsScalarFieldEnum!], orderBy: [Doctor_institutsOrderByWithRelationInput!], skip: Int, take: Int, where: Doctor_institutsWhereInput): [Doctor_instituts!]!
   findManyDoctors(cursor: DoctorsWhereUniqueInput, distinct: [DoctorsScalarFieldEnum!], orderBy: [DoctorsOrderByWithRelationInput!], skip: Int, take: Int, where: DoctorsWhereInput): [Doctors!]!
   findManyGeneralMedicalRecords(cursor: GeneralMedicalRecordsWhereUniqueInput, distinct: [GeneralMedicalRecordsScalarFieldEnum!], orderBy: [GeneralMedicalRecordsOrderByWithRelationInput!], skip: Int, take: Int, where: GeneralMedicalRecordsWhereInput): [GeneralMedicalRecords!]!
   findManyLab_attachments(cursor: Lab_attachmentsWhereUniqueInput, distinct: [Lab_attachmentsScalarFieldEnum!], orderBy: [Lab_attachmentsOrderByWithRelationInput!], skip: Int, take: Int, where: Lab_attachmentsWhereInput): [Lab_attachments!]!
@@ -10483,14 +9754,10 @@ type Query {
   findUniqueCertificatesOrThrow(where: CertificatesWhereUniqueInput!): Certificates
   findUniqueCliniques(where: CliniquesWhereUniqueInput!): Cliniques
   findUniqueCliniquesOrThrow(where: CliniquesWhereUniqueInput!): Cliniques
-  findUniqueConsultation_lab_requests(where: Consultation_lab_requestsWhereUniqueInput!): Consultation_lab_requests
-  findUniqueConsultation_lab_requestsOrThrow(where: Consultation_lab_requestsWhereUniqueInput!): Consultation_lab_requests
   findUniqueConsultations(where: ConsultationsWhereUniqueInput!): Consultations
   findUniqueConsultationsOrThrow(where: ConsultationsWhereUniqueInput!): Consultations
   findUniqueCtscan_results(where: Ctscan_resultsWhereUniqueInput!): Ctscan_results
   findUniqueCtscan_resultsOrThrow(where: Ctscan_resultsWhereUniqueInput!): Ctscan_results
-  findUniqueDoctor_instituts(where: Doctor_institutsWhereUniqueInput!): Doctor_instituts
-  findUniqueDoctor_institutsOrThrow(where: Doctor_institutsWhereUniqueInput!): Doctor_instituts
   findUniqueDoctors(where: DoctorsWhereUniqueInput!): Doctors
   findUniqueDoctorsOrThrow(where: DoctorsWhereUniqueInput!): Doctors
   findUniqueGeneralMedicalRecords(where: GeneralMedicalRecordsWhereUniqueInput!): GeneralMedicalRecords
@@ -10521,19 +9788,15 @@ type Query {
   findUniqueUsersOrThrow(where: UsersWhereUniqueInput!): Users
   findUniqueXray_results(where: Xray_resultsWhereUniqueInput!): Xray_results
   findUniqueXray_resultsOrThrow(where: Xray_resultsWhereUniqueInput!): Xray_results
-  getHopitaux(where: HopitauxWhereUniqueInput!): Hopitaux
   getInstituts_medicaux(where: Instituts_medicauxWhereUniqueInput!): Instituts_medicaux
   groupByAnalysis_results(by: [Analysis_resultsScalarFieldEnum!]!, having: Analysis_resultsScalarWhereWithAggregatesInput, orderBy: [Analysis_resultsOrderByWithAggregationInput!], skip: Int, take: Int, where: Analysis_resultsWhereInput): [Analysis_resultsGroupBy!]!
   groupByAuthorizations(by: [AuthorizationsScalarFieldEnum!]!, having: AuthorizationsScalarWhereWithAggregatesInput, orderBy: [AuthorizationsOrderByWithAggregationInput!], skip: Int, take: Int, where: AuthorizationsWhereInput): [AuthorizationsGroupBy!]!
   groupByCertificates(by: [CertificatesScalarFieldEnum!]!, having: CertificatesScalarWhereWithAggregatesInput, orderBy: [CertificatesOrderByWithAggregationInput!], skip: Int, take: Int, where: CertificatesWhereInput): [CertificatesGroupBy!]!
   groupByCliniques(by: [CliniquesScalarFieldEnum!]!, having: CliniquesScalarWhereWithAggregatesInput, orderBy: [CliniquesOrderByWithAggregationInput!], skip: Int, take: Int, where: CliniquesWhereInput): [CliniquesGroupBy!]!
-  groupByConsultation_lab_requests(by: [Consultation_lab_requestsScalarFieldEnum!]!, having: Consultation_lab_requestsScalarWhereWithAggregatesInput, orderBy: [Consultation_lab_requestsOrderByWithAggregationInput!], skip: Int, take: Int, where: Consultation_lab_requestsWhereInput): [Consultation_lab_requestsGroupBy!]!
   groupByConsultations(by: [ConsultationsScalarFieldEnum!]!, having: ConsultationsScalarWhereWithAggregatesInput, orderBy: [ConsultationsOrderByWithAggregationInput!], skip: Int, take: Int, where: ConsultationsWhereInput): [ConsultationsGroupBy!]!
   groupByCtscan_results(by: [Ctscan_resultsScalarFieldEnum!]!, having: Ctscan_resultsScalarWhereWithAggregatesInput, orderBy: [Ctscan_resultsOrderByWithAggregationInput!], skip: Int, take: Int, where: Ctscan_resultsWhereInput): [Ctscan_resultsGroupBy!]!
-  groupByDoctor_instituts(by: [Doctor_institutsScalarFieldEnum!]!, having: Doctor_institutsScalarWhereWithAggregatesInput, orderBy: [Doctor_institutsOrderByWithAggregationInput!], skip: Int, take: Int, where: Doctor_institutsWhereInput): [Doctor_institutsGroupBy!]!
   groupByDoctors(by: [DoctorsScalarFieldEnum!]!, having: DoctorsScalarWhereWithAggregatesInput, orderBy: [DoctorsOrderByWithAggregationInput!], skip: Int, take: Int, where: DoctorsWhereInput): [DoctorsGroupBy!]!
   groupByGeneralMedicalRecords(by: [GeneralMedicalRecordsScalarFieldEnum!]!, having: GeneralMedicalRecordsScalarWhereWithAggregatesInput, orderBy: [GeneralMedicalRecordsOrderByWithAggregationInput!], skip: Int, take: Int, where: GeneralMedicalRecordsWhereInput): [GeneralMedicalRecordsGroupBy!]!
-  groupByHopitaux(by: [HopitauxScalarFieldEnum!]!, having: HopitauxScalarWhereWithAggregatesInput, orderBy: [HopitauxOrderByWithAggregationInput!], skip: Int, take: Int, where: HopitauxWhereInput): [HopitauxGroupBy!]!
   groupByInstituts_medicaux(by: [Instituts_medicauxScalarFieldEnum!]!, having: Instituts_medicauxScalarWhereWithAggregatesInput, orderBy: [Instituts_medicauxOrderByWithAggregationInput!], skip: Int, take: Int, where: Instituts_medicauxWhereInput): [Instituts_medicauxGroupBy!]!
   groupByLab_attachments(by: [Lab_attachmentsScalarFieldEnum!]!, having: Lab_attachmentsScalarWhereWithAggregatesInput, orderBy: [Lab_attachmentsOrderByWithAggregationInput!], skip: Int, take: Int, where: Lab_attachmentsWhereInput): [Lab_attachmentsGroupBy!]!
   groupByLab_documents(by: [Lab_documentsScalarFieldEnum!]!, having: Lab_documentsScalarWhereWithAggregatesInput, orderBy: [Lab_documentsOrderByWithAggregationInput!], skip: Int, take: Int, where: Lab_documentsWhereInput): [Lab_documentsGroupBy!]!
@@ -10548,8 +9811,6 @@ type Query {
   groupByRdvs(by: [RdvsScalarFieldEnum!]!, having: RdvsScalarWhereWithAggregatesInput, orderBy: [RdvsOrderByWithAggregationInput!], skip: Int, take: Int, where: RdvsWhereInput): [RdvsGroupBy!]!
   groupByUsers(by: [UsersScalarFieldEnum!]!, having: UsersScalarWhereWithAggregatesInput, orderBy: [UsersOrderByWithAggregationInput!], skip: Int, take: Int, where: UsersWhereInput): [UsersGroupBy!]!
   groupByXray_results(by: [Xray_resultsScalarFieldEnum!]!, having: Xray_resultsScalarWhereWithAggregatesInput, orderBy: [Xray_resultsOrderByWithAggregationInput!], skip: Int, take: Int, where: Xray_resultsWhereInput): [Xray_resultsGroupBy!]!
-  hopitaux(where: HopitauxWhereUniqueInput!): Hopitaux
-  hopitauxes(cursor: HopitauxWhereUniqueInput, distinct: [HopitauxScalarFieldEnum!], orderBy: [HopitauxOrderByWithRelationInput!], skip: Int, take: Int, where: HopitauxWhereInput): [Hopitaux!]!
   instituts_medicaux(where: Instituts_medicauxWhereUniqueInput!): Instituts_medicaux
   instituts_medicauxes(cursor: Instituts_medicauxWhereUniqueInput, distinct: [Instituts_medicauxScalarFieldEnum!], orderBy: [Instituts_medicauxOrderByWithRelationInput!], skip: Int, take: Int, where: Instituts_medicauxWhereInput): [Instituts_medicaux!]!
 }
@@ -12523,20 +11784,10 @@ enum cliniques_type_enum {
   hopital
 }
 
-input consultation_lab_requestsConsultation_idLab_request_idCompoundUniqueInput {
-  consultation_id: String!
-  lab_request_id: String!
-}
-
 enum ctscan_results_result_type_enum {
   analysis
   ctscan
   xray
-}
-
-input doctor_institutsDoctor_idInstitut_medical_idCompoundUniqueInput {
-  doctor_id: String!
-  institut_medical_id: String!
 }
 
 enum doctors_specialty_enum {
@@ -12573,12 +11824,6 @@ enum doctors_specialty_enum {
 }
 
 enum doctors_type_enum {
-  clinique
-  doctor
-  hopital
-}
-
-enum hopitaux_type_enum {
   clinique
   doctor
   hopital

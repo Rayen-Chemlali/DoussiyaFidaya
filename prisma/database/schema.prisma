@@ -62,17 +62,6 @@ model cliniques {
   email   String?
 }
 
-model consultation_lab_requests {
-  consultation_id String        @db.Uuid
-  lab_request_id  String        @db.Uuid
-  lab_requests    lab_requests  @relation(fields: [lab_request_id], references: [id], onDelete: Cascade, map: "FK_c7ff515e4184d1f7f535e8b3caa")
-  consultations   consultations @relation(fields: [consultation_id], references: [id], onDelete: Cascade, map: "FK_dee1a36c581e90ee3237a3b5eda")
-
-  @@id([consultation_id, lab_request_id], map: "PK_fd46884e9600ab52922ed44848f")
-  @@index([lab_request_id], map: "IDX_c7ff515e4184d1f7f535e8b3ca")
-  @@index([consultation_id], map: "IDX_dee1a36c581e90ee3237a3b5ed")
-}
-
 model consultations {
   id                        String                      @id(map: "PK_c5b78e9424d9bc68464f6a12103") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   section                   String?
@@ -83,7 +72,7 @@ model consultations {
   institut_medical_id       String?                     @db.Uuid
   prescription_id           String?                     @unique(map: "REL_488cc5c61fa845f715c76450a1") @db.Uuid
   patient_id                String                      @db.Uuid
-  consultation_lab_requests consultation_lab_requests[]
+  lab_requests              lab_requests[]
   prescriptions             prescriptions?              @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_488cc5c61fa845f715c76450a17")
   instituts_medicaux        instituts_medicaux?         @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_6bc76193c5d2560bdc53cd919e7")
   patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ee6c335246d3b937f11c329c837")
@@ -101,16 +90,6 @@ model ctscan_results {
   lab_documents   lab_documents                   @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_cf0b41100cc512aaa487b4d8099")
 }
 
-model doctor_instituts {
-  doctor_id           String             @db.Uuid
-  institut_medical_id String             @db.Uuid
-  doctors             doctors            @relation(fields: [doctor_id], references: [id], onDelete: Cascade, map: "FK_923f87cb0e2090945db970c7b6e")
-  instituts_medicaux  instituts_medicaux @relation(fields: [institut_medical_id], references: [id], onDelete: Cascade, map: "FK_b0a5ec63efd9946c346c74e5768")
-
-  @@id([doctor_id, institut_medical_id], map: "PK_2d7427057147c74b40bcaa512dd")
-  @@index([doctor_id], map: "IDX_923f87cb0e2090945db970c7b6")
-  @@index([institut_medical_id], map: "IDX_b0a5ec63efd9946c346c74e576")
-}
 
 model doctors {
   id               String                 @id(map: "PK_8207e7889b50ee3695c2b8154ff") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
@@ -126,7 +105,7 @@ model doctors {
   user_id          String                 @unique(map: "REL_653c27d1b10652eb0c7bbbc442") @db.Uuid
   certificates     certificates[]
   consultations    consultations[]
-  doctor_instituts doctor_instituts[]
+  instituts        instituts_medicaux[]
   users            users                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_653c27d1b10652eb0c7bbbc4427")
   lab_requests     lab_requests[]
   prescriptions    prescriptions[]
@@ -148,7 +127,7 @@ model instituts_medicaux {
   type             instituts_medicaux_type_enum
   authorizations   authorizations[]
   consultations    consultations[]
-  doctor_instituts doctor_instituts[]
+  doctors          doctors[]
 }
 
 model lab_attachments {
@@ -188,7 +167,7 @@ model lab_requests {
   description               String?
   doctor_id                 String?                     @db.Uuid
   patient_id                String                      @db.Uuid
-  consultation_lab_requests consultation_lab_requests[]
+  consultations             consultations[]
   lab_documents             lab_documents[]
   doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9d74157a7327c3ee105975b6575")
   patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ca8b7bab5fe23747323f8f70b2f")

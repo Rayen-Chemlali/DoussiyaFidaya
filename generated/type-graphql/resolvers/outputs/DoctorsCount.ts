@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { DoctorsCountCertificatesArgs } from "./args/DoctorsCountCertificatesArgs";
 import { DoctorsCountConsultationsArgs } from "./args/DoctorsCountConsultationsArgs";
-import { DoctorsCountDoctor_institutsArgs } from "./args/DoctorsCountDoctor_institutsArgs";
+import { DoctorsCountInstituts_medicauxArgs } from "./args/DoctorsCountInstituts_medicauxArgs";
 import { DoctorsCountLab_requestsArgs } from "./args/DoctorsCountLab_requestsArgs";
 import { DoctorsCountPrescriptionsArgs } from "./args/DoctorsCountPrescriptionsArgs";
 import { DoctorsCountRdv_requestsArgs } from "./args/DoctorsCountRdv_requestsArgs";
@@ -14,7 +14,7 @@ import { DoctorsCountRdvsArgs } from "./args/DoctorsCountRdvsArgs";
 export class DoctorsCount {
   certificates!: number;
   consultations!: number;
-  doctor_instituts!: number;
+  instituts_medicaux!: number;
   lab_requests!: number;
   prescriptions!: number;
   rdv_requests!: number;
@@ -37,11 +37,11 @@ export class DoctorsCount {
   }
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
-    name: "doctor_instituts",
+    name: "instituts_medicaux",
     nullable: false
   })
-  getDoctor_instituts(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountDoctor_institutsArgs): number {
-    return root.doctor_instituts;
+  getInstituts_medicaux(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountInstituts_medicauxArgs): number {
+    return root.instituts_medicaux;
   }
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {

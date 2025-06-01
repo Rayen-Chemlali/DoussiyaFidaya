@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../scalars";
 import { Certificates } from "../models/Certificates";
 import { Consultations } from "../models/Consultations";
-import { Doctor_instituts } from "../models/Doctor_instituts";
+import { Instituts_medicaux } from "../models/Instituts_medicaux";
 import { Lab_requests } from "../models/Lab_requests";
 import { Prescriptions } from "../models/Prescriptions";
 import { Rdv_requests } from "../models/Rdv_requests";
@@ -75,7 +75,7 @@ export class Doctors {
 
   consultations?: Consultations[];
 
-  doctor_instituts?: Doctor_instituts[];
+  instituts_medicaux?: Instituts_medicaux[];
 
   users?: Users;
 

@@ -3,7 +3,7 @@ import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { ConsultationsCreateNestedManyWithoutInstituts_medicauxInput } from "../inputs/ConsultationsCreateNestedManyWithoutInstituts_medicauxInput";
-import { Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput } from "../inputs/Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput";
+import { DoctorsCreateNestedManyWithoutInstituts_medicauxInput } from "../inputs/DoctorsCreateNestedManyWithoutInstituts_medicauxInput";
 import { instituts_medicaux_type_enum } from "../../enums/instituts_medicaux_type_enum";
 
 @TypeGraphQL.InputType("Instituts_medicauxCreateWithoutAuthorizationsInput", {})
@@ -23,8 +23,8 @@ export class Instituts_medicauxCreateWithoutAuthorizationsInput {
   })
   consultations?: ConsultationsCreateNestedManyWithoutInstituts_medicauxInput | undefined;
 
-  @TypeGraphQL.Field(_type => Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput, {
+  @TypeGraphQL.Field(_type => DoctorsCreateNestedManyWithoutInstituts_medicauxInput, {
     nullable: true
   })
-  doctor_instituts?: Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput | undefined;
+  doctors?: DoctorsCreateNestedManyWithoutInstituts_medicauxInput | undefined;
 }

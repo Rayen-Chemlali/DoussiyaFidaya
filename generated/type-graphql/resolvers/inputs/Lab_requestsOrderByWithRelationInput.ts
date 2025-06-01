@@ -2,7 +2,7 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsOrderByRelationAggregateInput } from "../inputs/Consultation_lab_requestsOrderByRelationAggregateInput";
+import { ConsultationsOrderByRelationAggregateInput } from "../inputs/ConsultationsOrderByRelationAggregateInput";
 import { DoctorsOrderByWithRelationInput } from "../inputs/DoctorsOrderByWithRelationInput";
 import { Lab_documentsOrderByRelationAggregateInput } from "../inputs/Lab_documentsOrderByRelationAggregateInput";
 import { PatientsOrderByWithRelationInput } from "../inputs/PatientsOrderByWithRelationInput";
@@ -41,10 +41,10 @@ export class Lab_requestsOrderByWithRelationInput {
   })
   patient_id?: "asc" | "desc" | undefined;
 
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsOrderByRelationAggregateInput, {
+  @TypeGraphQL.Field(_type => ConsultationsOrderByRelationAggregateInput, {
     nullable: true
   })
-  consultation_lab_requests?: Consultation_lab_requestsOrderByRelationAggregateInput | undefined;
+  consultations?: ConsultationsOrderByRelationAggregateInput | undefined;
 
   @TypeGraphQL.Field(_type => Lab_documentsOrderByRelationAggregateInput, {
     nullable: true

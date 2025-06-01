@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../scalars";
 import { Authorizations } from "../models/Authorizations";
 import { Consultations } from "../models/Consultations";
-import { Doctor_instituts } from "../models/Doctor_instituts";
+import { Doctors } from "../models/Doctors";
 import { instituts_medicaux_type_enum } from "../enums/instituts_medicaux_type_enum";
 import { Instituts_medicauxCount } from "../resolvers/outputs/Instituts_medicauxCount";
 
@@ -24,7 +24,7 @@ export class Instituts_medicaux {
 
   consultations?: Consultations[];
 
-  doctor_instituts?: Doctor_instituts[];
+  doctors?: Doctors[];
 
   @TypeGraphQL.Field(_type => Instituts_medicauxCount, {
     nullable: true

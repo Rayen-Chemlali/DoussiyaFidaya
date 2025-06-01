@@ -2,13 +2,10 @@ export { Analysis_resultsScalarFieldEnum } from "./Analysis_resultsScalarFieldEn
 export { AuthorizationsScalarFieldEnum } from "./AuthorizationsScalarFieldEnum";
 export { CertificatesScalarFieldEnum } from "./CertificatesScalarFieldEnum";
 export { CliniquesScalarFieldEnum } from "./CliniquesScalarFieldEnum";
-export { Consultation_lab_requestsScalarFieldEnum } from "./Consultation_lab_requestsScalarFieldEnum";
 export { ConsultationsScalarFieldEnum } from "./ConsultationsScalarFieldEnum";
 export { Ctscan_resultsScalarFieldEnum } from "./Ctscan_resultsScalarFieldEnum";
-export { Doctor_institutsScalarFieldEnum } from "./Doctor_institutsScalarFieldEnum";
 export { DoctorsScalarFieldEnum } from "./DoctorsScalarFieldEnum";
 export { GeneralMedicalRecordsScalarFieldEnum } from "./GeneralMedicalRecordsScalarFieldEnum";
-export { HopitauxScalarFieldEnum } from "./HopitauxScalarFieldEnum";
 export { Instituts_medicauxScalarFieldEnum } from "./Instituts_medicauxScalarFieldEnum";
 export { JsonNullValueFilter } from "./JsonNullValueFilter";
 export { Lab_attachmentsScalarFieldEnum } from "./Lab_attachmentsScalarFieldEnum";

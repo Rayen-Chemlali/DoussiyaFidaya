@@ -4,9 +4,9 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { CertificatesListRelationFilter } from "../inputs/CertificatesListRelationFilter";
 import { ConsultationsListRelationFilter } from "../inputs/ConsultationsListRelationFilter";
-import { Doctor_institutsListRelationFilter } from "../inputs/Doctor_institutsListRelationFilter";
 import { Enumdoctors_specialty_enumFilter } from "../inputs/Enumdoctors_specialty_enumFilter";
 import { Enumdoctors_type_enumFilter } from "../inputs/Enumdoctors_type_enumFilter";
+import { Instituts_medicauxListRelationFilter } from "../inputs/Instituts_medicauxListRelationFilter";
 import { Lab_requestsListRelationFilter } from "../inputs/Lab_requestsListRelationFilter";
 import { PrescriptionsListRelationFilter } from "../inputs/PrescriptionsListRelationFilter";
 import { Rdv_requestsListRelationFilter } from "../inputs/Rdv_requestsListRelationFilter";
@@ -99,10 +99,10 @@ export class DoctorsWhereInput {
   })
   consultations?: ConsultationsListRelationFilter | undefined;
 
-  @TypeGraphQL.Field(_type => Doctor_institutsListRelationFilter, {
+  @TypeGraphQL.Field(_type => Instituts_medicauxListRelationFilter, {
     nullable: true
   })
-  doctor_instituts?: Doctor_institutsListRelationFilter | undefined;
+  instituts_medicaux?: Instituts_medicauxListRelationFilter | undefined;
 
   @TypeGraphQL.Field(_type => UsersRelationFilter, {
     nullable: true

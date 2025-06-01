@@ -2,9 +2,9 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsOrderByRelationAggregateInput } from "../inputs/Consultation_lab_requestsOrderByRelationAggregateInput";
 import { DoctorsOrderByWithRelationInput } from "../inputs/DoctorsOrderByWithRelationInput";
 import { Instituts_medicauxOrderByWithRelationInput } from "../inputs/Instituts_medicauxOrderByWithRelationInput";
+import { Lab_requestsOrderByRelationAggregateInput } from "../inputs/Lab_requestsOrderByRelationAggregateInput";
 import { PatientsOrderByWithRelationInput } from "../inputs/PatientsOrderByWithRelationInput";
 import { PrescriptionsOrderByWithRelationInput } from "../inputs/PrescriptionsOrderByWithRelationInput";
 import { RdvsOrderByWithRelationInput } from "../inputs/RdvsOrderByWithRelationInput";
@@ -58,10 +58,10 @@ export class ConsultationsOrderByWithRelationInput {
   })
   patient_id?: "asc" | "desc" | undefined;
 
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsOrderByRelationAggregateInput, {
+  @TypeGraphQL.Field(_type => Lab_requestsOrderByRelationAggregateInput, {
     nullable: true
   })
-  consultation_lab_requests?: Consultation_lab_requestsOrderByRelationAggregateInput | undefined;
+  lab_requests?: Lab_requestsOrderByRelationAggregateInput | undefined;
 
   @TypeGraphQL.Field(_type => PrescriptionsOrderByWithRelationInput, {
     nullable: true

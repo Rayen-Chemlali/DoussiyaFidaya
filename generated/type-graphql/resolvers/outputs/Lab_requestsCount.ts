@@ -2,20 +2,20 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Lab_requestsCountConsultation_lab_requestsArgs } from "./args/Lab_requestsCountConsultation_lab_requestsArgs";
+import { Lab_requestsCountConsultationsArgs } from "./args/Lab_requestsCountConsultationsArgs";
 import { Lab_requestsCountLab_documentsArgs } from "./args/Lab_requestsCountLab_documentsArgs";
 
 @TypeGraphQL.ObjectType("Lab_requestsCount", {})
 export class Lab_requestsCount {
-  consultation_lab_requests!: number;
+  consultations!: number;
   lab_documents!: number;
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
-    name: "consultation_lab_requests",
+    name: "consultations",
     nullable: false
   })
-  getConsultation_lab_requests(@TypeGraphQL.Root() root: Lab_requestsCount, @TypeGraphQL.Args() args: Lab_requestsCountConsultation_lab_requestsArgs): number {
-    return root.consultation_lab_requests;
+  getConsultations(@TypeGraphQL.Root() root: Lab_requestsCount, @TypeGraphQL.Args() args: Lab_requestsCountConsultationsArgs): number {
+    return root.consultations;
   }
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {

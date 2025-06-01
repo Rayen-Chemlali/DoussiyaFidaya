@@ -4,10 +4,10 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { CertificatesCreateNestedManyWithoutDoctorsInput } from "../inputs/CertificatesCreateNestedManyWithoutDoctorsInput";
 import { ConsultationsCreateNestedManyWithoutDoctorsInput } from "../inputs/ConsultationsCreateNestedManyWithoutDoctorsInput";
-import { Doctor_institutsCreateNestedManyWithoutDoctorsInput } from "../inputs/Doctor_institutsCreateNestedManyWithoutDoctorsInput";
 import { DoctorsCreateeducationInput } from "../inputs/DoctorsCreateeducationInput";
 import { DoctorsCreateexperienceInput } from "../inputs/DoctorsCreateexperienceInput";
 import { DoctorsCreatelanguagesInput } from "../inputs/DoctorsCreatelanguagesInput";
+import { Instituts_medicauxCreateNestedManyWithoutDoctorsInput } from "../inputs/Instituts_medicauxCreateNestedManyWithoutDoctorsInput";
 import { Lab_requestsCreateNestedManyWithoutDoctorsInput } from "../inputs/Lab_requestsCreateNestedManyWithoutDoctorsInput";
 import { Rdv_requestsCreateNestedManyWithoutDoctorsInput } from "../inputs/Rdv_requestsCreateNestedManyWithoutDoctorsInput";
 import { RdvsCreateNestedManyWithoutDoctorsInput } from "../inputs/RdvsCreateNestedManyWithoutDoctorsInput";
@@ -77,10 +77,10 @@ export class DoctorsCreateWithoutPrescriptionsInput {
   })
   consultations?: ConsultationsCreateNestedManyWithoutDoctorsInput | undefined;
 
-  @TypeGraphQL.Field(_type => Doctor_institutsCreateNestedManyWithoutDoctorsInput, {
+  @TypeGraphQL.Field(_type => Instituts_medicauxCreateNestedManyWithoutDoctorsInput, {
     nullable: true
   })
-  doctor_instituts?: Doctor_institutsCreateNestedManyWithoutDoctorsInput | undefined;
+  instituts_medicaux?: Instituts_medicauxCreateNestedManyWithoutDoctorsInput | undefined;
 
   @TypeGraphQL.Field(_type => UsersCreateNestedOneWithoutDoctorsInput, {
     nullable: false
