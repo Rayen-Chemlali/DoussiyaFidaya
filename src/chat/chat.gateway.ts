@@ -6,34 +6,36 @@ import {
   OnGatewayDisconnect,
   ConnectedSocket,
   MessageBody,
-  WsException, // Pour les erreurs WebSocket
+  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { UsePipes, ValidationPipe, Logger } from '@nestjs/common'; // Ajout Logger
+import { UsePipes, ValidationPipe, Logger } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { SendMessageDto } from './dto/send-message.dto'; // Import DTO
-// import { NotificationService } from '../notification/notification.service'; // Si vous avez un service de notification
+import { SendMessageDto } from './dto/send-message.dto'; // Includes patientId
+import { Message } from '../types/chat.types'; // Import your Message type
+
+// Assuming your Doctor type is available or you can define a subset
+interface AuthenticatedDoctorData {
+  id: string;
+  // other fields from doctor object if needed by client on connection
+}
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN || '*', // Utiliser une variable d'environnement
+    origin: process.env.CORS_ORIGIN || '*',
     methods: ['GET', 'POST'],
     credentials: true,
   },
-  // path: '/socket.io' // Si vous voulez un chemin spécifique
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
   private readonly logger = new Logger(ChatGateway.name);
-  // La map connectedClients est utile par instance. Pour une solution globale avec Redis,
-  // vous pourriez avoir besoin de vérifier l'état de connexion via Redis aussi.
   private connectedClients: Map<string, Socket> = new Map();
 
   constructor(
     private readonly chatService: ChatService,
-    // private readonly notificationService: NotificationService, // Injecter le service de notification
   ) {}
 
   async handleConnection(client: Socket) {
@@ -45,7 +47,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      // Validation du token et récupération des données du docteur
       const doctor = await this.chatService.validateToken(token);
       if (!doctor) {
         this.logger.warn(`Invalid token for connection. Token: ${token.substring(0, 10)}...`);
@@ -53,14 +54,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      // Utiliser l'ID du docteur directement (pas user_id)
       this.connectedClients.set(doctor.id, client);
-      client.data.doctorId = doctor.id;
-      client.join(doctor.id); // Le docteur rejoint une room portant son ID pour messages privés
+      client.data.doctorId = doctor.id; // Store doctor's own ID on the socket
+      client.data.doctor = doctor; // Store full doctor object if needed by client
+      client.join(doctor.id); // Room for general notifications to this doctor
       this.logger.log(`Client connected: ${doctor.id} (Socket ID: ${client.id})`);
 
-      // Notifier les autres (ou un service de présence) que le docteur est en ligne
-      // Pour une présence à l'échelle, émettre via Redis ou mettre à jour un statut dans Redis
+      // Emit confirmation with user info
+      client.emit('connected_user_info', { id: doctor.id, firstName: doctor.first_name, lastName: doctor.last_name });
+
+
       this.server.emit('doctorOnline', { doctorId: doctor.id, status: 'online' });
 
     } catch (error) {
@@ -73,7 +76,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const doctorId = client.data.doctorId;
     if (doctorId) {
       this.connectedClients.delete(doctorId);
-      client.leave(doctorId);
+      // client.leave(doctorId); // No need to leave if room is just doctor.id
       this.logger.log(`Client disconnected: ${doctorId} (Socket ID: ${client.id})`);
       this.server.emit('doctorOffline', { doctorId: doctorId, status: 'offline' });
     } else {
@@ -85,95 +88,135 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('sendMessage')
   async handleMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: SendMessageDto,
-  ): Promise<any> { // Le client s'attend à un acquittement, donc on peut retourner le message ou un statut
+    @MessageBody() data: SendMessageDto, // Now includes patientId
+  ): Promise<any> {
     try {
       const senderId = client.data.doctorId;
       if (!senderId) {
         throw new WsException('Unauthorized: No senderId found on socket.');
       }
 
+      // Ensure patientId is present (already validated by DTO if required)
+      if (!data.patientId) {
+        throw new WsException('Patient ID is required to send a message.');
+      }
+
       const message = await this.chatService.createMessage(senderId, data);
 
-      // Envoyer au destinataire s'il est connecté (directement ou via la room)
-      // this.server.to(data.receiverId).emit('newMessage', message); // Si le receiverId est une room
+      // Prepare message payload for emission (e.g., with signed URLs for attachments)
+      const populatedMessage = { ...message };
+      if (populatedMessage.attachments) {
+        for (const att of populatedMessage.attachments) {
+          if (att.path) {
+            att.url = await this.chatService.getSignedUrlForAttachment(att.path);
+          }
+        }
+      }
+
+
+      // Emit to the receiver's specific room (doctor.id)
       const receiverSocket = this.connectedClients.get(data.receiverId);
       if (receiverSocket) {
-        receiverSocket.emit('newMessage', message);
+        // The 'newMessage' event should carry patientId to allow client to route it correctly
+        receiverSocket.emit('newMessage', populatedMessage);
       } else {
-        this.logger.log(`Receiver ${data.receiverId} is offline. TODO: Trigger push notification.`);
+        this.logger.log(`Receiver ${data.receiverId} is offline for patient ${data.patientId}. TODO: Trigger push notification.`);
         // await this.notificationService.sendChatPushNotification(data.receiverId, message);
       }
 
-      // Renvoyer le message à l'expéditeur pour confirmation (avec ID et timestamps)
-      client.emit('messageSent', message); // Ou juste un ack: return { status: 'ok', messageId: message.id };
-      return message; // Pour l'ack de Socket.IO si le client l'utilise
+      // Acknowledge to sender, also with patientId
+      client.emit('messageSent', populatedMessage);
+      return populatedMessage; // For Socket.IO ack
 
     } catch (error) {
-      this.logger.error(`Failed to send message from ${client.data.doctorId}`, error);
+      this.logger.error(`Failed to send message from ${client.data.doctorId} for patient ${data.patientId}`, error);
       if (error instanceof WsException) {
         throw error;
       }
-      throw new WsException(error.message || 'Failed to send message'); // Envoie l'erreur au client
+      throw new WsException(error.message || 'Failed to send message');
     }
   }
 
   @SubscribeMessage('markAsRead')
   async handleMarkAsRead(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { messageId: string },
+    @MessageBody() data: { messageId: string, patientId: string }, // client should send patientId for context
   ): Promise<any> {
     try {
       const readerId = client.data.doctorId;
       const message = await this.chatService.markMessageAsRead(data.messageId, readerId);
 
-      // Notifier l'expéditeur que le message a été lu (si l'expéditeur est en ligne)
-      // this.server.to(message.senderId).emit('messageRead', { messageId: message.id, conversationId: message.receiverId /*ou autre identifiant de conv*/ });
       const senderSocket = this.connectedClients.get(message.senderId);
       if (senderSocket) {
         senderSocket.emit('messageRead', {
           messageId: message.id,
           readBy: readerId,
-          // Potentiellement l'ID de la conversation pour mettre à jour l'UI
-          // conversationId: readerId === message.senderId ? message.receiverId : message.senderId
+          patientId: message.patientId, // Send patientId back
+          // conversationId: `${message.senderId}-${message.patientId}` // Or however the client identifies convos
         });
       }
-      return { status: 'success', messageId: message.id };
+      return { status: 'success', messageId: message.id, patientId: message.patientId };
     } catch (error) {
       this.logger.error(`Failed to mark message ${data.messageId} as read by ${client.data.doctorId}`, error);
       throw new WsException(error.message || 'Failed to mark message as read');
     }
   }
 
+  // Typing indicators now need patientId for context
   @SubscribeMessage('startTyping')
   handleStartTyping(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { receiverId: string },
+    @MessageBody() data: { receiverId: string, patientId: string },
   ): void {
     const senderId = client.data.doctorId;
-    if (!senderId || !data.receiverId) return;
+    if (!senderId || !data.receiverId || !data.patientId) return;
 
-    // this.server.to(data.receiverId).emit('typing', { doctorId: senderId, isTyping: true });
     const receiverSocket = this.connectedClients.get(data.receiverId);
     if (receiverSocket) {
-      receiverSocket.emit('typing', { doctorId: senderId, conversationPartnerId: senderId, isTyping: true });
+      // Emit with patientId so client can show typing in correct chat window
+      receiverSocket.emit('typing', { doctorId: senderId, patientId: data.patientId, isTyping: true });
     }
-    this.logger.debug(`Doctor ${senderId} started typing to ${data.receiverId}`);
+    this.logger.debug(`Doctor ${senderId} started typing to ${data.receiverId} for patient ${data.patientId}`);
   }
 
   @SubscribeMessage('stopTyping')
   handleStopTyping(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { receiverId: string },
+    @MessageBody() data: { receiverId: string, patientId: string },
   ): void {
     const senderId = client.data.doctorId;
-    if (!senderId || !data.receiverId) return;
+    if (!senderId || !data.receiverId || !data.patientId) return;
 
-    // this.server.to(data.receiverId).emit('typing', { doctorId: senderId, isTyping: false });
     const receiverSocket = this.connectedClients.get(data.receiverId);
     if (receiverSocket) {
-      receiverSocket.emit('typing', { doctorId: senderId, conversationPartnerId: senderId, isTyping: false });
+      receiverSocket.emit('typing', { doctorId: senderId, patientId: data.patientId, isTyping: false });
     }
-    this.logger.debug(`Doctor ${senderId} stopped typing to ${data.receiverId}`);
+    this.logger.debug(`Doctor ${senderId} stopped typing to ${data.receiverId} for patient ${data.patientId}`);
+  }
+
+  @SubscribeMessage('deleteMessage')
+  async handleDeleteMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { messageId: string, patientId: string, receiverId: string } // receiverId needed to notify other party
+  ): Promise<any> {
+    const doctorId = client.data.doctorId;
+    if (!doctorId) {
+      throw new WsException('Unauthorized');
+    }
+    try {
+      await this.chatService.deleteMessage(data.messageId, doctorId);
+      // Notify both sender (ack) and receiver
+      client.emit('messageDeleted', { messageId: data.messageId, patientId: data.patientId, status: 'success' });
+
+      const receiverSocket = this.connectedClients.get(data.receiverId);
+      if (receiverSocket) {
+        receiverSocket.emit('messageDeleted', { messageId: data.messageId, patientId: data.patientId });
+      }
+      this.logger.log(`Message ${data.messageId} deleted by ${doctorId} for patient ${data.patientId}`);
+      return { status: 'success', messageId: data.messageId, patientId: data.patientId };
+    } catch (error) {
+      this.logger.error(`Failed to delete message ${data.messageId} by ${doctorId}`, error);
+      throw new WsException(error.message || 'Failed to delete message');
+    }
   }
 }

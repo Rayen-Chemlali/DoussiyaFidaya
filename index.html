@@ -3,651 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Messenger Interface</title>
+    <title>Doctor Chat (Patient-Centric)</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .chat-container {
-            display: flex;
-            height: 100vh;
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-
-        /* Sidebar avec conversations */
-        .sidebar {
-            width: 350px;
-            border-right: 1px solid #e4e6ea;
-            display: flex;
-            flex-direction: column;
-            background: white;
-        }
-
-        .sidebar-header {
-            padding: 16px;
-            border-bottom: 1px solid #e4e6ea;
-            background: #fff;
-        }
-
-        .connection-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .connection-status.connected {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .connection-status.disconnected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .auth-section {
-            margin-bottom: 16px;
-        }
-
-        .auth-section textarea {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 60px;
-            font-size: 12px;
-        }
-
-        .auth-section input {
-            width: 100%;
-            padding: 8px 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        .btn-primary {
-            background: #1877f2;
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: #166fe5;
-        }
-
-        .btn-danger {
-            background: #e41e3f;
-            color: white;
-        }
-
-        .btn-danger:hover:not(:disabled) {
-            background: #d11a3b;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .conversations-header {
-            padding: 16px;
-            border-bottom: 1px solid #e4e6ea;
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .refresh-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 4px;
-            border-radius: 4px;
-        }
-
-        .refresh-btn:hover {
-            background: #f0f2f5;
-        }
-
-        .conversations-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .conversation-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-bottom: 1px solid #f0f2f5;
-        }
-
-        .conversation-item:hover {
-            background: #f0f2f5;
-        }
-
-        .conversation-item.active {
-            background: #e7f3ff;
-            border-right: 3px solid #1877f2;
-        }
-
-        .conversation-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #1877f2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .conversation-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .conversation-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-
-        .conversation-preview {
-            color: #65676b;
-            font-size: 13px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .conversation-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-        }
-
-        .conversation-time {
-            color: #65676b;
-            font-size: 12px;
-        }
-
-        .unread-badge {
-            background: #e41e3f;
-            color: white;
-            border-radius: 50%;
-            min-width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Zone de chat principale */
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: white;
-        }
-
-        .chat-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e4e6ea;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: white;
-        }
-
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #1877f2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .chat-info h3 {
-            font-size: 16px;
-            margin-bottom: 2px;
-        }
-
-        .chat-status {
-            color: #65676b;
-            font-size: 12px;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            background: #f0f2f5;
-        }
-
-        .message-group {
-            margin-bottom: 16px;
-        }
-
-        .message-date {
-            text-align: center;
-            color: #65676b;
-            font-size: 12px;
-            margin-bottom: 12px;
-            background: white;
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            margin: 0 auto 12px;
-            display: block;
-            width: fit-content;
-        }
-
-        .message {
-            display: flex;
-            margin-bottom: 8px;
-            align-items: flex-end;
-        }
-
-        .message.own {
-            flex-direction: row-reverse;
-        }
-
-        .message-bubble {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            word-wrap: break-word;
-            position: relative;
-        }
-
-        .message.own .message-bubble {
-            background: #1877f2;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message:not(.own) .message-bubble {
-            background: #e4e6ea;
-            color: #050505;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: #65676b;
-            margin: 4px 12px 0;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .message:hover .message-time {
-            opacity: 1;
-        }
-
-        .message.own .message-time {
-            text-align: right;
-        }
-
-        .message-attachments {
-            margin-top: 8px;
-        }
-
-        .attachment-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 12px;
-            border-radius: 12px;
-            margin: 4px;
-            font-size: 13px;
-        }
-
-        .message:not(.own) .attachment-item {
-            background: rgba(0,0,0,0.05);
-        }
-
-        .typing-indicator {
-            display: flex;
-            align-items: flex-end;
-            margin-bottom: 16px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .typing-indicator.show {
-            opacity: 1;
-        }
-
-        .typing-bubble {
-            background: #e4e6ea;
-            padding: 12px 16px;
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #65676b;
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .load-more {
-            text-align: center;
-            padding: 12px;
-            margin-bottom: 16px;
-        }
-
-        .load-more button {
-            background: #1877f2;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 16px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .load-more button:hover {
-            background: #166fe5;
-        }
-
-        .load-more button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* Zone de saisie */
-        .message-input-container {
-            padding: 16px;
-            border-top: 1px solid #e4e6ea;
-            background: white;
-        }
-
-        .file-preview {
-            margin-bottom: 12px;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            margin: 4px 0;
-            background: #f0f2f5;
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .remove-file {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #e41e3f;
-            padding: 4px;
-            border-radius: 4px;
-        }
-
-        .remove-file:hover {
-            background: #fee;
-        }
-
-        .message-input-wrapper {
-            display: flex;
-            align-items: flex-end;
-            gap: 8px;
-            background: #f0f2f5;
-            border-radius: 20px;
-            padding: 8px 12px;
-        }
-
-        .message-input {
-            flex: 1;
-            border: none;
-            background: none;
-            outline: none;
-            resize: none;
-            max-height: 100px;
-            font-size: 15px;
-            font-family: inherit;
-            line-height: 1.3;
-        }
-
-        .input-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-        }
-
-        .action-btn:hover {
-            background: rgba(0,0,0,0.05);
-        }
-
-        .send-btn {
-            background: #1877f2;
-            color: white;
-        }
-
-        .send-btn:hover:not(:disabled) {
-            background: #166fe5;
-        }
-
-        .send-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #65676b;
-            text-align: center;
-            padding: 32px;
-        }
-
-        .empty-state h3 {
-            margin-bottom: 8px;
-            color: #1c1e21;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: absolute;
-                left: 0;
-                z-index: 1000;
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .chat-main {
-                width: 100%;
-            }
-        }
-
-        .scroll-to-bottom {
-            position: absolute;
-            bottom: 80px;
-            right: 20px;
-            background: #1877f2;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s;
-        }
-
-        .scroll-to-bottom.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .scroll-to-bottom:hover {
-            background: #166fe5;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; height: 100vh; overflow: hidden; }
+        .chat-container { display: flex; height: 100vh; max-width: 1200px; margin: 0 auto; background: white; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+
+        /* Sidebar */
+        .sidebar { width: 380px; border-right: 1px solid #e4e6ea; display: flex; flex-direction: column; background: white; }
+        .sidebar-header { padding: 16px; border-bottom: 1px solid #e4e6ea; background: #fff; }
+        .connection-status { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; }
+        .connection-status.connected { background: #d4edda; color: #155724; }
+        .connection-status.disconnected { background: #f8d7da; color: #721c24; }
+        .auth-section textarea, .auth-section input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; resize: vertical; font-size: 12px; margin-bottom: 8px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background-color 0.2s; }
+        .btn-primary { background: #1877f2; color: white; }
+        .btn-primary:hover:not(:disabled) { background: #166fe5; }
+        .btn-danger { background: #e41e3f; color: white; }
+        .btn-danger:hover:not(:disabled) { background: #d11a3b; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .new-conversation-section { padding: 16px; border-bottom: 1px solid #e4e6ea;}
+        .new-conversation-section input { width: 100%; padding: 8px 12px; margin-bottom:8px; border: 1px solid #ddd; border-radius: 8px; }
+
+
+        .conversations-header { padding: 16px; border-bottom: 1px solid #e4e6ea; font-size: 18px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .refresh-btn { background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px; border-radius: 4px; }
+        .refresh-btn:hover { background: #f0f2f5; }
+        .conversations-list { flex: 1; overflow-y: auto; }
+        .conversation-item { display: flex; padding: 12px 16px; cursor: pointer; transition: background-color 0.2s; border-bottom: 1px solid #f0f2f5; }
+        .conversation-item:hover { background: #f0f2f5; }
+        .conversation-item.active { background: #e7f3ff; border-right: 3px solid #1877f2; }
+        .conversation-avatar { width: 50px; height: 50px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px; flex-shrink: 0; }
+        .conversation-info { flex: 1; min-width: 0; }
+        .conversation-name { font-weight: 600; margin-bottom: 2px; font-size: 14px; }
+        .conversation-patient { font-size: 12px; color: #333; margin-bottom: 4px; font-style: italic;}
+        .conversation-preview { color: #65676b; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conversation-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        .conversation-time { color: #65676b; font-size: 12px; }
+        .unread-badge { background: #e41e3f; color: white; border-radius: 50%; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+
+        /* Chat Main */
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: white; }
+        .chat-header { padding: 12px 16px; border-bottom: 1px solid #e4e6ea; display: flex; align-items: center; gap: 12px; background: white; }
+        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .chat-info h3 { font-size: 16px; margin-bottom: 2px; }
+        .chat-info .patient-context { font-size: 13px; color: #444; font-style: italic;}
+        .chat-status { color: #65676b; font-size: 12px; }
+        .messages-container { flex: 1; overflow-y: auto; padding: 16px; background: #f0f2f5; position: relative; }
+        .message-group { margin-bottom: 16px; }
+        .message-date { text-align: center; color: #65676b; font-size: 12px; margin-bottom: 12px; background: white; display: inline-block; padding: 4px 12px; border-radius: 12px; margin: 0 auto 12px; display: block; width: fit-content; }
+        .message { display: flex; margin-bottom: 2px; align-items: flex-end; position: relative; } /* Reduced margin, added relative */
+        .message.own { flex-direction: row-reverse; }
+        .message-bubble { max-width: 70%; padding: 10px 14px; border-radius: 18px; word-wrap: break-word; position: relative; }
+        .message.own .message-bubble { background: #1877f2; color: white; border-bottom-right-radius: 4px; }
+        .message:not(.own) .message-bubble { background: #e4e6ea; color: #050505; border-bottom-left-radius: 4px; }
+        .message-time { font-size: 10px; color: #888; margin: 2px 8px 0; display: block; clear: both; } /* Changed, always visible */
+        .message.own .message-time { text-align: right; }
+        .message:not(.own) .message-time { text-align: left; }
+        .message-read-status { font-size: 10px; color: #1877f2; margin-left: 5px; }
+        .message-actions { display: none; position: absolute; top: -10px; background: white; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); padding: 2px; }
+        .message:hover .message-actions { display: flex; }
+        .message.own .message-actions { right: 0; margin-right: 5px; } /* Adjust based on bubble */
+        .message:not(.own) .message-actions { left: 0; margin-left: 5px; }
+        .message-action-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 3px 5px; }
+
+        .message-attachments { margin-top: 6px; }
+        .attachment-item { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.3); padding: 6px 10px; border-radius: 10px; margin: 4px 2px; font-size: 12px; border: 1px solid rgba(0,0,0,0.05); }
+        .message:not(.own) .attachment-item { background: rgba(0,0,0,0.08); }
+        .attachment-item a { color: inherit; text-decoration: none; }
+        .attachment-item a:hover { text-decoration: underline; }
+
+        .typing-indicator { display: flex; align-items: flex-end; margin: 0 16px 8px 16px; opacity: 0; transition: opacity 0.3s; height: 0; }
+        .typing-indicator.show { opacity: 1; height: auto; margin-bottom: 8px; }
+        .typing-bubble { background: #e4e6ea; padding: 10px 14px; border-radius: 18px; border-bottom-left-radius: 4px; }
+        .typing-dots { display: flex; gap: 4px; }
+        .typing-dot { width: 7px; height: 7px; background: #65676b; border-radius: 50%; animation: typing 1.4s infinite ease-in-out; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+
+        .load-more { text-align: center; padding: 10px; margin-bottom: 10px; }
+        .load-more button { background: #e0e0e0; color: #333; border: none; padding: 8px 16px; border-radius: 16px; cursor: pointer; font-size: 13px; }
+        .load-more button:hover:not(:disabled) { background: #d0d0d0; }
+        .load-more button:disabled { background: #f0f0f0; color: #aaa; cursor: not-allowed; }
+
+        .message-input-container { padding: 12px 16px; border-top: 1px solid #e4e6ea; background: white; }
+        .file-preview { margin-bottom: 8px; max-height: 80px; overflow-y: auto; }
+        .file-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; margin: 4px 0; background: #f0f2f5; border-radius: 8px; font-size: 12px; }
+        .file-info { display: flex; align-items: center; gap: 6px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .remove-file { background: none; border: none; cursor: pointer; color: #e41e3f; padding: 4px; border-radius: 4px; font-size: 14px; }
+        .message-input-wrapper { display: flex; align-items: flex-end; gap: 8px; background: #f0f2f5; border-radius: 24px; padding: 6px 12px; }
+        .message-input { flex: 1; border: none; background: none; outline: none; resize: none; max-height: 100px; font-size: 15px; font-family: inherit; line-height: 1.4; padding: 6px 0; }
+        .input-actions { display: flex; gap: 6px; align-items: center; }
+        .action-btn { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; font-size: 18px; color: #555; }
+        .action-btn:hover { background: rgba(0,0,0,0.05); }
+        .send-btn { background: #1877f2; color: white; }
+        .send-btn:hover:not(:disabled) { background: #166fe5; }
+        .send-btn:disabled { background: #bddefc; cursor: not-allowed; }
+
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #65676b; text-align: center; padding: 32px; }
+        .empty-state h3 { margin-bottom: 8px; color: #1c1e21; }
+        .scroll-to-bottom { position: absolute; bottom: 90px; right: 25px; background: #1877f2; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(10px); transition: all 0.3s; z-index: 10; }
+        .scroll-to-bottom.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
 <div class="chat-container">
-    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div id="connectionStatus" class="connection-status disconnected">
-                <span>🔴</span>
-                <span>Disconnected</span>
+                <span>🔴</span><span>Disconnected</span>
             </div>
-
             <div class="auth-section">
-                <textarea id="tokenInput" placeholder="JWT Token..." rows="2"></textarea>
+                <textarea id="tokenInput" placeholder="JWT Token..." rows="3"></textarea>
                 <input type="text" id="serverUrl" value="http://localhost:3000" placeholder="Server URL">
                 <div style="display: flex; gap: 8px; margin-top: 8px;">
                     <button id="connectBtn" class="btn btn-primary">Connect</button>
                     <button id="disconnectBtn" class="btn btn-danger" disabled>Disconnect</button>
                 </div>
+                <p id="currentUserInfo" style="font-size: 12px; margin-top: 8px; color: #333;"></p>
             </div>
+        </div>
+
+        <div class="new-conversation-section">
+            <h4 style="margin-bottom:8px; font-weight: 600;">Start New Discussion</h4>
+            <input type="text" id="newPatientId" placeholder="Patient ID (UUID)">
+            <input type="text" id="newDoctorId" placeholder="Other Doctor ID (UUID)">
+            <button id="startNewConversationBtn" class="btn btn-primary" style="width:100%; margin-top:4px;">Start/Open Discussion</button>
         </div>
 
         <div class="conversations-header">
-            <span>Conversations</span>
+            <span>Discussions</span>
             <button class="refresh-btn" id="refreshConversations" title="Refresh">🔄</button>
         </div>
-
         <div class="conversations-list" id="conversationsList">
-            <div class="empty-state">
-                <h3>No conversations</h3>
-                <p>Connect to load your conversations</p>
-            </div>
+            <div class="empty-state"><h3>No discussions</h3><p>Connect to load.</p></div>
         </div>
     </div>
 
-    <!-- Chat Main -->
     <div class="chat-main">
         <div id="chatContent" class="empty-state">
-            <h3>Welcome to Chat</h3>
-            <p>Select a conversation to start messaging</p>
+            <h3>Welcome to Doctor Chat</h3>
+            <p>Select a discussion about a patient to start messaging.</p>
         </div>
     </div>
 </div>
 
-<!-- File input hidden -->
-<input type="file" id="fileInput" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt" style="display: none;">
+<input type="file" id="fileInput" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar" style="display: none;">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
 <script>
     class ChatApp {
         constructor() {
             this.socket = null;
-            this.currentConversation = null;
-            this.conversations = new Map();
-            this.messages = new Map();
-            this.currentUser = null;
+            this.currentConversation = null; // { partnerDoctorId: string, patientId: string, patientName: string, partnerDoctorName: string }
+            this.conversations = new Map(); // Key: "partnerDoctorId-patientId", Value: conversation object
+            this.messages = new Map(); // Key: "partnerDoctorId-patientId", Value: { messages: [], hasMore: true, nextCursor: null }
+            this.currentUser = null; // { id: string, firstName: string, lastName: string }
             this.isTyping = false;
             this.typingTimeout = null;
+            this.typingCleanupTimeout = null;
             this.selectedFiles = [];
+            this.messageCursors = new Map(); // Stores nextCursor for pagination
 
             this.initializeElements();
             this.bindEvents();
@@ -656,38 +176,34 @@
 
         initializeElements() {
             this.elements = {
-                // Connection
                 tokenInput: document.getElementById('tokenInput'),
                 serverUrl: document.getElementById('serverUrl'),
                 connectBtn: document.getElementById('connectBtn'),
                 disconnectBtn: document.getElementById('disconnectBtn'),
                 connectionStatus: document.getElementById('connectionStatus'),
-
-                // Sidebar
+                currentUserInfo: document.getElementById('currentUserInfo'),
                 sidebar: document.getElementById('sidebar'),
                 conversationsList: document.getElementById('conversationsList'),
                 refreshConversations: document.getElementById('refreshConversations'),
-
-                // Chat
+                newPatientIdInput: document.getElementById('newPatientId'),
+                newDoctorIdInput: document.getElementById('newDoctorId'),
+                startNewConversationBtn: document.getElementById('startNewConversationBtn'),
                 chatContent: document.getElementById('chatContent'),
                 fileInput: document.getElementById('fileInput')
             };
         }
 
         bindEvents() {
-            // Connection events
             this.elements.connectBtn.addEventListener('click', () => this.connect());
             this.elements.disconnectBtn.addEventListener('click', () => this.disconnect());
             this.elements.refreshConversations.addEventListener('click', () => this.loadConversations());
-
-            // File input
             this.elements.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+            this.elements.startNewConversationBtn.addEventListener('click', () => this.handleStartNewConversation());
         }
 
         loadFromStorage() {
             const token = localStorage.getItem('chat_token');
             const serverUrl = localStorage.getItem('chat_server_url');
-
             if (token) this.elements.tokenInput.value = token;
             if (serverUrl) this.elements.serverUrl.value = serverUrl;
         }
@@ -697,66 +213,98 @@
             localStorage.setItem('chat_server_url', this.elements.serverUrl.value);
         }
 
+        decodeJwt(token) {
+            try {
+                return jwt_decode(token);
+            } catch (e) {
+                console.error("Failed to decode JWT:", e);
+                return null;
+            }
+        }
+
         async connect() {
             const token = this.elements.tokenInput.value.trim();
             const url = this.elements.serverUrl.value.trim();
 
-            if (!token) {
-                alert('Please enter a JWT token');
-                return;
+            if (!token) { alert('Please enter a JWT token'); return; }
+
+            // Attempt to decode JWT to get user ID early for UI consistency
+            const decodedToken = this.decodeJwt(token);
+            if (decodedToken && decodedToken.associated_data && decodedToken.associated_data.id) {
+                // Placeholder, actual name comes from 'connected_user_info'
+                this.currentUser = { id: decodedToken.associated_data.id, firstName: "Loading", lastName: "User..." };
+                this.elements.currentUserInfo.textContent = `Logged in as: ${this.currentUser.id.substring(0,8)}...`;
+            } else {
+                console.warn("Could not extract user ID from token structure immediately.");
+                // If you can't decode or structure is different, wait for server confirmation
             }
+
 
             this.saveToStorage();
             this.updateConnectionStatus('Connecting...', 'connecting');
 
-            this.socket = io(url, {
-                auth: { token },
-                transports: ['websocket', 'polling']
-            });
-
+            if (this.socket) { this.socket.disconnect(); }
+            this.socket = io(url, { auth: { token }, transports: ['websocket', 'polling'] });
             this.setupSocketEvents();
         }
 
         disconnect() {
-            if (this.socket) {
-                this.socket.disconnect();
-                this.socket = null;
-            }
+            if (this.socket) { this.socket.disconnect(); }
+            // State reset handled in 'disconnect' event
+        }
+
+        resetAppState() {
+            this.socket = null;
+            this.currentConversation = null;
+            this.conversations.clear();
+            this.messages.clear();
+            this.messageCursors.clear();
+            this.currentUser = null;
+            this.selectedFiles = [];
+            this.elements.conversationsList.innerHTML = '<div class="empty-state"><h3>No discussions</h3><p>Connect to load.</p></div>';
+            this.elements.chatContent.innerHTML = '<div class="empty-state"><h3>Welcome</h3><p>Select a discussion.</p></div>';
+            this.elements.currentUserInfo.textContent = '';
             this.updateConnectionStatus('Disconnected', 'disconnected');
             this.updateButtons(false);
         }
+
 
         setupSocketEvents() {
             this.socket.on('connect', () => {
                 this.updateConnectionStatus('Connected', 'connected');
                 this.updateButtons(true);
-                this.loadConversations();
+                // User info might be confirmed by server here
+                // this.loadConversations(); // Moved to after 'connected_user_info'
+            });
+
+            this.socket.on('connected_user_info', (userInfo) => {
+                this.currentUser = userInfo; // { id, firstName, lastName }
+                this.elements.currentUserInfo.textContent = `Logged in as: ${this.currentUser.firstName} ${this.currentUser.lastName} (${this.currentUser.id.substring(0,8)}...)`;
+                this.loadConversations(); // Now load conversations
             });
 
             this.socket.on('disconnect', (reason) => {
-                this.updateConnectionStatus('Disconnected', 'disconnected');
-                this.updateButtons(false);
                 console.log('Disconnected:', reason);
+                this.resetAppState(); // Full reset
             });
 
             this.socket.on('connect_error', (error) => {
-                this.updateConnectionStatus('Connection Error', 'error');
-                this.updateButtons(false);
                 console.error('Connection error:', error);
+                this.resetAppState();
+                this.updateConnectionStatus(`Error: ${error.message}`, 'error');
             });
 
-            this.socket.on('newMessage', (message) => this.handleNewMessage(message));
-            this.socket.on('messageSent', (message) => this.handleMessageSent(message));
-            this.socket.on('messageRead', (data) => this.handleMessageRead(data));
-            this.socket.on('typing', (data) => this.handleTyping(data));
-            this.socket.on('doctorOnline', (data) => this.handleDoctorOnline(data));
-            this.socket.on('doctorOffline', (data) => this.handleDoctorOffline(data));
+            this.socket.on('newMessage', (message) => this.handleNewMessage(message, false));
+            this.socket.on('messageSent', (message) => this.handleNewMessage(message, true)); // Handle own sent message for UI update
+            this.socket.on('messageRead', (data) => this.handleMessageRead(data)); // { messageId, patientId, readBy }
+            this.socket.on('typing', (data) => this.handleTyping(data)); // { doctorId, patientId, isTyping }
+            this.socket.on('messageDeleted', (data) => this.handleMessageDeleted(data)); // { messageId, patientId }
+            // doctorOnline/Offline can be used to update UI elements if needed
         }
 
         updateConnectionStatus(text, type) {
             const status = this.elements.connectionStatus;
             status.className = `connection-status ${type}`;
-
             const emoji = type === 'connected' ? '🟢' : type === 'connecting' ? '🟡' : '🔴';
             status.innerHTML = `<span>${emoji}</span><span>${text}</span>`;
         }
@@ -764,232 +312,314 @@
         updateButtons(connected) {
             this.elements.connectBtn.disabled = connected;
             this.elements.disconnectBtn.disabled = !connected;
+            this.elements.refreshConversations.disabled = !connected;
+            this.elements.startNewConversationBtn.disabled = !connected;
         }
 
+        async fetchApi(endpoint, options = {}) {
+            if (!this.currentUser || !this.elements.tokenInput.value) {
+                console.error("Fetch API: Not authenticated.");
+                // alert("Authentication token is missing. Please reconnect.");
+                return null;
+            }
+            const headers = {
+                'Authorization': `Bearer ${this.elements.tokenInput.value}`,
+                'Content-Type': 'application/json',
+                ...options.headers,
+            };
+            const response = await fetch(`${this.elements.serverUrl.value}${endpoint}`, { ...options, headers });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                console.error(`API Error ${response.status} for ${endpoint}:`, errorData);
+                alert(`Error: ${errorData.message || 'Failed to fetch data.'}`);
+                if(response.status === 401) this.disconnect(); // Auto-disconnect on auth error
+                return null;
+            }
+            if (response.status === 204) return true; // No content
+            return response.json();
+        }
+
+
         async loadConversations() {
-            if (!this.socket || !this.socket.connected) return;
+            if (!this.socket || !this.socket.connected || !this.currentUser) return;
+            this.elements.conversationsList.innerHTML = '<div class="empty-state"><p>Loading discussions...</p></div>';
 
-            try {
-                const response = await fetch('/chat/conversations', {
-                    headers: {
-                        'Authorization': `Bearer ${this.elements.tokenInput.value}`
-                    }
-                });
-
-                if (response.ok) {
-                    const conversations = await response.json();
-                    this.renderConversations(conversations);
-                } else {
-                    console.error('Failed to load conversations');
-                }
-            } catch (error) {
-                console.error('Error loading conversations:', error);
+            const conversationsData = await this.fetchApi('/chat/conversations');
+            if (conversationsData) {
+                this.conversations.clear();
+                conversationsData.forEach(conv => this.conversations.set(conv.id, conv)); // conv.id is "partnerDoctorId-patientId"
+                this.renderConversations();
+            } else {
+                this.elements.conversationsList.innerHTML = '<div class="empty-state"><h3>Failed to load</h3><p>Try refreshing.</p></div>';
             }
         }
 
-        renderConversations(conversations) {
+        renderConversations() {
             const container = this.elements.conversationsList;
+            const sortedConversations = Array.from(this.conversations.values()).sort((a, b) => {
+                const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0);
+                const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0);
+                return dateB - dateA;
+            });
 
-            if (conversations.length === 0) {
-                container.innerHTML = `
-                        <div class="empty-state">
-                            <h3>No conversations</h3>
-                            <p>Start a new conversation</p>
-                        </div>
-                    `;
+            if (sortedConversations.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No discussions</h3><p>Start a new one below.</p></div>`;
                 return;
             }
 
-            container.innerHTML = conversations.map(conv => {
-                const doctor = conv.doctor;
+            container.innerHTML = sortedConversations.map(conv => {
+                const doctor = conv.partnerDoctor;
+                const patient = conv.patient;
                 const lastMessage = conv.lastMessage;
                 const unreadCount = conv.unreadCount || 0;
 
-                const avatarText = `${doctor.first_name?.[0] || ''}${doctor.last_name?.[0] || ''}`.toUpperCase();
-                const fullName = `${doctor.first_name || ''} ${doctor.last_name || ''}`.trim();
+                const avatarText = `${doctor.first_name?.[0] || 'Dr'}${doctor.last_name?.[0] || ''}`.toUpperCase();
+                const fullName = `${doctor.first_name || 'Doctor'} ${doctor.last_name || ''}`.trim();
+                const patientName = patient.name || `Patient ${patient.id.substring(0,8)}`;
 
-                let preview = 'No messages yet';
-                let timeText = '';
-
-                if (lastMessage) {
-                    preview = lastMessage.content || 'Attachment';
-                    timeText = this.formatTime(lastMessage.createdAt);
-                }
+                let preview = lastMessage?.content ? (lastMessage.content.length > 30 ? lastMessage.content.substring(0,27)+'...' : lastMessage.content) : (lastMessage?.attachments?.length > 0 ? '📎 Attachment' : 'No messages yet');
+                let timeText = lastMessage ? this.formatTime(lastMessage.createdAt) : '';
+                const conversationId = conv.id; // "partnerDoctorId-patientId"
 
                 return `
-                        <div class="conversation-item" data-doctor-id="${doctor.id}" onclick="chatApp.selectConversation('${doctor.id}')">
-                            <div class="conversation-avatar">${avatarText}</div>
-                            <div class="conversation-info">
-                                <div class="conversation-name">${fullName}</div>
-                                <div class="conversation-preview">${preview}</div>
-                            </div>
-                            <div class="conversation-meta">
-                                ${timeText ? `<div class="conversation-time">${timeText}</div>` : ''}
-                                ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
-                            </div>
+                    <div class="conversation-item ${this.currentConversation?.id === conversationId ? 'active' : ''}"
+                         data-conversation-id="${conversationId}"
+                         onclick="chatApp.selectConversation('${conversationId}')">
+                        <div class="conversation-avatar" style="${doctor.profile_image ? `background-image:url(${doctor.profile_image}); background-size:cover;` : ''}">${!doctor.profile_image ? avatarText : ''}</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">${fullName}</div>
+                            <div class="conversation-patient">Re: ${patientName}</div>
+                            <div class="conversation-preview">${preview}</div>
                         </div>
-                    `;
+                        <div class="conversation-meta">
+                            ${timeText ? `<div class="conversation-time">${timeText}</div>` : ''}
+                            ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
+                        </div>
+                    </div>`;
             }).join('');
-
-            // Store conversations data
-            conversations.forEach(conv => {
-                this.conversations.set(conv.doctor.id, conv);
-            });
         }
 
-        async selectConversation(doctorId) {
-            // Update UI
-            document.querySelectorAll('.conversation-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`[data-doctor-id="${doctorId}"]`)?.classList.add('active');
+        handleStartNewConversation() {
+            const patientId = this.elements.newPatientIdInput.value.trim();
+            const otherDoctorId = this.elements.newDoctorIdInput.value.trim();
 
-            this.currentConversation = doctorId;
-
-            // Load conversation messages
-            await this.loadMessages(doctorId);
-            this.renderChatInterface(doctorId);
-        }
-
-        async loadMessages(doctorId, cursor = null) {
-            if (!this.socket || !this.socket.connected) return;
-
-            try {
-                const url = new URL('/chat/messages', window.location.origin);
-                url.searchParams.set('doctorId', doctorId);
-                url.searchParams.set('limit', '50');
-                if (cursor) url.searchParams.set('cursor', cursor);
-
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${this.elements.tokenInput.value}`
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-
-                    if (!this.messages.has(doctorId)) {
-                        this.messages.set(doctorId, []);
-                    }
-
-                    const existingMessages = this.messages.get(doctorId);
-
-                    if (cursor) {
-                        // Prepend older messages
-                        this.messages.set(doctorId, [...data.messages.reverse(), ...existingMessages]);
-                    } else {
-                        // Initial load
-                        this.messages.set(doctorId, data.messages.reverse());
-                    }
-
-                    this.renderMessages(doctorId, !cursor);
-                    return data;
-                }
-            } catch (error) {
-                console.error('Error loading messages:', error);
+            if (!patientId || !otherDoctorId) {
+                alert("Please provide both Patient ID and other Doctor ID.");
+                return;
             }
-            return null;
+            if (otherDoctorId === this.currentUser.id) {
+                alert("You cannot start a conversation with yourself.");
+                return;
+            }
+            // Basic UUID validation (very simple)
+            const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+            if (!uuidRegex.test(patientId) || !uuidRegex.test(otherDoctorId)) {
+                alert("Patient ID and Doctor ID must be valid UUIDs.");
+                return;
+            }
+
+
+            const conversationId = `${otherDoctorId}-${patientId}`;
+
+            // If conversation exists, select it. Otherwise, prepare a new one.
+            if (this.conversations.has(conversationId)) {
+                this.selectConversation(conversationId);
+            } else {
+                // Create a temporary conversation object to open the chat window
+                // This assumes you can fetch doctor/patient details if needed, or use placeholders
+                // For now, we'll create a shell and let the first message "officially" create it via backend
+                // Or, you might need an API to get doctor details by ID
+                const tempNewConv = {
+                    id: conversationId,
+                    partnerDoctor: { id: otherDoctorId, first_name: "Doctor", last_name: otherDoctorId.substring(0,8), profile_image: null /* more fields */ },
+                    patient: { id: patientId, name: `Patient ${patientId.substring(0,8)}` },
+                    lastMessage: null,
+                    unreadCount: 0
+                };
+                this.conversations.set(conversationId, tempNewConv); // Add to map
+                this.renderConversations(); // Re-render list
+                this.selectConversation(conversationId); // Select it
+            }
+            this.elements.newPatientIdInput.value = '';
+            this.elements.newDoctorIdInput.value = '';
         }
 
-        renderChatInterface(doctorId) {
-            const conversation = this.conversations.get(doctorId);
-            if (!conversation) return;
 
-            const doctor = conversation.doctor;
-            const avatarText = `${doctor.first_name?.[0] || ''}${doctor.last_name?.[0] || ''}`.toUpperCase();
-            const fullName = `${doctor.first_name || ''} ${doctor.last_name || ''}`.trim();
+        async selectConversation(conversationId) {
+            const conversation = this.conversations.get(conversationId);
+            if (!conversation) {
+                console.error("Selected conversation not found in map:", conversationId);
+                return;
+            }
+
+            this.currentConversation = {
+                id: conversation.id, // "partnerDoctorId-patientId"
+                partnerDoctorId: conversation.partnerDoctor.id,
+                patientId: conversation.patient.id,
+                patientName: conversation.patient.name,
+                partnerDoctorName: `${conversation.partnerDoctor.first_name} ${conversation.partnerDoctor.last_name}`,
+                partnerDoctorAvatar: conversation.partnerDoctor.profile_image,
+                partnerDoctorSpecialty: conversation.partnerDoctor.specialty,
+            };
+
+            document.querySelectorAll('.conversation-item').forEach(item => item.classList.remove('active'));
+            const currentConvElement = document.querySelector(`[data-conversation-id="${conversationId}"]`);
+            if (currentConvElement) currentConvElement.classList.add('active');
+
+            this.renderChatInterface();
+            await this.loadMessages(true); // Load initial messages for this new conversation
+
+            // Mark messages as read (if any unread for this specific conversation)
+            // This needs a more refined logic: iterate messages and call markAsRead if they are unread and receiver is current user.
+            // For simplicity, new messages received will trigger read status.
+            // Or, if conversation.unreadCount > 0, loop through its messages when loaded and mark them.
+            // Let's assume opening the chat and loading messages implies they are seen. The backend should update read status for messages fetched.
+            // A more proactive approach:
+            if (conversation.unreadCount > 0) {
+                const messagesData = this.messages.get(this.currentConversation.id);
+                if (messagesData && messagesData.messages) {
+                    messagesData.messages.forEach(msg => {
+                        if (!msg.isRead && msg.receiverId === this.currentUser.id) {
+                            this.socket.emit('markAsRead', { messageId: msg.id, patientId: this.currentConversation.patientId });
+                        }
+                    });
+                }
+                // Optimistically update UI
+                conversation.unreadCount = 0;
+                this.renderConversations();
+            }
+
+        }
+
+        async loadMessages(isInitialLoad = false) {
+            if (!this.socket || !this.socket.connected || !this.currentConversation) return;
+
+            const { partnerDoctorId, patientId, id: conversationId } = this.currentConversation;
+            let currentMessagesData = this.messages.get(conversationId);
+
+            if (isInitialLoad) {
+                this.messages.set(conversationId, { messages: [], hasMore: true, nextCursor: null });
+                currentMessagesData = this.messages.get(conversationId);
+                const messagesContentEl = document.getElementById('messagesContent');
+                if(messagesContentEl) messagesContentEl.innerHTML = '<div class="empty-state"><p>Loading messages...</p></div>';
+            }
+
+            if (!currentMessagesData.hasMore && !isInitialLoad) {
+                const loadMoreBtn = document.getElementById('loadMoreMessagesBtn');
+                if(loadMoreBtn) loadMoreBtn.disabled = true;
+                return; // No more messages to load
+            }
+
+            const cursor = currentMessagesData.nextCursor;
+
+            const url = `/chat/messages?doctorId=${partnerDoctorId}&patientId=${patientId}&limit=20${cursor ? '&cursor=' + cursor : ''}`;
+            const data = await this.fetchApi(url);
+
+            if (data && data.messages) {
+                const newMessages = data.messages.reverse(); // API returns newest first, reverse for prepending
+                currentMessagesData.messages = isInitialLoad ? newMessages : [...newMessages, ...currentMessagesData.messages];
+                currentMessagesData.hasMore = data.hasMore;
+                currentMessagesData.nextCursor = data.nextCursor;
+                this.messages.set(conversationId, currentMessagesData);
+                this.renderMessages(isInitialLoad);
+            }
+        }
+
+        renderChatInterface() {
+            if (!this.currentConversation) {
+                this.elements.chatContent.innerHTML = '<div class="empty-state"><h3>Error</h3><p>No conversation selected.</p></div>';
+                return;
+            }
+            const { partnerDoctorName, patientName, partnerDoctorAvatar, partnerDoctorSpecialty } = this.currentConversation;
+            const avatarText = partnerDoctorName.split(" ").map(n => n[0]).join("").toUpperCase();
 
             this.elements.chatContent.innerHTML = `
-                    <div class="chat-header">
-                        <div class="chat-avatar">${avatarText}</div>
-                        <div class="chat-info">
-                            <h3>${fullName}</h3>
-                            <div class="chat-status">${doctor.specialty || 'Doctor'}</div>
+                <div class="chat-header">
+                    <div class="chat-avatar" style="${partnerDoctorAvatar ? `background-image:url(${partnerDoctorAvatar}); background-size:cover;` : ''}">${!partnerDoctorAvatar ? avatarText : ''}</div>
+                    <div class="chat-info">
+                        <h3>${partnerDoctorName}</h3>
+                        <div class="patient-context">Discussion about: ${patientName}</div>
+                        <div class="chat-status" id="chatPartnerStatus">${partnerDoctorSpecialty || 'Doctor'}</div>
+                    </div>
+                </div>
+                <div class="messages-container" id="messagesContainer">
+                    <div class="load-more" id="loadMoreContainer">
+                        <button id="loadMoreMessagesBtn" onclick="chatApp.loadMessages(false)" disabled>Load Older Messages</button>
+                    </div>
+                    <div id="messagesContent"></div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-bubble"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>
+                    </div>
+                </div>
+                <div class="message-input-container">
+                    <div class="file-preview" id="filePreview"></div>
+                    <div class="message-input-wrapper">
+                        <div class="input-actions">
+                            <button class="action-btn" onclick="chatApp.elements.fileInput.click()" title="Attach file">📎</button>
+                        </div>
+                        <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1" onkeydown="chatApp.handleInputKeydown(event)" oninput="chatApp.handleInputChange(event)"></textarea>
+                        <div class="input-actions">
+                            <button class="action-btn send-btn" id="sendBtn" onclick="chatApp.sendMessage()" title="Send message" disabled>➤</button>
                         </div>
                     </div>
+                </div>
+                <button class="scroll-to-bottom" id="scrollToBottomBtn" onclick="chatApp.scrollToBottom()">↓</button>`;
 
-                    <div class="messages-container" id="messagesContainer">
-                        <div id="messagesContent"></div>
-                        <div class="typing-indicator" id="typingIndicator">
-                            <div class="typing-bubble">
-                                <div class="typing-dots">
-                                    <div class="typing-dot"></div>
-                                    <div class="typing-dot"></div>
-                                    <div class="typing-dot"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            const msgContainer = document.getElementById('messagesContainer');
+            msgContainer.addEventListener('scroll', () => this.handleScroll(msgContainer));
 
-                    <div class="message-input-container">
-                        <div class="file-preview" id="filePreview"></div>
-                        <div class="message-input-wrapper">
-                            <div class="input-actions">
-                                <button class="action-btn" onclick="chatApp.selectFiles()" title="Attach file">📎</button>
-                            </div>
-                            <textarea
-                                class="message-input"
-                                id="messageInput"
-                                placeholder="Type a message..."
-                                rows="1"
-                                onkeydown="chatApp.handleInputKeydown(event)"
-                                oninput="chatApp.handleInputChange(event)"
-                            ></textarea>
-                            <div class="input-actions">
-                                <button class="action-btn send-btn" id="sendBtn" onclick="chatApp.sendMessage()" title="Send message">➤</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="scroll-to-bottom" id="scrollToBottom" onclick="chatApp.scrollToBottom()">↓</button>
-                `;
-
-            // Setup message container scroll events
-            const container = document.getElementById('messagesContainer');
-            container.addEventListener('scroll', () => this.handleScroll());
+            const messageInputEl = document.getElementById('messageInput');
+            messageInputEl.addEventListener('input', () => {
+                document.getElementById('sendBtn').disabled = messageInputEl.value.trim() === '' && this.selectedFiles.length === 0;
+            });
         }
 
-        renderMessages(doctorId, scrollToBottom = true) {
-            const messages = this.messages.get(doctorId) || [];
+        renderMessages(scrollToBottom = true) {
+            if (!this.currentConversation) return;
+            const conversationId = this.currentConversation.id;
+            const messagesData = this.messages.get(conversationId);
             const container = document.getElementById('messagesContent');
-            if (!container) return;
+            const loadMoreBtn = document.getElementById('loadMoreMessagesBtn');
 
-            if (messages.length === 0) {
-                container.innerHTML = `
-                        <div class="empty-state">
-                            <h3>No messages yet</h3>
-                            <p>Start the conversation!</p>
-                        </div>
-                    `;
+            if (!container || !messagesData) return;
+
+            if (loadMoreBtn) {
+                loadMoreBtn.disabled = !messagesData.hasMore;
+                document.getElementById('loadMoreContainer').style.display = messagesData.messages.length === 0 && !messagesData.hasMore ? 'none' : 'block';
+            }
+
+
+            if (messagesData.messages.length === 0) {
+                container.innerHTML = `<div class="empty-state" style="padding:50px 0;"><h3>No messages yet</h3><p>Start the discussion!</p></div>`;
                 return;
             }
 
             let html = '';
             let currentDate = '';
-
-            messages.forEach((message, index) => {
+            messagesData.messages.forEach(message => {
                 const messageDate = new Date(message.createdAt).toDateString();
-
                 if (messageDate !== currentDate) {
                     currentDate = messageDate;
                     html += `<div class="message-date">${this.formatDate(message.createdAt)}</div>`;
                 }
-
-                const isOwn = message.senderId === this.getCurrentUserId();
+                const isOwn = message.senderId === this.currentUser.id;
                 const time = this.formatTime(message.createdAt);
 
                 html += `
-                        <div class="message ${isOwn ? 'own' : ''}" data-message-id="${message.id}">
-                            <div class="message-bubble">
-                                ${message.content}
-                                ${this.renderAttachments(message.attachments)}
-                            </div>
-                            <div class="message-time">${time}</div>
+                    <div class="message ${isOwn ? 'own' : ''}" data-message-id="${message.id}">
+                        <div class="message-bubble">
+                            ${message.content.replace(/\n/g, '<br>')}
+                            ${this.renderAttachments(message.attachments)}
                         </div>
-                    `;
+                        <div class="message-actions">
+                           ${isOwn ? `<button class="message-action-btn" title="Delete" onclick="chatApp.confirmDeleteMessage('${message.id}')">🗑️</button>` : ''}
+                           </div>
+                    </div>
+                    <div class="message-time ${isOwn ? 'own' : ''}">
+                        ${time}
+                        ${isOwn && message.isRead ? '<span class="message-read-status">✓✓</span>' : (isOwn ? '✓' : '')}
+                    </div>`;
             });
-
             container.innerHTML = html;
 
             if (scrollToBottom) {
@@ -997,79 +627,82 @@
             }
         }
 
-        renderAttachments(attachments) {
-            if (!attachments || attachments.length === 0) return '';
-            
-            return `
-                <div class="message-attachments">
-                    ${attachments.map(attachment => `
-                        <div class="attachment-item">
-                            <span>📎</span>
-                            <span>${attachment.name}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+        confirmDeleteMessage(messageId) {
+            if (confirm("Are you sure you want to delete this message? This cannot be undone.")) {
+                this.deleteMessage(messageId);
+            }
         }
 
-        formatDate(date) {
-            const d = new Date(date);
+        deleteMessage(messageId) {
+            if (!this.socket || !this.socket.connected || !this.currentConversation) return;
+            this.socket.emit('deleteMessage', {
+                messageId: messageId,
+                patientId: this.currentConversation.patientId,
+                receiverId: this.currentConversation.partnerDoctorId // Needed for backend to notify partner
+            });
+        }
+
+        handleMessageDeleted(data) { // { messageId, patientId }
+            if (this.currentConversation && this.currentConversation.patientId === data.patientId) {
+                const messagesData = this.messages.get(this.currentConversation.id);
+                if (messagesData) {
+                    messagesData.messages = messagesData.messages.filter(m => m.id !== data.messageId);
+                    this.renderMessages(false); // Don't auto-scroll, user might be looking at history
+                }
+            }
+            // Potentially update conversation preview if the deleted message was the last one
+            this.loadConversations(); // Easiest way to refresh last message preview
+        }
+
+
+        renderAttachments(attachments) {
+            if (!attachments || attachments.length === 0) return '';
+            return `<div class="message-attachments">
+                ${attachments.map(att => `
+                    <div class="attachment-item">
+                        <a href="${att.url || '#'}" target="_blank" title="Download ${att.filename} (${(att.size / 1024).toFixed(1)} KB)">
+                            📎 ${att.filename.length > 20 ? att.filename.substring(0,17)+'...' : att.filename}
+                        </a>
+                    </div>`).join('')}
+            </div>`;
+        }
+
+        formatDate(dateStr) { /* ... same as before ... */
+            const d = new Date(dateStr);
             const today = new Date();
             const yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
 
-            if (d.toDateString() === today.toDateString()) {
-                return 'Today';
-            } else if (d.toDateString() === yesterday.toDateString()) {
-                return 'Yesterday';
-            } else {
-                return d.toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric',
-                    year: d.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
-                });
+            if (d.toDateString() === today.toDateString()) return 'Today';
+            if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: d.getFullYear() !== today.getFullYear() ? 'numeric' : undefined });
+        }
+        formatTime(dateStr) { /* ... same as before ... */
+            return new Date(dateStr).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+        }
+
+        handleScroll(container) {
+            const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+            if (scrollToBottomBtn) {
+                const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 200;
+                scrollToBottomBtn.classList.toggle('show', !isNearBottom && container.scrollHeight > container.clientHeight + 50);
             }
-        }
-
-        formatTime(date) {
-            return new Date(date).toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true 
-            });
-        }
-
-        getCurrentUserId() {
-            // This should be implemented based on your authentication system
-            // For now, we'll return a placeholder
-            return 'current-user-id';
-        }
-
-        handleScroll() {
-            const container = document.getElementById('messagesContainer');
-            if (!container) return;
-
-            const scrollToBottom = document.getElementById('scrollToBottom');
-            if (scrollToBottom) {
-                const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-                scrollToBottom.classList.toggle('show', !isNearBottom);
-            }
-
-            // Load more messages when scrolling to top
-            if (container.scrollTop === 0 && this.currentConversation) {
-                const messages = this.messages.get(this.currentConversation);
-                if (messages && messages.length > 0) {
-                    const oldestMessage = messages[0];
-                    this.loadMessages(this.currentConversation, oldestMessage.id);
+            if (container.scrollTop < 50 && this.currentConversation) { // Threshold to trigger load
+                const messagesData = this.messages.get(this.currentConversation.id);
+                if (messagesData && messagesData.hasMore) {
+                    const loadMoreBtn = document.getElementById('loadMoreMessagesBtn');
+                    if(loadMoreBtn && !loadMoreBtn.disabled) { // Check if not already loading
+                        loadMoreBtn.disabled = true; // Prevent multiple quick calls
+                        this.loadMessages(false).finally(() => {
+                            if(loadMoreBtn && messagesData.hasMore) loadMoreBtn.disabled = false;
+                        });
+                    }
                 }
             }
         }
-
         scrollToBottom() {
             const container = document.getElementById('messagesContainer');
-            if (container) {
-                container.scrollTop = container.scrollHeight;
-            }
+            if (container) container.scrollTop = container.scrollHeight;
         }
 
         handleInputKeydown(event) {
@@ -1078,171 +711,219 @@
                 this.sendMessage();
             }
         }
-
         handleInputChange(event) {
             const input = event.target;
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+            document.getElementById('sendBtn').disabled = input.value.trim() === '' && this.selectedFiles.length === 0;
 
-            // Handle typing indicator
+            if (!this.currentConversation) return;
             if (!this.isTyping) {
                 this.isTyping = true;
-                this.socket.emit('typing', { doctorId: this.currentConversation });
+                this.socket.emit('startTyping', { receiverId: this.currentConversation.partnerDoctorId, patientId: this.currentConversation.patientId });
             }
-
             clearTimeout(this.typingTimeout);
             this.typingTimeout = setTimeout(() => {
                 this.isTyping = false;
-                this.socket.emit('stopTyping', { doctorId: this.currentConversation });
-            }, 1000);
-        }
-
-        selectFiles() {
-            this.elements.fileInput.click();
+                this.socket.emit('stopTyping', { receiverId: this.currentConversation.partnerDoctorId, patientId: this.currentConversation.patientId });
+            }, 2000); // User considered stopped typing after 2s of inactivity
         }
 
         handleFileSelect(event) {
             const files = Array.from(event.target.files);
-            this.selectedFiles = [...this.selectedFiles, ...files];
+            // Basic validation (example: max 5 files, max 10MB each)
+            if (this.selectedFiles.length + files.length > 5) {
+                alert("You can select a maximum of 5 files.");
+                return;
+            }
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) { // 10 MB
+                    alert(`File ${file.name} is too large (max 10MB).`);
+                    continue; // Skip this file
+                }
+                this.selectedFiles.push(file);
+            }
             this.renderFilePreview();
+            document.getElementById('sendBtn').disabled = document.getElementById('messageInput').value.trim() === '' && this.selectedFiles.length === 0;
+            event.target.value = null; // Reset file input
         }
 
         renderFilePreview() {
             const container = document.getElementById('filePreview');
             if (!container) return;
-
-            if (this.selectedFiles.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-
+            if (this.selectedFiles.length === 0) { container.innerHTML = ''; return; }
             container.innerHTML = this.selectedFiles.map((file, index) => `
                 <div class="file-item">
                     <div class="file-info">
                         <span>📎</span>
-                        <span>${file.name}</span>
+                        <span>${file.name} (${(file.size/1024).toFixed(1)}KB)</span>
                     </div>
-                    <button class="remove-file" onclick="chatApp.removeFile(${index})">×</button>
-                </div>
-            `).join('');
+                    <button class="remove-file" onclick="chatApp.removeFile(${index})" title="Remove file">×</button>
+                </div>`).join('');
         }
-
         removeFile(index) {
             this.selectedFiles.splice(index, 1);
             this.renderFilePreview();
+            document.getElementById('sendBtn').disabled = document.getElementById('messageInput').value.trim() === '' && this.selectedFiles.length === 0;
         }
 
         async sendMessage() {
             if (!this.socket || !this.socket.connected || !this.currentConversation) return;
-
             const input = document.getElementById('messageInput');
             const content = input.value.trim();
-            
             if (!content && this.selectedFiles.length === 0) return;
 
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true; // Disable while sending
+
             try {
-                // Handle file uploads first if any
-                const attachments = [];
+                let uploadedAttachments = [];
                 if (this.selectedFiles.length > 0) {
                     const formData = new FormData();
-                    this.selectedFiles.forEach(file => {
-                        formData.append('files', file);
-                    });
+                    this.selectedFiles.forEach(file => formData.append('files', file)); // Key must match FilesInterceptor
 
-                    const uploadResponse = await fetch('/chat/upload', {
+                    const uploadResponse = await fetch(`${this.elements.serverUrl.value}/chat/upload`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${this.elements.tokenInput.value}`
-                        },
+                        headers: { 'Authorization': `Bearer ${this.elements.tokenInput.value}` },
                         body: formData
                     });
 
                     if (uploadResponse.ok) {
-                        const uploadResult = await uploadResponse.json();
-                        attachments.push(...uploadResult.files);
+                        const result = await uploadResponse.json(); // Expects { files: AttachmentDto[] }
+                        if (result.files) {
+                            uploadedAttachments = result.files;
+                        } else {
+                            throw new Error("Uploaded files data not in expected format.");
+                        }
+                    } else {
+                        const errorData = await uploadResponse.json().catch(()=>({message: "File upload failed."}));
+                        throw new Error(`File upload failed: ${errorData.message || uploadResponse.statusText}`);
                     }
                 }
 
-                // Send message with content and attachments
                 this.socket.emit('sendMessage', {
-                    content,
-                    receiverId: this.currentConversation,
-                    attachments
+                    content: content,
+                    receiverId: this.currentConversation.partnerDoctorId,
+                    patientId: this.currentConversation.patientId,
+                    attachments: uploadedAttachments
                 });
 
-                // Clear input and files
                 input.value = '';
-                input.style.height = 'auto';
+                input.style.height = 'auto'; // Reset height
                 this.selectedFiles = [];
                 this.renderFilePreview();
 
             } catch (error) {
                 console.error('Error sending message:', error);
-                alert('Failed to send message. Please try again.');
-            }
-        }
-
-        handleNewMessage(message) {
-            if (message.senderId === this.currentConversation) {
-                const messages = this.messages.get(this.currentConversation) || [];
-                messages.push(message);
-                this.messages.set(this.currentConversation, messages);
-                this.renderMessages(this.currentConversation);
-            }
-            // Update conversation list
-            this.loadConversations();
-        }
-
-        handleMessageSent(message) {
-            if (message.receiverId === this.currentConversation) {
-                const messages = this.messages.get(this.currentConversation) || [];
-                messages.push(message);
-                this.messages.set(this.currentConversation, messages);
-                this.renderMessages(this.currentConversation);
-            }
-            // Update conversation list
-            this.loadConversations();
-        }
-
-        handleMessageRead(data) {
-            // Update message read status in UI
-            const messageElement = document.querySelector(`[data-message-id="${data.messageId}"]`);
-            if (messageElement) {
-                messageElement.classList.add('read');
-            }
-        }
-
-        handleTyping(data) {
-            if (data.doctorId === this.currentConversation) {
-                const indicator = document.getElementById('typingIndicator');
-                if (indicator) {
-                    indicator.classList.add('show');
-                    clearTimeout(this.typingTimeout);
-                    this.typingTimeout = setTimeout(() => {
-                        indicator.classList.remove('show');
-                    }, 3000);
+                alert(`Failed to send message: ${error.message}`);
+            } finally {
+                if (input.value.trim() === '' && this.selectedFiles.length === 0) {
+                    // Re-enable only if there's content or files after an error perhaps.
+                    // But typically, after successful send, it should be disabled until new input.
+                } else {
+                    sendBtn.disabled = false; // Re-enable if there's still content (e.g. if only file send failed)
                 }
             }
         }
 
-        handleDoctorOnline(data) {
-            // Update doctor online status in UI
-            const conversation = document.querySelector(`[data-doctor-id="${data.doctorId}"]`);
-            if (conversation) {
-                conversation.classList.add('online');
+        handleNewMessage(message, isOwnSentMessage) {
+            // Ensure message has patientId and senderId/receiverId
+            if (!message || !message.patientId || (!message.senderId && !message.receiverId)) {
+                console.warn("Received malformed message object:", message);
+                return;
+            }
+
+            const relevantDoctorId = isOwnSentMessage ? message.receiverId : message.senderId;
+            const conversationId = `${relevantDoctorId}-${message.patientId}`;
+
+            if (!this.messages.has(conversationId)) {
+                this.messages.set(conversationId, { messages: [], hasMore: false, nextCursor: null });
+            }
+            const conversationMessages = this.messages.get(conversationId);
+
+            // Avoid duplicates if messageSent and newMessage both add it (though typically only one should for one client)
+            if (!conversationMessages.messages.find(m => m.id === message.id)) {
+                conversationMessages.messages.push(message);
+            }
+
+
+            // Update UI if this is the currently active chat
+            if (this.currentConversation && this.currentConversation.id === conversationId) {
+                this.renderMessages(true); // Scroll to bottom for new message
+                // If message received from other doctor, mark as read
+                if (!isOwnSentMessage && message.senderId === this.currentConversation.partnerDoctorId) {
+                    this.socket.emit('markAsRead', { messageId: message.id, patientId: message.patientId });
+                }
+            }
+
+            // Update conversation list (last message, unread count)
+            const convData = this.conversations.get(conversationId);
+            if (convData) {
+                convData.lastMessage = message;
+                if (!isOwnSentMessage && message.senderId === relevantDoctorId && (!this.currentConversation || this.currentConversation.id !== conversationId)) {
+                    convData.unreadCount = (convData.unreadCount || 0) + 1;
+                } else if (isOwnSentMessage || (this.currentConversation && this.currentConversation.id === conversationId)) {
+                    // If it's our own message, or we are viewing the chat, reset unread for this convo
+                    convData.unreadCount = 0;
+                }
+                this.renderConversations(); // Re-render to show new preview/badge
+            } else if (!isOwnSentMessage) {
+                // This is a message for a conversation not yet in the list (e.g. new doctor messaged us)
+                // We should fetch updated conversations or try to create a temporary one
+                this.loadConversations(); // Simplest is to reload all conversations
             }
         }
 
-        handleDoctorOffline(data) {
-            // Update doctor offline status in UI
-            const conversation = document.querySelector(`[data-doctor-id="${data.doctorId}"]`);
-            if (conversation) {
-                conversation.classList.remove('online');
+        handleMessageRead(data) { // { messageId, patientId, readBy }
+            if (this.currentConversation && this.currentConversation.patientId === data.patientId && this.currentUser.id === data.readBy) {
+                // This is an ack that a message *I* sent was read by the other party.
+                // Or, if I marked a message as read, this confirms it.
+                const messagesData = this.messages.get(this.currentConversation.id);
+                if (messagesData) {
+                    const msgToUpdate = messagesData.messages.find(m => m.id === data.messageId);
+                    if (msgToUpdate && msgToUpdate.senderId === this.currentUser.id) { // Only update my sent messages' read status
+                        msgToUpdate.isRead = true;
+                        this.renderMessages(false); // Re-render without scrolling
+                    }
+                }
+            }
+            // If the read receipt is for the current conversation, update unread count in sidebar
+            const conversationIdForRead = `${data.readBy}-${data.patientId}`; // If data.readBy is the other doctor
+            const otherPartyId = (this.currentConversation && data.patientId === this.currentConversation.patientId) ? this.currentConversation.partnerDoctorId : null;
+            if (otherPartyId){
+                const actualConvId = `${otherPartyId}-${data.patientId}`;
+                const convInList = this.conversations.get(actualConvId);
+                if(convInList && convInList.lastMessage && convInList.lastMessage.id === data.messageId && convInList.lastMessage.senderId === otherPartyId) {
+                    // This logic is tricky. If the other person read MY message, their unread count for ME doesn't change.
+                    // If I read THEIR message, then MY unread count for THEM decreases.
+                    // The `messageRead` event is more for the SENDER to know their message was seen.
+                }
+            }
+            // The `getConversations` logic should correctly calculate unread counts from the DB.
+            // We can refresh conversations to get the latest unread counts after a message is read.
+            // this.loadConversations(); // Could be too chatty.
+        }
+
+        handleTyping(data) { // { doctorId, patientId, isTyping }
+            if (this.currentConversation && this.currentConversation.partnerDoctorId === data.doctorId && this.currentConversation.patientId === data.patientId) {
+                const indicator = document.getElementById('typingIndicator');
+                const msgContainer = document.getElementById('messagesContainer');
+                if (indicator && msgContainer) {
+                    if (data.isTyping) {
+                        indicator.classList.add('show');
+                        this.scrollToBottom();
+                        clearTimeout(this.typingCleanupTimeout); // Clear previous cleanup
+                        this.typingCleanupTimeout = setTimeout(() => { // Add a safety net timeout
+                            if(indicator.classList.contains('show')) indicator.classList.remove('show');
+                        }, 4000); // Hide after 4s if no 'stopTyping' received
+                    } else {
+                        indicator.classList.remove('show');
+                        clearTimeout(this.typingCleanupTimeout);
+                    }
+                }
             }
         }
     }
-
-    // Initialize the chat application
     const chatApp = new ChatApp();
 </script>
 </body>

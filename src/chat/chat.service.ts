@@ -1,14 +1,12 @@
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { Message, MessageAttachment, Conversation } from '../types/chat.types'; // Conservez vos types
-import { SendMessageDto, AttachmentDto } from './dto/send-message.dto'; // Import DTO
+// Import PatientCentricConversation and other necessary types from chat.types.ts
+import { Message, Doctor, PatientInfo, PatientCentricConversation, MessageAttachment } from '../types/chat.types';
+import { SendMessageDto, AttachmentDto } from './dto/send-message.dto';
 
-// Import pour S3 et uuid
 import { S3 } from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
-import * as path from 'path'; // Gardé pour la structure initiale, mais S3 ne l'utilisera pas
-import * as fs from 'fs'; // Optionnel si vous gardez un fallback local ou pour des tests
 
 @Injectable()
 export class ChatService {
@@ -19,32 +17,26 @@ export class ChatService {
     private prisma: PrismaService,
     private jwtService: JwtService,
   ) {
-    // Configuration S3 - À externaliser dans un module de configuration (ConfigService)
     this.s3 = new S3({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       region: process.env.AWS_REGION,
+      signatureVersion: 'v4', // Good practice for signed URLs
     });
   }
 
-  async validateToken(token: string): Promise<any> { // Type Doctor à définir
+  async validateToken(token: string): Promise<any> { // Consider returning a more specific Doctor type
     try {
       const payload = this.jwtService.verify(token);
-
-      // Le payload contient associated_data qui est les données du docteur
-      // On utilise directement l'ID du docteur depuis associated_data
       const doctorId = payload.associated_data.id;
-
       const doctor = await this.prisma.doctors.findUnique({
-        where: { id: doctorId }, // Utiliser l'ID du docteur directement
+        where: { id: doctorId },
       });
-
       if (!doctor) {
         this.logger.warn(`Token validated for doctor ${doctorId} but doctor not found.`);
         return null;
       }
-
-      return doctor;
+      return doctor; // Return the full doctor object
     } catch (error) {
       this.logger.error('Token validation failed', error);
       return null;
@@ -53,22 +45,33 @@ export class ChatService {
 
   async createMessage(
     senderId: string,
-    data: SendMessageDto, // Utilise le DTO
+    data: SendMessageDto,
   ): Promise<Message> {
     try {
-      const messageData: any = {
+      const receiverExists = await this.prisma.doctors.findUnique({ where: { id: data.receiverId } });
+      if (!receiverExists) {
+        throw new NotFoundException(`Receiver doctor with ID ${data.receiverId} not found.`);
+      }
+      // Optional: Validate patientId if you have a patients table and it's required for all messages
+      // const patientExists = await this.prisma.patients.findUnique({ where: { id: data.patientId } });
+      // if (!patientExists) {
+      //   throw new NotFoundException(`Patient with ID ${data.patientId} not found.`);
+      // }
+
+      const messageData: any = { // Type this more strictly if possible
         content: data.content,
         senderId: senderId,
         receiverId: data.receiverId,
+        patientId: data.patientId, // Include patientId
       };
 
       if (data.attachments && data.attachments.length > 0) {
         messageData.attachments = {
           create: data.attachments.map(att => ({
             filename: att.filename,
-            path: att.path, // Ceci est maintenant la clé S3
+            path: att.path, // This is the S3 key
             mimeType: att.mimeType,
-            size: parseInt(att.size, 10), // Conversion en nombre
+            size: parseInt(att.size, 10), // Convert string size from DTO to number for Prisma
           })),
         };
       }
@@ -79,58 +82,80 @@ export class ChatService {
           attachments: true,
           sender: true,
           receiver: true,
+          // If you have a 'patient' relation defined in Prisma Message model:
+          // patient: true,
         },
       });
 
-      return message as Message;
+      // Ensure the returned message conforms to the Message interface, especially attachment URLs
+      const typedMessage = message as Message;
+      if (typedMessage.attachments) {
+        for (const att of typedMessage.attachments) {
+          if (att.path) {
+            (att as MessageAttachment).url = await this.getSignedUrlForAttachment(att.path);
+          }
+        }
+      }
+      return typedMessage;
+
     } catch (error) {
       this.logger.error('Failed to create message', error);
-      throw error; // Relancez pour que le gateway/controller puisse gérer
+      throw error;
     }
   }
 
   async getMessages(
-    userId: string, // L'utilisateur qui fait la requête
+    userId: string,
     otherUserId: string,
+    patientId: string,
     cursor?: string,
     limit: number = 20,
   ): Promise<{ messages: Message[]; hasMore: boolean; nextCursor?: string }> {
     try {
-      const messages = await this.prisma.message.findMany({
+      if (!patientId) {
+        throw new BadRequestException('Patient ID is required to fetch messages.');
+      }
+
+      const messagesFromDb = await this.prisma.message.findMany({
         where: {
+          patientId: patientId, // Filter by patientId
           OR: [
             { senderId: userId, receiverId: otherUserId },
             { senderId: otherUserId, receiverId: userId },
           ],
         },
-        take: limit + 1, // Demande un de plus pour vérifier s'il y a "hasMore"
-        skip: cursor ? 1 : 0, // Saute l'élément curseur si fourni
+        take: limit + 1,
+        skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { createdAt: 'desc' },
         include: {
           attachments: true,
-          sender: true, // Inclure les détails du sender
-          receiver: true, // Inclure les détails du receiver
+          sender: true, // Include sender details
+          receiver: true, // Include receiver details
         },
       });
 
-      const hasMore = messages.length > limit;
-      const messagesToReturn = hasMore ? messages.slice(0, limit) : messages;
+      const hasMore = messagesFromDb.length > limit;
+      const messagesToReturn = hasMore ? messagesFromDb.slice(0, limit) : messagesFromDb;
       const nextCursor = hasMore ? messagesToReturn[messagesToReturn.length - 1]?.id : undefined;
 
-      // Convertir les chemins S3 en URLs signées si nécessaire ici
-      for (const msg of messagesToReturn) {
-        if (msg.attachments) {
-          for (const att of msg.attachments) {
-            // att.path est la clé S3
-            // att.url = await this.getSignedUrlForAttachment(att.path); // Méthode à créer
+      // Process messages to add signed URLs to attachments
+      const processedMessages: Message[] = await Promise.all(
+        messagesToReturn.map(async (msg) => {
+          const typedMsg = msg as Message; // Cast to ensure 'attachments' property is recognized
+          if (typedMsg.attachments) {
+            for (const att of typedMsg.attachments) {
+              if (att.path) {
+                (att as MessageAttachment).url = await this.getSignedUrlForAttachment(att.path);
+              }
+            }
           }
-        }
-      }
-
+          return typedMsg;
+        })
+      );
 
       return {
-        messages: messagesToReturn as Message[],
+        messages: processedMessages,
         hasMore,
         nextCursor,
       };
@@ -140,6 +165,7 @@ export class ChatService {
     }
   }
 
+
   async markMessageAsRead(messageId: string, readerId: string): Promise<Message> {
     try {
       const messageToUpdate = await this.prisma.message.findUnique({ where: { id: messageId } });
@@ -147,9 +173,9 @@ export class ChatService {
       if (messageToUpdate.receiverId !== readerId) {
         throw new UnauthorizedException('Cannot mark this message as read');
       }
-      if (messageToUpdate.isRead) return messageToUpdate as Message; // Déjà lu
+      // if (messageToUpdate.isRead) return messageToUpdate as Message; // Already read
 
-      const message = await this.prisma.message.update({
+      const updatedMessage = await this.prisma.message.update({
         where: { id: messageId },
         data: { isRead: true },
         include: {
@@ -158,100 +184,150 @@ export class ChatService {
           receiver: true,
         },
       });
-      return message as Message;
+
+      const typedMessage = updatedMessage as Message;
+      if (typedMessage.attachments) {
+        for (const att of typedMessage.attachments) {
+          if (att.path) {
+            (att as MessageAttachment).url = await this.getSignedUrlForAttachment(att.path);
+          }
+        }
+      }
+      return typedMessage;
+
     } catch (error) {
       this.logger.error(`Failed to mark message ${messageId} as read`, error);
       throw error;
     }
   }
 
-  async getConversations(doctorId: string): Promise<Conversation[]> {
-    this.logger.log(`Getting conversations for doctor ${doctorId}`);
+  async getConversations(doctorId: string): Promise<PatientCentricConversation[]> {
+    this.logger.log(`Getting patient-centric conversations for doctor ${doctorId}`);
     try {
-      // Requête SQL améliorée pour PostgresQL
-      // Utilise ROW_NUMBER() pour obtenir le dernier message et calcule les non-lus
       const conversationsQuery = `
           WITH UserMessages AS (
               SELECT
                   m.id AS message_id,
                   m."content",
                   m."createdAt",
+                  m."updatedAt", -- Select updatedAt for lastMessage
                   m."senderId",
                   m."receiverId",
+                  m."patientId",
                   m."isRead",
                   CASE
                       WHEN m."senderId" = $1 THEN m."receiverId"
                       ELSE m."senderId"
                       END AS partner_id,
-                  ROW_NUMBER() OVER(PARTITION BY CASE WHEN m."senderId" = $1 THEN m."receiverId" ELSE m."senderId" END ORDER BY m."createdAt" DESC) as rn
+                  ROW_NUMBER() OVER(PARTITION BY
+                    CASE WHEN m."senderId" = $1 THEN m."receiverId" ELSE m."senderId" END,
+                    m."patientId"
+                    ORDER BY m."createdAt" DESC) as rn
               FROM "Message" m
-              WHERE m."senderId" = $1 OR m."receiverId" = $1
+              WHERE (m."senderId" = $1 OR m."receiverId" = $1) AND m."patientId" IS NOT NULL
           ),
-               LatestMessages AS (
+               LatestMessagesInContext AS (
                    SELECT * FROM UserMessages WHERE rn = 1
                ),
-               UnreadCounts AS (
+               UnreadCountsInContext AS (
                    SELECT
                        "senderId" as partner_id,
+                       "patientId",
                        COUNT(*) as unread_count
                    FROM "Message"
-                   WHERE "receiverId" = $1 AND "isRead" = FALSE
-                   GROUP BY "senderId"
+                   WHERE "receiverId" = $1 AND "isRead" = FALSE AND "patientId" IS NOT NULL
+                   GROUP BY "senderId", "patientId"
                )
           SELECT
-              d.id as "doctorId",
-              d.first_name,
-              d.last_name,
-              d.specialty,
-              d.profile_image,
-              d.type,
-              d.is_license_verified,
-              d.bio,
-              d.education,
-              d.experience,
-              d.languages,
-              d.user_id,
+              d.id as "partnerDoctorId",
+              d.first_name as "partnerFirstName",
+              d.last_name as "partnerLastName",
+              d.profile_image as "partnerProfileImage",
+              d.specialty as "partnerSpecialty",
+              d.type as "partnerType",
+              d.is_license_verified as "partnerIsLicenseVerified",
+              d.bio as "partnerBio",
+              d.education AS "partnerEducation",
+              d.experience AS "partnerExperience",
+              d.languages AS "partnerLanguages",
+              d.user_id AS "partnerUserId",
+              p.id as "patientTableId",
+              p.cin as "patientCin",
+              lm."patientId" as "messagePatientId",
+              lm.message_id,
               lm.content as "lastMessageContent",
               lm."createdAt" as "lastMessageDate",
+              lm."updatedAt" as "lastMessageUpdatedAt",
               lm."isRead" as "lastMessageIsRead",
-              lm."senderId" as "lastMessageSenderId",
-              COALESCE(uc.unread_count, 0) as "unreadCount"
+              lm."senderId" as "lastMessageSenderId"
           FROM doctors d
-                   JOIN LatestMessages lm ON d.id = lm.partner_id
-                   LEFT JOIN UnreadCounts uc ON d.id = uc.partner_id
+                   JOIN LatestMessagesInContext lm ON d.id = lm.partner_id
+                   LEFT JOIN patients p ON lm."patientId" = p.id
+                   LEFT JOIN UnreadCountsInContext uc ON d.id = uc.partner_id AND lm."patientId" = uc."patientId"
           WHERE d.id != $1
           ORDER BY lm."createdAt" DESC;
       `;
 
       const result = await this.prisma.$queryRawUnsafe(conversationsQuery, doctorId) as any[];
 
-      return result.map(conv => ({
-        id: conv.doctorId, // ID de la conversation (ou du partenaire)
-        doctor: {
-          id: conv.doctorId,
-          type: conv.type,
-          is_license_verified: conv.is_license_verified,
-          bio: conv.bio,
-          education: conv.education || [],
-          experience: conv.experience || [],
-          first_name: conv.first_name,
-          languages: conv.languages || [],
-          last_name: conv.last_name,
-          profile_image: conv.profile_image, // Potentiellement à transformer en URL signée S3
-          specialty: conv.specialty,
-          user_id: conv.user_id,
-        },
-        lastMessage: conv.lastMessageContent ? {
-          id: conv.message_id, // Assurez-vous que message_id est sélectionné si besoin
-          content: conv.lastMessageContent,
-          createdAt: conv.lastMessageDate,
-          isRead: conv.lastMessageSenderId === doctorId ? true : conv.lastMessageIsRead, // Si je suis l'expéditeur du dernier message, il est "lu" de mon point de vue
-          senderId: conv.lastMessageSenderId,
-        } : undefined,
-        unreadCount: Number(conv.unreadCount) || 0,
+      return Promise.all(result.map(async conv => {
+        const patientName = conv.patientCin
+          ? `Patient CIN: ${conv.patientCin}`
+          : `Patient ID: ${conv.messagePatientId ? conv.messagePatientId.substring(0, 8) : 'N/A'}`;
+
+        let partnerDoctorProfileImageUrl = conv.partnerProfileImage;
+        if (conv.partnerProfileImage && conv.partnerProfileImage.startsWith('s3key:')) {
+          partnerDoctorProfileImageUrl = await this.getSignedUrlForAttachment(conv.partnerProfileImage.replace('s3key:', ''));
+        } else if (conv.partnerProfileImage) {
+          // Assuming it might be a direct URL if not an S3 key
+          partnerDoctorProfileImageUrl = conv.partnerProfileImage;
+        }
+
+        // Get unread count from the query result
+        const unreadCountQuery = `
+          SELECT COUNT(*) as unread_count
+          FROM "Message"
+          WHERE "receiverId" = $1 AND "senderId" = $2 AND "patientId" = $3 AND "isRead" = FALSE
+        `;
+        const unreadResult = await this.prisma.$queryRawUnsafe(unreadCountQuery, doctorId, conv.partnerDoctorId, conv.messagePatientId) as any[];
+        const unreadCount = Number(unreadResult[0]?.unread_count) || 0;
+
+        return {
+          id: `${conv.partnerDoctorId}-${conv.messagePatientId}`,
+          partnerDoctor: {
+            id: conv.partnerDoctorId,
+            first_name: conv.partnerFirstName,
+            last_name: conv.partnerLastName,
+            profile_image: partnerDoctorProfileImageUrl,
+            specialty: conv.partnerSpecialty,
+            type: conv.partnerType,
+            is_license_verified: conv.partnerIsLicenseVerified,
+            bio: conv.partnerBio,
+            education: conv.partnerEducation || [],
+            experience: conv.partnerExperience || [],
+            languages: conv.partnerLanguages || [],
+            user_id: conv.partnerUserId,
+          } as Doctor,
+          patient: {
+            id: conv.messagePatientId,
+            name: patientName,
+          } as PatientInfo,
+          lastMessage: conv.lastMessageContent ? {
+            id: conv.message_id,
+            content: conv.lastMessageContent,
+            createdAt: conv.lastMessageDate,
+            updatedAt: conv.lastMessageUpdatedAt,
+            isRead: conv.lastMessageSenderId === doctorId ? true : conv.lastMessageIsRead,
+            senderId: conv.lastMessageSenderId,
+            receiverId: conv.lastMessageSenderId === doctorId ? conv.partnerDoctorId : doctorId,
+            patientId: conv.messagePatientId,
+            attachments: [], // Populating this requires more complex query or separate fetches
+          } : undefined,
+          unreadCount: unreadCount,
+        } as PatientCentricConversation;
       }));
     } catch (error) {
-      this.logger.error(`Failed to get conversations for doctor ${doctorId}`, error);
+      this.logger.error(`Failed to get patient-centric conversations for doctor ${doctorId}`, error);
       throw error;
     }
   }
@@ -260,70 +336,106 @@ export class ChatService {
     try {
       const message = await this.prisma.message.findUnique({
         where: { id: messageId },
+        include: { attachments: true }
       });
 
       if (!message) {
         throw new NotFoundException('Message not found');
       }
-      // Logique de suppression : permettre seulement au sender de supprimer pour tout le monde,
-      // ou une suppression "soft" (deletedForUser)
       if (message.senderId !== doctorId) {
         throw new UnauthorizedException('You can only delete your own messages.');
       }
 
-      // TODO: Supprimer les pièces jointes de S3 si elles existent
-      // const attachments = await this.prisma.messageAttachment.findMany({ where: { messageId }});
-      // for (const att of attachments) { await this.deleteAttachmentFromS3(att.path); }
+      // Delete attachments from S3 if they exist
+      if (message.attachments && message.attachments.length > 0) {
+        for (const attachment of message.attachments) {
+          await this.deleteAttachmentFromS3(attachment.path);
+        }
+      }
 
-      const deletedMessage = await this.prisma.message.delete({
+      await this.prisma.message.delete({
         where: { id: messageId },
-        include: { attachments: true, sender: true, receiver: true },
       });
-      return deletedMessage as Message;
+
+      // Ensure the returned object satisfies the Message interface, including patientId
+      return {
+        id: message.id,
+        content: message.content,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt,
+        senderId: message.senderId,
+        receiverId: message.receiverId,
+        isRead: message.isRead,
+        patientId: message.patientId || '', // Handle potential null value
+        attachments: [] // Attachments are conceptually gone
+      } as Message;
+
     } catch (error) {
       this.logger.error('Failed to delete message', error);
       throw error;
     }
   }
 
-  async uploadAttachment(file: Express.Multer.File): Promise<AttachmentDto> {
-    const filenameInS3 = `${uuidv4()}-${file.originalname}`;
-    const s3Key = `chat-attachments/${filenameInS3}`;
-
-    try {
-      await this.s3.putObject({
-        Bucket: process.env.AWS_S3_BUCKET_NAME!,
-        Key: s3Key,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-        ACL: 'private', // Important pour la confidentialité
-      }).promise();
-
-      return {
-        filename: file.originalname,
-        path: s3Key, // Clé S3
-        mimeType: file.mimetype,
-        size: file.size.toString(),
-      };
-    } catch (error) {
-      this.logger.error(`Failed to upload attachment ${file.originalname} to S3`, error);
-      throw new Error(`Failed to upload attachment: ${error.message}`);
+  async uploadAttachments(files: Array<Express.Multer.File>): Promise<AttachmentDto[]> {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('No files uploaded.');
     }
+
+    const uploadPromises = files.map(async (file) => {
+      const filenameInS3 = `${uuidv4()}-${file.originalname}`;
+      const s3Key = `chat-attachments/${filenameInS3}`;
+
+      try {
+        await this.s3.putObject({
+          Bucket: process.env.AWS_S3_BUCKET_NAME!,
+          Key: s3Key,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+          ACL: 'private',
+        }).promise();
+
+        return {
+          filename: file.originalname,
+          path: s3Key, // S3 key
+          mimeType: file.mimetype,
+          size: file.size.toString(), // DTO expects string
+        };
+      } catch (error) {
+        this.logger.error(`Failed to upload attachment ${file.originalname} to S3`, error);
+        throw new Error(`Failed to upload attachment ${file.originalname}: ${error.message}`);
+      }
+    });
+
+    return Promise.all(uploadPromises);
   }
 
-  // Méthode pour obtenir une URL signée (à appeler avant d'envoyer les messages/conversations au client)
   async getSignedUrlForAttachment(s3Key: string): Promise<string> {
+    if (!s3Key || s3Key === 'null' || s3Key === 'undefined') {
+      this.logger.warn(`Attempted to get signed URL for invalid S3 key: ${s3Key}`);
+      return '';
+    }
     try {
       return await this.s3.getSignedUrlPromise('getObject', {
         Bucket: process.env.AWS_S3_BUCKET_NAME!,
         Key: s3Key,
-        Expires: 60 * 60, // URL valide pour 1 heure
+        Expires: 60 * 60, // 1 hour
       });
     } catch (error) {
       this.logger.error(`Failed to get signed URL for ${s3Key}`, error);
-      return ''; // Ou gérer l'erreur autrement
+      return '';
     }
   }
 
-  // async deleteAttachmentFromS3(s3Key: string): Promise<void> { ... }
+  async deleteAttachmentFromS3(s3Key: string): Promise<void> {
+    try {
+      await this.s3.deleteObject({
+        Bucket: process.env.AWS_S3_BUCKET_NAME!,
+        Key: s3Key,
+      }).promise();
+      this.logger.log(`Successfully deleted ${s3Key} from S3.`);
+    } catch (error) {
+      this.logger.error(`Failed to delete ${s3Key} from S3`, error);
+      // Decide if this error should be re-thrown or just logged
+    }
+  }
 }

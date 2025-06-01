@@ -178,7 +178,7 @@ model lab_documents {
   ctscan_results   ctscan_results[]
   lab_attachments  lab_attachments[]
   laboratories     laboratories?             @relation(fields: [laboratory_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  patients         patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients         patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   lab_requests     lab_requests?             @relation(fields: [lab_request_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   lab_results      lab_results[]
   xray_results     xray_results[]
@@ -269,7 +269,7 @@ model prescriptions {
   consultations consultations[]
   medications   medications[]
   doctors       doctors?                  @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  patients      patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients      patients                  @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model rdv_requests {
@@ -305,34 +305,34 @@ model rdvs {
 }
 
 model users {
-  id                String              @id @default(uuid()) @db.Uuid
-  address           String?
-  created_at        DateTime           @default(now()) @db.Timestamp(6)
-  email             String              @unique
-  first_name        String
-  last_name         String
-  validation_token  verification_tokens?
-  is_verified       Boolean
-  password          String
-  salt              String
-  last_login        DateTime?          @db.Timestamptz(6)
-  phone             String?
-  profile_picture   String?
-  role              users_role_enum
-  associated_id     String?            @db.Uuid
-  updated_at        DateTime           @default(now()) @db.Timestamp(6)
-  doctors           doctors[]
-  patients          patients[]
+  id               String               @id @default(uuid()) @db.Uuid
+  address          String?
+  created_at       DateTime             @default(now()) @db.Timestamp(6)
+  email            String               @unique
+  first_name       String
+  last_name        String
+  validation_token verification_tokens?
+  is_verified      Boolean
+  password         String
+  salt             String
+  last_login       DateTime?            @db.Timestamptz(6)
+  phone            String?
+  profile_picture  String?
+  role             users_role_enum
+  associated_id    String?              @db.Uuid
+  updated_at       DateTime             @default(now()) @db.Timestamp(6)
+  doctors          doctors[]
+  patients         patients[]
 }
 
 model xray_results {
-  id              String                       @id @default(uuid()) @db.Uuid
+  id              String                        @id @default(uuid()) @db.Uuid
   is_abnormal     Boolean
   description     String?
   title           String
   result_type     xray_results_result_type_enum
-  lab_document_id String                       @db.Uuid
-  lab_documents   lab_documents                @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lab_document_id String                        @db.Uuid
+  lab_documents   lab_documents                 @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum analysis_results_result_type_enum {
@@ -457,16 +457,21 @@ model verification_tokens {
 }
 
 model Message {
-  id           String             @id @default(uuid()) @db.Uuid
-  content      String
-  createdAt    DateTime           @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime           @updatedAt @db.Timestamp(6)
-  senderId     String             @db.Uuid
-  receiverId   String             @db.Uuid
-  isRead       Boolean            @default(false)
-  sender       doctors            @relation("SentMessages", fields: [senderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  receiver     doctors            @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  attachments  MessageAttachment[]
+  id         String   @id @default(uuid()) @db.Uuid
+  content    String
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+  senderId   String   @db.Uuid
+  receiverId String   @db.Uuid
+  isRead     Boolean  @default(false)
+
+  patientId String? @db.Uuid
+
+  //patient      patients?           @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  sender      doctors             @relation("SentMessages", fields: [senderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  receiver    doctors             @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  attachments MessageAttachment[]
 }
 
 model MessageAttachment {
@@ -476,6 +481,6 @@ model MessageAttachment {
   mimeType  String
   size      Int
   messageId String   @db.Uuid
-  message   Message  @relation(fields: [messageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade, onUpdate: NoAction) // Consider Cascade delete for attachments
   createdAt DateTime @default(now()) @db.Timestamp(6)
 }
