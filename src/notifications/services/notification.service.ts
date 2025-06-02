@@ -119,17 +119,17 @@ export class NotificationService implements OnModuleInit {
           offlineUserIds.push(userId);
         }
       }
-
+      const compactPayload = { eventName, entity: { id: entity.id, ...entity } };
       if (onlineUserIds.length > 0) {
-        const compactPayload = { eventName, entity: { id: entity.id, ...entity } };
         for (const userId of onlineUserIds) {
           this.eventEmitter.emit(`sse.notify:${userId}`, { eventName, payload: compactPayload });
           this.logger.log(`Emitted sse.notify:${userId} for user ${userId}`);
         }
+        this.rabbitClient.emit('notification-online', { eventName, payload: compactPayload, userIds: onlineUserIds });
       }
 
       if (offlineUserIds.length > 0) {
-        this.rabbitClient.emit('notification', { eventName, payload, userIds: offlineUserIds });
+        this.rabbitClient.emit('notification-offline', { eventName, payload:compactPayload, userIds: offlineUserIds });
         this.logger.log(`Emitted notification to RabbitMQ for ${offlineUserIds.length} users`);
       }
     } catch (err) {
@@ -186,8 +186,10 @@ export class NotificationService implements OnModuleInit {
   private async getRelatedUserIds(entity: any): Promise<string[]> {
     const patientId = entity.patients? entity.patients.users.id : null;
     const doctorId = entity.doctors? entity.doctors.users.id : null;
+    const userId = entity.user_id ? entity.user_id : null;
     const myId = entity.hasOwnProperty("email") ? entity.id : null;
-    return [myId,patientId,doctorId].filter(id => id !== null) as string[];
+    console.log("the ids are", {myId, patientId, doctorId});
+    return [myId,userId,patientId,doctorId].filter(id => id !== null) as string[];
   }
 
   // private matchPattern(pattern: string, topic: string): boolean {

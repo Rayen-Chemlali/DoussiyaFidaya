@@ -517,5 +517,6 @@ model UserNotification {
   eventName String
   payload   String
   createdAt DateTime  @default(now())
-  expiresAt DateTime?
+  read      Boolean   @default(false)
+  sentToUser Boolean   @default(false)
 }
