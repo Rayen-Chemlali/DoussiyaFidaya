@@ -2,10 +2,8 @@ export { Analysis_resultsCrudResolver } from "./Analysis_results/Analysis_result
 export { AuthorizationsCrudResolver } from "./Authorizations/AuthorizationsCrudResolver";
 export { CertificatesCrudResolver } from "./Certificates/CertificatesCrudResolver";
 export { CliniquesCrudResolver } from "./Cliniques/CliniquesCrudResolver";
-export { Consultation_lab_requestsCrudResolver } from "./Consultation_lab_requests/Consultation_lab_requestsCrudResolver";
 export { ConsultationsCrudResolver } from "./Consultations/ConsultationsCrudResolver";
 export { Ctscan_resultsCrudResolver } from "./Ctscan_results/Ctscan_resultsCrudResolver";
-export { Doctor_institutsCrudResolver } from "./Doctor_instituts/Doctor_institutsCrudResolver";
 export { DoctorsCrudResolver } from "./Doctors/DoctorsCrudResolver";
 export { GeneralMedicalRecordsCrudResolver } from "./GeneralMedicalRecords/GeneralMedicalRecordsCrudResolver";
 export { HopitauxCrudResolver } from "./Hopitaux/HopitauxCrudResolver";

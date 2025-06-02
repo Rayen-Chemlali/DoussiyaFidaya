@@ -2,7 +2,6 @@ import * as TypeGraphQL from "type-graphql";
 import type { GraphQLResolveInfo } from "graphql";
 import { Certificates } from "../../../models/Certificates";
 import { Consultations } from "../../../models/Consultations";
-import { Doctor_instituts } from "../../../models/Doctor_instituts";
 import { Doctors } from "../../../models/Doctors";
 import { Instituts_medicaux } from "../../../models/Instituts_medicaux";
 import { Lab_requests } from "../../../models/Lab_requests";
@@ -13,7 +12,6 @@ import { Rdvs } from "../../../models/Rdvs";
 import { Users } from "../../../models/Users";
 import { DoctorsCertificatesArgs } from "./args/DoctorsCertificatesArgs";
 import { DoctorsConsultationsArgs } from "./args/DoctorsConsultationsArgs";
-import { DoctorsDoctor_institutsArgs } from "./args/DoctorsDoctor_institutsArgs";
 import { DoctorsInstitutsArgs } from "./args/DoctorsInstitutsArgs";
 import { DoctorsLab_requestsArgs } from "./args/DoctorsLab_requestsArgs";
 import { DoctorsPrescriptionsArgs } from "./args/DoctorsPrescriptionsArgs";
@@ -50,21 +48,6 @@ export class DoctorsRelationsResolver {
         id: doctors.id,
       },
     }).consultations({
-      ...args,
-      ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
-    });
-  }
-
-  @TypeGraphQL.FieldResolver(_type => [Doctor_instituts], {
-    nullable: false
-  })
-  async doctor_instituts(@TypeGraphQL.Root() doctors: Doctors, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: DoctorsDoctor_institutsArgs): Promise<Doctor_instituts[]> {
-    const { _count } = transformInfoIntoPrismaArgs(info);
-    return getPrismaFromContext(ctx).doctors.findUniqueOrThrow({
-      where: {
-        id: doctors.id,
-      },
-    }).doctor_instituts({
       ...args,
       ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
     });

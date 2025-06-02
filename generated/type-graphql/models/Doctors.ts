@@ -4,7 +4,6 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../scalars";
 import { Certificates } from "../models/Certificates";
 import { Consultations } from "../models/Consultations";
-import { Doctor_instituts } from "../models/Doctor_instituts";
 import { Instituts_medicaux } from "../models/Instituts_medicaux";
 import { Lab_requests } from "../models/Lab_requests";
 import { Message } from "../models/Message";
@@ -81,8 +80,6 @@ export class Doctors {
   certificates?: Certificates[];
 
   consultations?: Consultations[];
-
-  doctor_instituts?: Doctor_instituts[];
 
   users?: Users;
 

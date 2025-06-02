@@ -2,7 +2,6 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput } from "../inputs/Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput";
 import { ConsultationsCreatenotesInput } from "../inputs/ConsultationsCreatenotesInput";
 import { DoctorsCreateNestedOneWithoutConsultationsInput } from "../inputs/DoctorsCreateNestedOneWithoutConsultationsInput";
 import { Lab_requestsCreateNestedManyWithoutConsultationsInput } from "../inputs/Lab_requestsCreateNestedManyWithoutConsultationsInput";
@@ -36,11 +35,6 @@ export class ConsultationsCreateWithoutInstituts_medicauxInput {
     nullable: true
   })
   measures?: Prisma.InputJsonValue | undefined;
-
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput, {
-    nullable: true
-  })
-  consultation_lab_requests?: Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput | undefined;
 
   @TypeGraphQL.Field(_type => PrescriptionsCreateNestedOneWithoutConsultationsInput, {
     nullable: true

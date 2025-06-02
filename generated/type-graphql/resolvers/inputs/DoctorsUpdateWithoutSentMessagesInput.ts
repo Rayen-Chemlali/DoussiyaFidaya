@@ -5,7 +5,6 @@ import { DecimalJSScalar } from "../../scalars";
 import { BoolFieldUpdateOperationsInput } from "../inputs/BoolFieldUpdateOperationsInput";
 import { CertificatesUpdateManyWithoutDoctorsNestedInput } from "../inputs/CertificatesUpdateManyWithoutDoctorsNestedInput";
 import { ConsultationsUpdateManyWithoutDoctorsNestedInput } from "../inputs/ConsultationsUpdateManyWithoutDoctorsNestedInput";
-import { Doctor_institutsUpdateManyWithoutDoctorsNestedInput } from "../inputs/Doctor_institutsUpdateManyWithoutDoctorsNestedInput";
 import { DoctorsUpdateeducationInput } from "../inputs/DoctorsUpdateeducationInput";
 import { DoctorsUpdateexperienceInput } from "../inputs/DoctorsUpdateexperienceInput";
 import { DoctorsUpdatelanguagesInput } from "../inputs/DoctorsUpdatelanguagesInput";
@@ -87,11 +86,6 @@ export class DoctorsUpdateWithoutSentMessagesInput {
     nullable: true
   })
   consultations?: ConsultationsUpdateManyWithoutDoctorsNestedInput | undefined;
-
-  @TypeGraphQL.Field(_type => Doctor_institutsUpdateManyWithoutDoctorsNestedInput, {
-    nullable: true
-  })
-  doctor_instituts?: Doctor_institutsUpdateManyWithoutDoctorsNestedInput | undefined;
 
   @TypeGraphQL.Field(_type => UsersUpdateOneRequiredWithoutDoctorsNestedInput, {
     nullable: true

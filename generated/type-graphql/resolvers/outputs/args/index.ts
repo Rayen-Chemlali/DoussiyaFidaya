@@ -1,4 +1,3 @@
-export { ConsultationsCountConsultation_lab_requestsArgs } from "./ConsultationsCountConsultation_lab_requestsArgs";
 export { ConsultationsCountLab_requestsArgs } from "./ConsultationsCountLab_requestsArgs";
 export { CreateManyAndReturnAuthorizationsInstituts_medicauxArgs } from "./CreateManyAndReturnAuthorizationsInstituts_medicauxArgs";
 export { CreateManyAndReturnCertificatesDoctorsArgs } from "./CreateManyAndReturnCertificatesDoctorsArgs";
@@ -18,7 +17,6 @@ export { CreateManyAndReturnRdvsDoctorsArgs } from "./CreateManyAndReturnRdvsDoc
 export { CreateManyAndReturnRdvsRdv_requests_rdvs_rdv_request_idTordv_requestsArgs } from "./CreateManyAndReturnRdvsRdv_requests_rdvs_rdv_request_idTordv_requestsArgs";
 export { DoctorsCountCertificatesArgs } from "./DoctorsCountCertificatesArgs";
 export { DoctorsCountConsultationsArgs } from "./DoctorsCountConsultationsArgs";
-export { DoctorsCountDoctor_institutsArgs } from "./DoctorsCountDoctor_institutsArgs";
 export { DoctorsCountInstitutsArgs } from "./DoctorsCountInstitutsArgs";
 export { DoctorsCountLab_requestsArgs } from "./DoctorsCountLab_requestsArgs";
 export { DoctorsCountPrescriptionsArgs } from "./DoctorsCountPrescriptionsArgs";
@@ -28,14 +26,12 @@ export { DoctorsCountReceivedMessagesArgs } from "./DoctorsCountReceivedMessages
 export { DoctorsCountSentMessagesArgs } from "./DoctorsCountSentMessagesArgs";
 export { Instituts_medicauxCountAuthorizationsArgs } from "./Instituts_medicauxCountAuthorizationsArgs";
 export { Instituts_medicauxCountConsultationsArgs } from "./Instituts_medicauxCountConsultationsArgs";
-export { Instituts_medicauxCountDoctor_institutsArgs } from "./Instituts_medicauxCountDoctor_institutsArgs";
 export { Instituts_medicauxCountDoctorsArgs } from "./Instituts_medicauxCountDoctorsArgs";
 export { Lab_documentsCountAnalysis_resultsArgs } from "./Lab_documentsCountAnalysis_resultsArgs";
 export { Lab_documentsCountCtscan_resultsArgs } from "./Lab_documentsCountCtscan_resultsArgs";
 export { Lab_documentsCountLab_attachmentsArgs } from "./Lab_documentsCountLab_attachmentsArgs";
 export { Lab_documentsCountLab_resultsArgs } from "./Lab_documentsCountLab_resultsArgs";
 export { Lab_documentsCountXray_resultsArgs } from "./Lab_documentsCountXray_resultsArgs";
-export { Lab_requestsCountConsultation_lab_requestsArgs } from "./Lab_requestsCountConsultation_lab_requestsArgs";
 export { Lab_requestsCountConsultationsArgs } from "./Lab_requestsCountConsultationsArgs";
 export { Lab_requestsCountLab_documentsArgs } from "./Lab_requestsCountLab_documentsArgs";
 export { LaboratoriesCountLab_documentsArgs } from "./LaboratoriesCountLab_documentsArgs";

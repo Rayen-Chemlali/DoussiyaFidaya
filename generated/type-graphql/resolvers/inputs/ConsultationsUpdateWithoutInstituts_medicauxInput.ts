@@ -2,7 +2,6 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput } from "../inputs/Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput";
 import { ConsultationsUpdatenotesInput } from "../inputs/ConsultationsUpdatenotesInput";
 import { DateTimeFieldUpdateOperationsInput } from "../inputs/DateTimeFieldUpdateOperationsInput";
 import { DoctorsUpdateOneWithoutConsultationsNestedInput } from "../inputs/DoctorsUpdateOneWithoutConsultationsNestedInput";
@@ -39,11 +38,6 @@ export class ConsultationsUpdateWithoutInstituts_medicauxInput {
     nullable: true
   })
   measures?: Prisma.InputJsonValue | undefined;
-
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput, {
-    nullable: true
-  })
-  consultation_lab_requests?: Consultation_lab_requestsUpdateManyWithoutConsultationsNestedInput | undefined;
 
   @TypeGraphQL.Field(_type => PrescriptionsUpdateOneWithoutConsultationsNestedInput, {
     nullable: true

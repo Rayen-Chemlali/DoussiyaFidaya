@@ -2,7 +2,6 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../scalars";
-import { Consultation_lab_requests } from "../models/Consultation_lab_requests";
 import { Doctors } from "../models/Doctors";
 import { Instituts_medicaux } from "../models/Instituts_medicaux";
 import { Lab_requests } from "../models/Lab_requests";
@@ -57,8 +56,6 @@ export class Consultations {
     nullable: false
   })
   patient_id!: string;
-
-  consultation_lab_requests?: Consultation_lab_requests[];
 
   prescriptions?: Prescriptions | null;
 

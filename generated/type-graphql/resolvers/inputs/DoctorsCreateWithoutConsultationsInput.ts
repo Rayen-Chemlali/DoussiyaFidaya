@@ -3,7 +3,6 @@ import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { CertificatesCreateNestedManyWithoutDoctorsInput } from "../inputs/CertificatesCreateNestedManyWithoutDoctorsInput";
-import { Doctor_institutsCreateNestedManyWithoutDoctorsInput } from "../inputs/Doctor_institutsCreateNestedManyWithoutDoctorsInput";
 import { DoctorsCreateeducationInput } from "../inputs/DoctorsCreateeducationInput";
 import { DoctorsCreateexperienceInput } from "../inputs/DoctorsCreateexperienceInput";
 import { DoctorsCreatelanguagesInput } from "../inputs/DoctorsCreatelanguagesInput";
@@ -79,11 +78,6 @@ export class DoctorsCreateWithoutConsultationsInput {
     nullable: true
   })
   certificates?: CertificatesCreateNestedManyWithoutDoctorsInput | undefined;
-
-  @TypeGraphQL.Field(_type => Doctor_institutsCreateNestedManyWithoutDoctorsInput, {
-    nullable: true
-  })
-  doctor_instituts?: Doctor_institutsCreateNestedManyWithoutDoctorsInput | undefined;
 
   @TypeGraphQL.Field(_type => UsersCreateNestedOneWithoutDoctorsInput, {
     nullable: false

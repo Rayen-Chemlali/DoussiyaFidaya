@@ -2,7 +2,6 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput } from "../inputs/Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput";
 import { ConsultationsUpdateManyWithoutLab_requestsNestedInput } from "../inputs/ConsultationsUpdateManyWithoutLab_requestsNestedInput";
 import { Lab_documentsUpdateManyWithoutLab_requestsNestedInput } from "../inputs/Lab_documentsUpdateManyWithoutLab_requestsNestedInput";
 import { NullableEnumlab_requests_priority_enumFieldUpdateOperationsInput } from "../inputs/NullableEnumlab_requests_priority_enumFieldUpdateOperationsInput";
@@ -31,11 +30,6 @@ export class Lab_requestsUpdateWithoutDoctorsInput {
     nullable: true
   })
   description?: NullableStringFieldUpdateOperationsInput | undefined;
-
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput, {
-    nullable: true
-  })
-  consultation_lab_requests?: Consultation_lab_requestsUpdateManyWithoutLab_requestsNestedInput | undefined;
 
   @TypeGraphQL.Field(_type => Lab_documentsUpdateManyWithoutLab_requestsNestedInput, {
     nullable: true

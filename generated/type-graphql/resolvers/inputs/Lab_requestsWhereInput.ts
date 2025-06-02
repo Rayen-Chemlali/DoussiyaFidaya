@@ -2,7 +2,6 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { Consultation_lab_requestsListRelationFilter } from "../inputs/Consultation_lab_requestsListRelationFilter";
 import { ConsultationsListRelationFilter } from "../inputs/ConsultationsListRelationFilter";
 import { DoctorsNullableRelationFilter } from "../inputs/DoctorsNullableRelationFilter";
 import { Enumlab_requests_priority_enumNullableFilter } from "../inputs/Enumlab_requests_priority_enumNullableFilter";
@@ -59,11 +58,6 @@ export class Lab_requestsWhereInput {
     nullable: true
   })
   patient_id?: UuidFilter | undefined;
-
-  @TypeGraphQL.Field(_type => Consultation_lab_requestsListRelationFilter, {
-    nullable: true
-  })
-  consultation_lab_requests?: Consultation_lab_requestsListRelationFilter | undefined;
 
   @TypeGraphQL.Field(_type => Lab_documentsListRelationFilter, {
     nullable: true

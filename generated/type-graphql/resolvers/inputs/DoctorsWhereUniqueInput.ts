@@ -5,7 +5,6 @@ import { DecimalJSScalar } from "../../scalars";
 import { BoolFilter } from "../inputs/BoolFilter";
 import { CertificatesListRelationFilter } from "../inputs/CertificatesListRelationFilter";
 import { ConsultationsListRelationFilter } from "../inputs/ConsultationsListRelationFilter";
-import { Doctor_institutsListRelationFilter } from "../inputs/Doctor_institutsListRelationFilter";
 import { DoctorsWhereInput } from "../inputs/DoctorsWhereInput";
 import { Enumdoctors_specialty_enumFilter } from "../inputs/Enumdoctors_specialty_enumFilter";
 import { Enumdoctors_type_enumFilter } from "../inputs/Enumdoctors_type_enumFilter";
@@ -106,11 +105,6 @@ export class DoctorsWhereUniqueInput {
     nullable: true
   })
   consultations?: ConsultationsListRelationFilter | undefined;
-
-  @TypeGraphQL.Field(_type => Doctor_institutsListRelationFilter, {
-    nullable: true
-  })
-  doctor_instituts?: Doctor_institutsListRelationFilter | undefined;
 
   @TypeGraphQL.Field(_type => UsersRelationFilter, {
     nullable: true
