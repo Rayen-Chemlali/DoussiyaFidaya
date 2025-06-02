@@ -15,7 +15,12 @@ export class DoctorsMaxAggregate {
   @TypeGraphQL.Field(_type => doctors_type_enum, {
     nullable: true
   })
-  type!: "doctor" | "clinique" | "hopital" | null;
+  type!: "GENERAL_PRACTITIONER" | "SPECIALIST" | "SURGEON" | null;
+
+  @TypeGraphQL.Field(_type => Boolean, {
+    nullable: true
+  })
+  is_license_verified!: boolean | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true
@@ -40,7 +45,7 @@ export class DoctorsMaxAggregate {
   @TypeGraphQL.Field(_type => doctors_specialty_enum, {
     nullable: true
   })
-  specialty!: "generaliste" | "cardiologue" | "dermatologue" | "gynecologue" | "pediatre" | "orthopediste" | "psychiatre" | "ophtalmologue" | "otorhinolaryngologue" | "neurologue" | "urologue" | "endocrinologue" | "gastroenterologue" | "rheumatologue" | "anesthesiste" | "radiologue" | "oncologue" | "chirurgien" | "nutritionniste" | "physiotherapeute" | "psychologue" | "sexologue" | "geriatre" | "allergologue" | "hematologue" | "nephrologue" | "pneumologue" | "dentiste" | "orthodontiste" | "autre" | null;
+  specialty!: "GENERAL_PRACTITIONER" | "CARDIOLOGIST" | "DERMATOLOGIST" | "ENDOCRINOLOGIST" | "GASTROENTEROLOGIST" | "GYNECOLOGIST" | "HEMATOLOGIST" | "INFECTIOUS_DISEASE" | "INTERNIST" | "NEPHROLOGIST" | "NEUROLOGIST" | "OBSTETRICIAN" | "ONCOLOGIST" | "OPHTHALMOLOGIST" | "ORTHOPEDIST" | "OTOLARYNGOLOGIST" | "PEDIATRICIAN" | "PSYCHIATRIST" | "PULMONOLOGIST" | "RHEUMATOLOGIST" | "UROLOGIST" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

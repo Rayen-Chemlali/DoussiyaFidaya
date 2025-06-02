@@ -12,17 +12,17 @@ export class Enumlab_requests_priority_enumNullableWithAggregatesFilter {
   @TypeGraphQL.Field(_type => lab_requests_priority_enum, {
     nullable: true
   })
-  equals?: "low" | "medium" | "high" | undefined;
+  equals?: "LOW" | "MEDIUM" | "HIGH" | "URGENT" | undefined;
 
   @TypeGraphQL.Field(_type => [lab_requests_priority_enum], {
     nullable: true
   })
-  in?: Array<"low" | "medium" | "high"> | undefined;
+  in?: Array<"LOW" | "MEDIUM" | "HIGH" | "URGENT"> | undefined;
 
   @TypeGraphQL.Field(_type => [lab_requests_priority_enum], {
     nullable: true
   })
-  notIn?: Array<"low" | "medium" | "high"> | undefined;
+  notIn?: Array<"LOW" | "MEDIUM" | "HIGH" | "URGENT"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumlab_requests_priority_enumNullableWithAggregatesFilter, {
     nullable: true

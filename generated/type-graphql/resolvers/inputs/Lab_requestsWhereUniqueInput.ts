@@ -3,6 +3,7 @@ import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { Consultation_lab_requestsListRelationFilter } from "../inputs/Consultation_lab_requestsListRelationFilter";
+import { ConsultationsListRelationFilter } from "../inputs/ConsultationsListRelationFilter";
 import { DoctorsNullableRelationFilter } from "../inputs/DoctorsNullableRelationFilter";
 import { Enumlab_requests_priority_enumNullableFilter } from "../inputs/Enumlab_requests_priority_enumNullableFilter";
 import { Lab_documentsListRelationFilter } from "../inputs/Lab_documentsListRelationFilter";
@@ -79,4 +80,9 @@ export class Lab_requestsWhereUniqueInput {
     nullable: true
   })
   patients?: PatientsRelationFilter | undefined;
+
+  @TypeGraphQL.Field(_type => ConsultationsListRelationFilter, {
+    nullable: true
+  })
+  consultations?: ConsultationsListRelationFilter | undefined;
 }

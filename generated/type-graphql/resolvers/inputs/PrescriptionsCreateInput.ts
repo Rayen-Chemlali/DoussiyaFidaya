@@ -2,7 +2,7 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { ConsultationsCreateNestedOneWithoutPrescriptionsInput } from "../inputs/ConsultationsCreateNestedOneWithoutPrescriptionsInput";
+import { ConsultationsCreateNestedManyWithoutPrescriptionsInput } from "../inputs/ConsultationsCreateNestedManyWithoutPrescriptionsInput";
 import { DoctorsCreateNestedOneWithoutPrescriptionsInput } from "../inputs/DoctorsCreateNestedOneWithoutPrescriptionsInput";
 import { MedicationsCreateNestedManyWithoutPrescriptionsInput } from "../inputs/MedicationsCreateNestedManyWithoutPrescriptionsInput";
 import { PatientsCreateNestedOneWithoutPrescriptionsInput } from "../inputs/PatientsCreateNestedOneWithoutPrescriptionsInput";
@@ -38,17 +38,17 @@ export class PrescriptionsCreateInput {
   @TypeGraphQL.Field(_type => prescriptions_status_enum, {
     nullable: false
   })
-  status!: "Pending" | "Approved" | "Rejected";
+  status!: "ACTIVE" | "COMPLETED" | "CANCELLED";
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: true
   })
   updated_at?: Date | undefined;
 
-  @TypeGraphQL.Field(_type => ConsultationsCreateNestedOneWithoutPrescriptionsInput, {
+  @TypeGraphQL.Field(_type => ConsultationsCreateNestedManyWithoutPrescriptionsInput, {
     nullable: true
   })
-  consultations?: ConsultationsCreateNestedOneWithoutPrescriptionsInput | undefined;
+  consultations?: ConsultationsCreateNestedManyWithoutPrescriptionsInput | undefined;
 
   @TypeGraphQL.Field(_type => MedicationsCreateNestedManyWithoutPrescriptionsInput, {
     nullable: true

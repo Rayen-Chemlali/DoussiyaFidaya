@@ -14,7 +14,7 @@ export class HopitauxMaxAggregate {
   @TypeGraphQL.Field(_type => hopitaux_type_enum, {
     nullable: true
   })
-  type!: "doctor" | "clinique" | "hopital" | null;
+  type!: "PUBLIC" | "PRIVATE" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

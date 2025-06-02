@@ -12,10 +12,10 @@ import { transformInfoIntoPrismaArgs, getPrismaFromContext, transformCountFieldI
 
 @TypeGraphQL.Resolver(_of => Prescriptions)
 export class PrescriptionsRelationsResolver {
-  @TypeGraphQL.FieldResolver(_type => Consultations, {
-    nullable: true
+  @TypeGraphQL.FieldResolver(_type => [Consultations], {
+    nullable: false
   })
-  async consultations(@TypeGraphQL.Root() prescriptions: Prescriptions, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: PrescriptionsConsultationsArgs): Promise<Consultations | null> {
+  async consultations(@TypeGraphQL.Root() prescriptions: Prescriptions, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: PrescriptionsConsultationsArgs): Promise<Consultations[]> {
     const { _count } = transformInfoIntoPrismaArgs(info);
     return getPrismaFromContext(ctx).prescriptions.findUniqueOrThrow({
       where: {

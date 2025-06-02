@@ -3,6 +3,7 @@ import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../scalars";
 import { Consultation_lab_requests } from "../models/Consultation_lab_requests";
+import { Consultations } from "../models/Consultations";
 import { Doctors } from "../models/Doctors";
 import { Lab_documents } from "../models/Lab_documents";
 import { Patients } from "../models/Patients";
@@ -24,7 +25,7 @@ export class Lab_requests {
   @TypeGraphQL.Field(_type => lab_requests_priority_enum, {
     nullable: true
   })
-  priority?: "low" | "medium" | "high" | null;
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true
@@ -48,6 +49,8 @@ export class Lab_requests {
   doctors?: Doctors | null;
 
   patients?: Patients;
+
+  consultations?: Consultations[];
 
   @TypeGraphQL.Field(_type => Lab_requestsCount, {
     nullable: true

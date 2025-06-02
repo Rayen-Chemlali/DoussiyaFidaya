@@ -8,9 +8,9 @@ import { DateTimeFieldUpdateOperationsInput } from "../inputs/DateTimeFieldUpdat
 import { Enumpatients_gender_enumFieldUpdateOperationsInput } from "../inputs/Enumpatients_gender_enumFieldUpdateOperationsInput";
 import { GeneralMedicalRecordsUpdateOneWithoutPatients_GeneralMedicalRecords_patient_idTopatientsNestedInput } from "../inputs/GeneralMedicalRecordsUpdateOneWithoutPatients_GeneralMedicalRecords_patient_idTopatientsNestedInput";
 import { GeneralMedicalRecordsUpdateOneWithoutPatients_patients_general_medical_record_idToGeneralMedicalRecordsNestedInput } from "../inputs/GeneralMedicalRecordsUpdateOneWithoutPatients_patients_general_medical_record_idToGeneralMedicalRecordsNestedInput";
+import { IntFieldUpdateOperationsInput } from "../inputs/IntFieldUpdateOperationsInput";
 import { Lab_documentsUpdateManyWithoutPatientsNestedInput } from "../inputs/Lab_documentsUpdateManyWithoutPatientsNestedInput";
 import { Lab_requestsUpdateManyWithoutPatientsNestedInput } from "../inputs/Lab_requestsUpdateManyWithoutPatientsNestedInput";
-import { NullableIntFieldUpdateOperationsInput } from "../inputs/NullableIntFieldUpdateOperationsInput";
 import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
 import { PrescriptionsUpdateManyWithoutPatientsNestedInput } from "../inputs/PrescriptionsUpdateManyWithoutPatientsNestedInput";
 import { Rdv_requestsUpdateManyWithoutPatientsNestedInput } from "../inputs/Rdv_requestsUpdateManyWithoutPatientsNestedInput";
@@ -25,10 +25,10 @@ export class PatientsUpdateWithoutAuthorizationsInput {
   })
   id?: StringFieldUpdateOperationsInput | undefined;
 
-  @TypeGraphQL.Field(_type => NullableIntFieldUpdateOperationsInput, {
+  @TypeGraphQL.Field(_type => IntFieldUpdateOperationsInput, {
     nullable: true
   })
-  cin?: NullableIntFieldUpdateOperationsInput | undefined;
+  cin?: IntFieldUpdateOperationsInput | undefined;
 
   @TypeGraphQL.Field(_type => DateTimeFieldUpdateOperationsInput, {
     nullable: true

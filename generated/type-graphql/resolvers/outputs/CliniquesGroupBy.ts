@@ -17,7 +17,7 @@ export class CliniquesGroupBy {
   @TypeGraphQL.Field(_type => cliniques_type_enum, {
     nullable: false
   })
-  type!: "doctor" | "clinique" | "hopital";
+  type!: "PRIVATE" | "PUBLIC";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: false

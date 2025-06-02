@@ -5,6 +5,7 @@ import { DecimalJSScalar } from "../../scalars";
 import { Consultation_lab_requestsOrderByRelationAggregateInput } from "../inputs/Consultation_lab_requestsOrderByRelationAggregateInput";
 import { DoctorsOrderByWithRelationInput } from "../inputs/DoctorsOrderByWithRelationInput";
 import { Instituts_medicauxOrderByWithRelationInput } from "../inputs/Instituts_medicauxOrderByWithRelationInput";
+import { Lab_requestsOrderByRelationAggregateInput } from "../inputs/Lab_requestsOrderByRelationAggregateInput";
 import { PatientsOrderByWithRelationInput } from "../inputs/PatientsOrderByWithRelationInput";
 import { PrescriptionsOrderByWithRelationInput } from "../inputs/PrescriptionsOrderByWithRelationInput";
 import { RdvsOrderByWithRelationInput } from "../inputs/RdvsOrderByWithRelationInput";
@@ -87,4 +88,9 @@ export class ConsultationsOrderByWithRelationInput {
     nullable: true
   })
   rdvs?: RdvsOrderByWithRelationInput | undefined;
+
+  @TypeGraphQL.Field(_type => Lab_requestsOrderByRelationAggregateInput, {
+    nullable: true
+  })
+  lab_requests?: Lab_requestsOrderByRelationAggregateInput | undefined;
 }

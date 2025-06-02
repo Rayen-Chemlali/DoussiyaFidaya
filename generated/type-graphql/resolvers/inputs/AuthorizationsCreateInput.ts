@@ -16,7 +16,7 @@ export class AuthorizationsCreateInput {
   @TypeGraphQL.Field(_type => authorizations_level_enum, {
     nullable: false
   })
-  level!: "general" | "speciality" | "full_access";
+  level!: "READ" | "WRITE" | "ADMIN";
 
   @TypeGraphQL.Field(_type => Instituts_medicauxCreateNestedOneWithoutAuthorizationsInput, {
     nullable: true

@@ -10,17 +10,17 @@ export class Enumanalysis_results_result_type_enumFilter {
   @TypeGraphQL.Field(_type => analysis_results_result_type_enum, {
     nullable: true
   })
-  equals?: "analysis" | "xray" | "ctscan" | undefined;
+  equals?: "NORMAL" | "ABNORMAL" | "CRITICAL" | undefined;
 
   @TypeGraphQL.Field(_type => [analysis_results_result_type_enum], {
     nullable: true
   })
-  in?: Array<"analysis" | "xray" | "ctscan"> | undefined;
+  in?: Array<"NORMAL" | "ABNORMAL" | "CRITICAL"> | undefined;
 
   @TypeGraphQL.Field(_type => [analysis_results_result_type_enum], {
     nullable: true
   })
-  notIn?: Array<"analysis" | "xray" | "ctscan"> | undefined;
+  notIn?: Array<"NORMAL" | "ABNORMAL" | "CRITICAL"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumanalysis_results_result_type_enumFilter, {
     nullable: true

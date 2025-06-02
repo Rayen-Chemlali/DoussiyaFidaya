@@ -45,6 +45,16 @@ export class UsersOrderByWithAggregationInput {
   })
   is_verified?: "asc" | "desc" | undefined;
 
+  @TypeGraphQL.Field(_type => SortOrder, {
+    nullable: true
+  })
+  password?: "asc" | "desc" | undefined;
+
+  @TypeGraphQL.Field(_type => SortOrder, {
+    nullable: true
+  })
+  salt?: "asc" | "desc" | undefined;
+
   @TypeGraphQL.Field(_type => SortOrderInput, {
     nullable: true
   })

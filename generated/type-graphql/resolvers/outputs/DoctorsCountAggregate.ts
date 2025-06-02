@@ -18,6 +18,11 @@ export class DoctorsCountAggregate {
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
     nullable: false
   })
+  is_license_verified!: number;
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    nullable: false
+  })
   bio!: number;
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {

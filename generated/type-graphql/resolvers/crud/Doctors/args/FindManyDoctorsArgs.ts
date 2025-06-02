@@ -35,5 +35,5 @@ export class FindManyDoctorsArgs {
   @TypeGraphQL.Field(_type => [DoctorsScalarFieldEnum], {
     nullable: true
   })
-  distinct?: Array<"id" | "type" | "bio" | "education" | "experience" | "first_name" | "languages" | "last_name" | "profile_image" | "specialty" | "user_id"> | undefined;
+  distinct?: Array<"id" | "type" | "is_license_verified" | "bio" | "education" | "experience" | "first_name" | "languages" | "last_name" | "profile_image" | "specialty" | "user_id"> | undefined;
 }

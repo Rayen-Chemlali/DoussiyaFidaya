@@ -5,6 +5,7 @@ import { DecimalJSScalar } from "../../scalars";
 import { Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput } from "../inputs/Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput";
 import { ConsultationsCreatenotesInput } from "../inputs/ConsultationsCreatenotesInput";
 import { Instituts_medicauxCreateNestedOneWithoutConsultationsInput } from "../inputs/Instituts_medicauxCreateNestedOneWithoutConsultationsInput";
+import { Lab_requestsCreateNestedManyWithoutConsultationsInput } from "../inputs/Lab_requestsCreateNestedManyWithoutConsultationsInput";
 import { PatientsCreateNestedOneWithoutConsultationsInput } from "../inputs/PatientsCreateNestedOneWithoutConsultationsInput";
 import { PrescriptionsCreateNestedOneWithoutConsultationsInput } from "../inputs/PrescriptionsCreateNestedOneWithoutConsultationsInput";
 import { RdvsCreateNestedOneWithoutConsultationsInput } from "../inputs/RdvsCreateNestedOneWithoutConsultationsInput";
@@ -60,4 +61,9 @@ export class ConsultationsCreateWithoutDoctorsInput {
     nullable: true
   })
   rdvs?: RdvsCreateNestedOneWithoutConsultationsInput | undefined;
+
+  @TypeGraphQL.Field(_type => Lab_requestsCreateNestedManyWithoutConsultationsInput, {
+    nullable: true
+  })
+  lab_requests?: Lab_requestsCreateNestedManyWithoutConsultationsInput | undefined;
 }

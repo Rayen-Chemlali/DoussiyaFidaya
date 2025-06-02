@@ -41,6 +41,16 @@ export class CreateManyAndReturnUsers {
   })
   is_verified!: boolean;
 
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  password!: string;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  salt!: string;
+
   @TypeGraphQL.Field(_type => Date, {
     nullable: true
   })
@@ -59,7 +69,7 @@ export class CreateManyAndReturnUsers {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: false
   })
-  role!: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin";
+  role!: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

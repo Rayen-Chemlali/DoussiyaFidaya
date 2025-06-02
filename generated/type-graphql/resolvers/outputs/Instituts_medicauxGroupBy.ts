@@ -17,7 +17,7 @@ export class Instituts_medicauxGroupBy {
   @TypeGraphQL.Field(_type => instituts_medicaux_type_enum, {
     nullable: false
   })
-  type!: "doctor" | "clinique" | "hopital";
+  type!: "CLINIC" | "HOSPITAL" | "LABORATORY";
 
   @TypeGraphQL.Field(_type => Instituts_medicauxCountAggregate, {
     nullable: true

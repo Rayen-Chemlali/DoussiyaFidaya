@@ -2,6 +2,7 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
+import { BoolWithAggregatesFilter } from "../inputs/BoolWithAggregatesFilter";
 import { Enumdoctors_specialty_enumWithAggregatesFilter } from "../inputs/Enumdoctors_specialty_enumWithAggregatesFilter";
 import { Enumdoctors_type_enumWithAggregatesFilter } from "../inputs/Enumdoctors_type_enumWithAggregatesFilter";
 import { StringNullableListFilter } from "../inputs/StringNullableListFilter";
@@ -35,6 +36,11 @@ export class DoctorsScalarWhereWithAggregatesInput {
     nullable: true
   })
   type?: Enumdoctors_type_enumWithAggregatesFilter | undefined;
+
+  @TypeGraphQL.Field(_type => BoolWithAggregatesFilter, {
+    nullable: true
+  })
+  is_license_verified?: BoolWithAggregatesFilter | undefined;
 
   @TypeGraphQL.Field(_type => StringNullableWithAggregatesFilter, {
     nullable: true

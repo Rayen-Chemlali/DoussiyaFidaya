@@ -19,7 +19,7 @@ export class Lab_requestsMinAggregate {
   @TypeGraphQL.Field(_type => lab_requests_priority_enum, {
     nullable: true
   })
-  priority!: "low" | "medium" | "high" | null;
+  priority!: "LOW" | "MEDIUM" | "HIGH" | "URGENT" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

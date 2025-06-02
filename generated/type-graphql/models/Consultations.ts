@@ -5,6 +5,7 @@ import { DecimalJSScalar } from "../scalars";
 import { Consultation_lab_requests } from "../models/Consultation_lab_requests";
 import { Doctors } from "../models/Doctors";
 import { Instituts_medicaux } from "../models/Instituts_medicaux";
+import { Lab_requests } from "../models/Lab_requests";
 import { Patients } from "../models/Patients";
 import { Prescriptions } from "../models/Prescriptions";
 import { Rdvs } from "../models/Rdvs";
@@ -68,6 +69,8 @@ export class Consultations {
   doctors?: Doctors | null;
 
   rdvs?: Rdvs | null;
+
+  lab_requests?: Lab_requests[];
 
   @TypeGraphQL.Field(_type => ConsultationsCount, {
     nullable: true

@@ -2,6 +2,7 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
+import { BoolFieldUpdateOperationsInput } from "../inputs/BoolFieldUpdateOperationsInput";
 import { DoctorsUpdateeducationInput } from "../inputs/DoctorsUpdateeducationInput";
 import { DoctorsUpdateexperienceInput } from "../inputs/DoctorsUpdateexperienceInput";
 import { DoctorsUpdatelanguagesInput } from "../inputs/DoctorsUpdatelanguagesInput";
@@ -21,6 +22,11 @@ export class DoctorsUpdateManyMutationInput {
     nullable: true
   })
   type?: Enumdoctors_type_enumFieldUpdateOperationsInput | undefined;
+
+  @TypeGraphQL.Field(_type => BoolFieldUpdateOperationsInput, {
+    nullable: true
+  })
+  is_license_verified?: BoolFieldUpdateOperationsInput | undefined;
 
   @TypeGraphQL.Field(_type => NullableStringFieldUpdateOperationsInput, {
     nullable: true

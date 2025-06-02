@@ -2,7 +2,8 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { PatientsCreateNestedOneWithoutUsersInput } from "../inputs/PatientsCreateNestedOneWithoutUsersInput";
+import { PatientsCreateNestedManyWithoutUsersInput } from "../inputs/PatientsCreateNestedManyWithoutUsersInput";
+import { Verification_tokensCreateNestedOneWithoutUserInput } from "../inputs/Verification_tokensCreateNestedOneWithoutUserInput";
 import { users_role_enum } from "../../enums/users_role_enum";
 
 @TypeGraphQL.InputType("UsersCreateWithoutDoctorsInput", {})
@@ -42,6 +43,16 @@ export class UsersCreateWithoutDoctorsInput {
   })
   is_verified!: boolean;
 
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  password!: string;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  salt!: string;
+
   @TypeGraphQL.Field(_type => Date, {
     nullable: true
   })
@@ -60,7 +71,7 @@ export class UsersCreateWithoutDoctorsInput {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: false
   })
-  role!: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin";
+  role!: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true
@@ -72,8 +83,13 @@ export class UsersCreateWithoutDoctorsInput {
   })
   updated_at?: Date | undefined;
 
-  @TypeGraphQL.Field(_type => PatientsCreateNestedOneWithoutUsersInput, {
+  @TypeGraphQL.Field(_type => Verification_tokensCreateNestedOneWithoutUserInput, {
     nullable: true
   })
-  patients?: PatientsCreateNestedOneWithoutUsersInput | undefined;
+  validation_token?: Verification_tokensCreateNestedOneWithoutUserInput | undefined;
+
+  @TypeGraphQL.Field(_type => PatientsCreateNestedManyWithoutUsersInput, {
+    nullable: true
+  })
+  patients?: PatientsCreateNestedManyWithoutUsersInput | undefined;
 }

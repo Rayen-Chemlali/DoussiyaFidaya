@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { DateTimeWithAggregatesFilter } from "../inputs/DateTimeWithAggregatesFilter";
 import { Enumpatients_gender_enumWithAggregatesFilter } from "../inputs/Enumpatients_gender_enumWithAggregatesFilter";
-import { IntNullableWithAggregatesFilter } from "../inputs/IntNullableWithAggregatesFilter";
+import { IntWithAggregatesFilter } from "../inputs/IntWithAggregatesFilter";
 import { StringNullableWithAggregatesFilter } from "../inputs/StringNullableWithAggregatesFilter";
 import { UuidNullableWithAggregatesFilter } from "../inputs/UuidNullableWithAggregatesFilter";
 import { UuidWithAggregatesFilter } from "../inputs/UuidWithAggregatesFilter";
@@ -31,10 +31,10 @@ export class PatientsScalarWhereWithAggregatesInput {
   })
   id?: UuidWithAggregatesFilter | undefined;
 
-  @TypeGraphQL.Field(_type => IntNullableWithAggregatesFilter, {
+  @TypeGraphQL.Field(_type => IntWithAggregatesFilter, {
     nullable: true
   })
-  cin?: IntNullableWithAggregatesFilter | undefined;
+  cin?: IntWithAggregatesFilter | undefined;
 
   @TypeGraphQL.Field(_type => DateTimeWithAggregatesFilter, {
     nullable: true

@@ -34,7 +34,7 @@ export class PrescriptionsMaxAggregate {
   @TypeGraphQL.Field(_type => prescriptions_status_enum, {
     nullable: true
   })
-  status!: "Pending" | "Approved" | "Rejected" | null;
+  status!: "ACTIVE" | "COMPLETED" | "CANCELLED" | null;
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: true

@@ -8,7 +8,10 @@ import { Doctor_institutsCreateNestedManyWithoutDoctorsInput } from "../inputs/D
 import { DoctorsCreateeducationInput } from "../inputs/DoctorsCreateeducationInput";
 import { DoctorsCreateexperienceInput } from "../inputs/DoctorsCreateexperienceInput";
 import { DoctorsCreatelanguagesInput } from "../inputs/DoctorsCreatelanguagesInput";
+import { Instituts_medicauxCreateNestedManyWithoutDoctorsInput } from "../inputs/Instituts_medicauxCreateNestedManyWithoutDoctorsInput";
 import { Lab_requestsCreateNestedManyWithoutDoctorsInput } from "../inputs/Lab_requestsCreateNestedManyWithoutDoctorsInput";
+import { MessageCreateNestedManyWithoutReceiverInput } from "../inputs/MessageCreateNestedManyWithoutReceiverInput";
+import { MessageCreateNestedManyWithoutSenderInput } from "../inputs/MessageCreateNestedManyWithoutSenderInput";
 import { PrescriptionsCreateNestedManyWithoutDoctorsInput } from "../inputs/PrescriptionsCreateNestedManyWithoutDoctorsInput";
 import { Rdv_requestsCreateNestedManyWithoutDoctorsInput } from "../inputs/Rdv_requestsCreateNestedManyWithoutDoctorsInput";
 import { UsersCreateNestedOneWithoutDoctorsInput } from "../inputs/UsersCreateNestedOneWithoutDoctorsInput";
@@ -25,7 +28,12 @@ export class DoctorsCreateWithoutRdvsInput {
   @TypeGraphQL.Field(_type => doctors_type_enum, {
     nullable: false
   })
-  type!: "doctor" | "clinique" | "hopital";
+  type!: "GENERAL_PRACTITIONER" | "SPECIALIST" | "SURGEON";
+
+  @TypeGraphQL.Field(_type => Boolean, {
+    nullable: true
+  })
+  is_license_verified?: boolean | undefined;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true
@@ -65,7 +73,7 @@ export class DoctorsCreateWithoutRdvsInput {
   @TypeGraphQL.Field(_type => doctors_specialty_enum, {
     nullable: false
   })
-  specialty!: "generaliste" | "cardiologue" | "dermatologue" | "gynecologue" | "pediatre" | "orthopediste" | "psychiatre" | "ophtalmologue" | "otorhinolaryngologue" | "neurologue" | "urologue" | "endocrinologue" | "gastroenterologue" | "rheumatologue" | "anesthesiste" | "radiologue" | "oncologue" | "chirurgien" | "nutritionniste" | "physiotherapeute" | "psychologue" | "sexologue" | "geriatre" | "allergologue" | "hematologue" | "nephrologue" | "pneumologue" | "dentiste" | "orthodontiste" | "autre";
+  specialty!: "GENERAL_PRACTITIONER" | "CARDIOLOGIST" | "DERMATOLOGIST" | "ENDOCRINOLOGIST" | "GASTROENTEROLOGIST" | "GYNECOLOGIST" | "HEMATOLOGIST" | "INFECTIOUS_DISEASE" | "INTERNIST" | "NEPHROLOGIST" | "NEUROLOGIST" | "OBSTETRICIAN" | "ONCOLOGIST" | "OPHTHALMOLOGIST" | "ORTHOPEDIST" | "OTOLARYNGOLOGIST" | "PEDIATRICIAN" | "PSYCHIATRIST" | "PULMONOLOGIST" | "RHEUMATOLOGIST" | "UROLOGIST";
 
   @TypeGraphQL.Field(_type => CertificatesCreateNestedManyWithoutDoctorsInput, {
     nullable: true
@@ -101,4 +109,19 @@ export class DoctorsCreateWithoutRdvsInput {
     nullable: true
   })
   rdv_requests?: Rdv_requestsCreateNestedManyWithoutDoctorsInput | undefined;
+
+  @TypeGraphQL.Field(_type => MessageCreateNestedManyWithoutSenderInput, {
+    nullable: true
+  })
+  sentMessages?: MessageCreateNestedManyWithoutSenderInput | undefined;
+
+  @TypeGraphQL.Field(_type => MessageCreateNestedManyWithoutReceiverInput, {
+    nullable: true
+  })
+  receivedMessages?: MessageCreateNestedManyWithoutReceiverInput | undefined;
+
+  @TypeGraphQL.Field(_type => Instituts_medicauxCreateNestedManyWithoutDoctorsInput, {
+    nullable: true
+  })
+  instituts?: Instituts_medicauxCreateNestedManyWithoutDoctorsInput | undefined;
 }

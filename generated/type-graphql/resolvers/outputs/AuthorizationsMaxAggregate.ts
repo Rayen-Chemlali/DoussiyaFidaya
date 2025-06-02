@@ -14,7 +14,7 @@ export class AuthorizationsMaxAggregate {
   @TypeGraphQL.Field(_type => authorizations_level_enum, {
     nullable: true
   })
-  level!: "general" | "speciality" | "full_access" | null;
+  level!: "READ" | "WRITE" | "ADMIN" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

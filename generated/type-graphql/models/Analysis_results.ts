@@ -30,7 +30,7 @@ export class Analysis_results {
   @TypeGraphQL.Field(_type => analysis_results_result_type_enum, {
     nullable: false
   })
-  result_type!: "analysis" | "xray" | "ctscan";
+  result_type!: "NORMAL" | "ABNORMAL" | "CRITICAL";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: false

@@ -9,5 +9,5 @@ export class Enumpatients_gender_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => patients_gender_enum, {
     nullable: true
   })
-  set?: "Male" | "Female" | undefined;
+  set?: "MALE" | "FEMALE" | "OTHER" | undefined;
 }

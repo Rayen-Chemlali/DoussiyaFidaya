@@ -9,5 +9,5 @@ export class Enumprescriptions_status_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => prescriptions_status_enum, {
     nullable: true
   })
-  set?: "Pending" | "Approved" | "Rejected" | undefined;
+  set?: "ACTIVE" | "COMPLETED" | "CANCELLED" | undefined;
 }

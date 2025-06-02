@@ -6,6 +6,7 @@ import { ConsultationsUpdatenotesInput } from "../inputs/ConsultationsUpdatenote
 import { DateTimeFieldUpdateOperationsInput } from "../inputs/DateTimeFieldUpdateOperationsInput";
 import { DoctorsUpdateOneWithoutConsultationsNestedInput } from "../inputs/DoctorsUpdateOneWithoutConsultationsNestedInput";
 import { Instituts_medicauxUpdateOneWithoutConsultationsNestedInput } from "../inputs/Instituts_medicauxUpdateOneWithoutConsultationsNestedInput";
+import { Lab_requestsUpdateManyWithoutConsultationsNestedInput } from "../inputs/Lab_requestsUpdateManyWithoutConsultationsNestedInput";
 import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
 import { PatientsUpdateOneRequiredWithoutConsultationsNestedInput } from "../inputs/PatientsUpdateOneRequiredWithoutConsultationsNestedInput";
 import { PrescriptionsUpdateOneWithoutConsultationsNestedInput } from "../inputs/PrescriptionsUpdateOneWithoutConsultationsNestedInput";
@@ -63,4 +64,9 @@ export class ConsultationsUpdateWithoutConsultation_lab_requestsInput {
     nullable: true
   })
   rdvs?: RdvsUpdateOneWithoutConsultationsNestedInput | undefined;
+
+  @TypeGraphQL.Field(_type => Lab_requestsUpdateManyWithoutConsultationsNestedInput, {
+    nullable: true
+  })
+  lab_requests?: Lab_requestsUpdateManyWithoutConsultationsNestedInput | undefined;
 }

@@ -20,6 +20,11 @@ export class DoctorsOrderByWithAggregationInput {
   })
   type?: "asc" | "desc" | undefined;
 
+  @TypeGraphQL.Field(_type => SortOrder, {
+    nullable: true
+  })
+  is_license_verified?: "asc" | "desc" | undefined;
+
   @TypeGraphQL.Field(_type => SortOrderInput, {
     nullable: true
   })

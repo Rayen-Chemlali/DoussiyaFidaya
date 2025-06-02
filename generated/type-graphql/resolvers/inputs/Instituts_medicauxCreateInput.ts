@@ -5,6 +5,7 @@ import { DecimalJSScalar } from "../../scalars";
 import { AuthorizationsCreateNestedManyWithoutInstituts_medicauxInput } from "../inputs/AuthorizationsCreateNestedManyWithoutInstituts_medicauxInput";
 import { ConsultationsCreateNestedManyWithoutInstituts_medicauxInput } from "../inputs/ConsultationsCreateNestedManyWithoutInstituts_medicauxInput";
 import { Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput } from "../inputs/Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput";
+import { DoctorsCreateNestedManyWithoutInstitutsInput } from "../inputs/DoctorsCreateNestedManyWithoutInstitutsInput";
 import { instituts_medicaux_type_enum } from "../../enums/instituts_medicaux_type_enum";
 
 @TypeGraphQL.InputType("Instituts_medicauxCreateInput", {})
@@ -17,7 +18,7 @@ export class Instituts_medicauxCreateInput {
   @TypeGraphQL.Field(_type => instituts_medicaux_type_enum, {
     nullable: false
   })
-  type!: "doctor" | "clinique" | "hopital";
+  type!: "CLINIC" | "HOSPITAL" | "LABORATORY";
 
   @TypeGraphQL.Field(_type => AuthorizationsCreateNestedManyWithoutInstituts_medicauxInput, {
     nullable: true
@@ -33,4 +34,9 @@ export class Instituts_medicauxCreateInput {
     nullable: true
   })
   doctor_instituts?: Doctor_institutsCreateNestedManyWithoutInstituts_medicauxInput | undefined;
+
+  @TypeGraphQL.Field(_type => DoctorsCreateNestedManyWithoutInstitutsInput, {
+    nullable: true
+  })
+  doctors?: DoctorsCreateNestedManyWithoutInstitutsInput | undefined;
 }

@@ -22,9 +22,9 @@ export class PatientsCreateWithoutCertificatesInput {
   id?: string | undefined;
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
-    nullable: true
+    nullable: false
   })
-  cin?: number | undefined;
+  cin!: number;
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: false
@@ -34,7 +34,7 @@ export class PatientsCreateWithoutCertificatesInput {
   @TypeGraphQL.Field(_type => patients_gender_enum, {
     nullable: false
   })
-  gender!: "Male" | "Female";
+  gender!: "MALE" | "FEMALE" | "OTHER";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

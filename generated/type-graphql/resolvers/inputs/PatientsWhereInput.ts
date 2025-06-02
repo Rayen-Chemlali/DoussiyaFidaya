@@ -8,7 +8,7 @@ import { ConsultationsListRelationFilter } from "../inputs/ConsultationsListRela
 import { DateTimeFilter } from "../inputs/DateTimeFilter";
 import { Enumpatients_gender_enumFilter } from "../inputs/Enumpatients_gender_enumFilter";
 import { GeneralMedicalRecordsNullableRelationFilter } from "../inputs/GeneralMedicalRecordsNullableRelationFilter";
-import { IntNullableFilter } from "../inputs/IntNullableFilter";
+import { IntFilter } from "../inputs/IntFilter";
 import { Lab_documentsListRelationFilter } from "../inputs/Lab_documentsListRelationFilter";
 import { Lab_requestsListRelationFilter } from "../inputs/Lab_requestsListRelationFilter";
 import { PrescriptionsListRelationFilter } from "../inputs/PrescriptionsListRelationFilter";
@@ -41,10 +41,10 @@ export class PatientsWhereInput {
   })
   id?: UuidFilter | undefined;
 
-  @TypeGraphQL.Field(_type => IntNullableFilter, {
+  @TypeGraphQL.Field(_type => IntFilter, {
     nullable: true
   })
-  cin?: IntNullableFilter | undefined;
+  cin?: IntFilter | undefined;
 
   @TypeGraphQL.Field(_type => DateTimeFilter, {
     nullable: true

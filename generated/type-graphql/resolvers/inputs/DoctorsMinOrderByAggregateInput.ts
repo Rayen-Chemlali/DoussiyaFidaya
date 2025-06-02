@@ -19,6 +19,11 @@ export class DoctorsMinOrderByAggregateInput {
   @TypeGraphQL.Field(_type => SortOrder, {
     nullable: true
   })
+  is_license_verified?: "asc" | "desc" | undefined;
+
+  @TypeGraphQL.Field(_type => SortOrder, {
+    nullable: true
+  })
   bio?: "asc" | "desc" | undefined;
 
   @TypeGraphQL.Field(_type => SortOrder, {

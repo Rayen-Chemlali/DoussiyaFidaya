@@ -6,6 +6,7 @@ import { Consultation_lab_requestsCreateNestedManyWithoutConsultationsInput } fr
 import { ConsultationsCreatenotesInput } from "../inputs/ConsultationsCreatenotesInput";
 import { DoctorsCreateNestedOneWithoutConsultationsInput } from "../inputs/DoctorsCreateNestedOneWithoutConsultationsInput";
 import { Instituts_medicauxCreateNestedOneWithoutConsultationsInput } from "../inputs/Instituts_medicauxCreateNestedOneWithoutConsultationsInput";
+import { Lab_requestsCreateNestedManyWithoutConsultationsInput } from "../inputs/Lab_requestsCreateNestedManyWithoutConsultationsInput";
 import { PatientsCreateNestedOneWithoutConsultationsInput } from "../inputs/PatientsCreateNestedOneWithoutConsultationsInput";
 import { RdvsCreateNestedOneWithoutConsultationsInput } from "../inputs/RdvsCreateNestedOneWithoutConsultationsInput";
 
@@ -60,4 +61,9 @@ export class ConsultationsCreateWithoutPrescriptionsInput {
     nullable: true
   })
   rdvs?: RdvsCreateNestedOneWithoutConsultationsInput | undefined;
+
+  @TypeGraphQL.Field(_type => Lab_requestsCreateNestedManyWithoutConsultationsInput, {
+    nullable: true
+  })
+  lab_requests?: Lab_requestsCreateNestedManyWithoutConsultationsInput | undefined;
 }

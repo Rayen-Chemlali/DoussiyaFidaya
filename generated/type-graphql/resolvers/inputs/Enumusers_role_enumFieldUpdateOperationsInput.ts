@@ -9,5 +9,5 @@ export class Enumusers_role_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: true
   })
-  set?: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin" | undefined;
+  set?: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC" | undefined;
 }

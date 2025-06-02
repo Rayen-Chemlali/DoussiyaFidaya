@@ -34,7 +34,7 @@ export class PrescriptionsCreateManyDoctorsInput {
   @TypeGraphQL.Field(_type => prescriptions_status_enum, {
     nullable: false
   })
-  status!: "Pending" | "Approved" | "Rejected";
+  status!: "ACTIVE" | "COMPLETED" | "CANCELLED";
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: true

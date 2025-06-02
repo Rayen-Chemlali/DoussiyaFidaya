@@ -11,17 +11,17 @@ export class NestedEnumauthorizations_level_enumWithAggregatesFilter {
   @TypeGraphQL.Field(_type => authorizations_level_enum, {
     nullable: true
   })
-  equals?: "general" | "speciality" | "full_access" | undefined;
+  equals?: "READ" | "WRITE" | "ADMIN" | undefined;
 
   @TypeGraphQL.Field(_type => [authorizations_level_enum], {
     nullable: true
   })
-  in?: Array<"general" | "speciality" | "full_access"> | undefined;
+  in?: Array<"READ" | "WRITE" | "ADMIN"> | undefined;
 
   @TypeGraphQL.Field(_type => [authorizations_level_enum], {
     nullable: true
   })
-  notIn?: Array<"general" | "speciality" | "full_access"> | undefined;
+  notIn?: Array<"READ" | "WRITE" | "ADMIN"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumauthorizations_level_enumWithAggregatesFilter, {
     nullable: true

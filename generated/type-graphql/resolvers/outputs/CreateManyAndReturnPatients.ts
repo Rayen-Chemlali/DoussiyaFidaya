@@ -16,9 +16,9 @@ export class CreateManyAndReturnPatients {
   id!: string;
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
-    nullable: true
+    nullable: false
   })
-  cin!: number | null;
+  cin!: number;
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: false
@@ -28,7 +28,7 @@ export class CreateManyAndReturnPatients {
   @TypeGraphQL.Field(_type => patients_gender_enum, {
     nullable: false
   })
-  gender!: "Male" | "Female";
+  gender!: "MALE" | "FEMALE" | "OTHER";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

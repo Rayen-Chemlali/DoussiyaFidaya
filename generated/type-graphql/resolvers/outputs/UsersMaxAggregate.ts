@@ -41,6 +41,16 @@ export class UsersMaxAggregate {
   })
   is_verified!: boolean | null;
 
+  @TypeGraphQL.Field(_type => String, {
+    nullable: true
+  })
+  password!: string | null;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: true
+  })
+  salt!: string | null;
+
   @TypeGraphQL.Field(_type => Date, {
     nullable: true
   })
@@ -59,7 +69,7 @@ export class UsersMaxAggregate {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: true
   })
-  role!: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin" | null;
+  role!: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

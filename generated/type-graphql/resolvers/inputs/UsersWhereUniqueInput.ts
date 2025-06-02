@@ -5,13 +5,14 @@ import { DecimalJSScalar } from "../../scalars";
 import { BoolFilter } from "../inputs/BoolFilter";
 import { DateTimeFilter } from "../inputs/DateTimeFilter";
 import { DateTimeNullableFilter } from "../inputs/DateTimeNullableFilter";
-import { DoctorsNullableRelationFilter } from "../inputs/DoctorsNullableRelationFilter";
+import { DoctorsListRelationFilter } from "../inputs/DoctorsListRelationFilter";
 import { Enumusers_role_enumFilter } from "../inputs/Enumusers_role_enumFilter";
-import { PatientsNullableRelationFilter } from "../inputs/PatientsNullableRelationFilter";
+import { PatientsListRelationFilter } from "../inputs/PatientsListRelationFilter";
 import { StringFilter } from "../inputs/StringFilter";
 import { StringNullableFilter } from "../inputs/StringNullableFilter";
 import { UsersWhereInput } from "../inputs/UsersWhereInput";
 import { UuidNullableFilter } from "../inputs/UuidNullableFilter";
+import { Verification_tokensNullableRelationFilter } from "../inputs/Verification_tokensNullableRelationFilter";
 
 @TypeGraphQL.InputType("UsersWhereUniqueInput", {})
 export class UsersWhereUniqueInput {
@@ -65,6 +66,16 @@ export class UsersWhereUniqueInput {
   })
   is_verified?: BoolFilter | undefined;
 
+  @TypeGraphQL.Field(_type => StringFilter, {
+    nullable: true
+  })
+  password?: StringFilter | undefined;
+
+  @TypeGraphQL.Field(_type => StringFilter, {
+    nullable: true
+  })
+  salt?: StringFilter | undefined;
+
   @TypeGraphQL.Field(_type => DateTimeNullableFilter, {
     nullable: true
   })
@@ -95,13 +106,18 @@ export class UsersWhereUniqueInput {
   })
   updated_at?: DateTimeFilter | undefined;
 
-  @TypeGraphQL.Field(_type => DoctorsNullableRelationFilter, {
+  @TypeGraphQL.Field(_type => Verification_tokensNullableRelationFilter, {
     nullable: true
   })
-  doctors?: DoctorsNullableRelationFilter | undefined;
+  validation_token?: Verification_tokensNullableRelationFilter | undefined;
 
-  @TypeGraphQL.Field(_type => PatientsNullableRelationFilter, {
+  @TypeGraphQL.Field(_type => DoctorsListRelationFilter, {
     nullable: true
   })
-  patients?: PatientsNullableRelationFilter | undefined;
+  doctors?: DoctorsListRelationFilter | undefined;
+
+  @TypeGraphQL.Field(_type => PatientsListRelationFilter, {
+    nullable: true
+  })
+  patients?: PatientsListRelationFilter | undefined;
 }

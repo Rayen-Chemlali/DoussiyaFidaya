@@ -19,7 +19,7 @@ export class Lab_requestsCreateManyDoctorsInput {
   @TypeGraphQL.Field(_type => lab_requests_priority_enum, {
     nullable: true
   })
-  priority?: "low" | "medium" | "high" | undefined;
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT" | undefined;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

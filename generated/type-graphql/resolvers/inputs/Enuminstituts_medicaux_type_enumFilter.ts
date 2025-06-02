@@ -10,17 +10,17 @@ export class Enuminstituts_medicaux_type_enumFilter {
   @TypeGraphQL.Field(_type => instituts_medicaux_type_enum, {
     nullable: true
   })
-  equals?: "doctor" | "clinique" | "hopital" | undefined;
+  equals?: "CLINIC" | "HOSPITAL" | "LABORATORY" | undefined;
 
   @TypeGraphQL.Field(_type => [instituts_medicaux_type_enum], {
     nullable: true
   })
-  in?: Array<"doctor" | "clinique" | "hopital"> | undefined;
+  in?: Array<"CLINIC" | "HOSPITAL" | "LABORATORY"> | undefined;
 
   @TypeGraphQL.Field(_type => [instituts_medicaux_type_enum], {
     nullable: true
   })
-  notIn?: Array<"doctor" | "clinique" | "hopital"> | undefined;
+  notIn?: Array<"CLINIC" | "HOSPITAL" | "LABORATORY"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnuminstituts_medicaux_type_enumFilter, {
     nullable: true

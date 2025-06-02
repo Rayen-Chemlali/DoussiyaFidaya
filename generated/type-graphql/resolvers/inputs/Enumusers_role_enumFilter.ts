@@ -10,17 +10,17 @@ export class Enumusers_role_enumFilter {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: true
   })
-  equals?: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin" | undefined;
+  equals?: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC" | undefined;
 
   @TypeGraphQL.Field(_type => [users_role_enum], {
     nullable: true
   })
-  in?: Array<"Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin"> | undefined;
+  in?: Array<"ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC"> | undefined;
 
   @TypeGraphQL.Field(_type => [users_role_enum], {
     nullable: true
   })
-  notIn?: Array<"Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin"> | undefined;
+  notIn?: Array<"ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumusers_role_enumFilter, {
     nullable: true

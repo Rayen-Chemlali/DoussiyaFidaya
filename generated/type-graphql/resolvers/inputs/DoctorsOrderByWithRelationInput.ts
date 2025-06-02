@@ -5,7 +5,9 @@ import { DecimalJSScalar } from "../../scalars";
 import { CertificatesOrderByRelationAggregateInput } from "../inputs/CertificatesOrderByRelationAggregateInput";
 import { ConsultationsOrderByRelationAggregateInput } from "../inputs/ConsultationsOrderByRelationAggregateInput";
 import { Doctor_institutsOrderByRelationAggregateInput } from "../inputs/Doctor_institutsOrderByRelationAggregateInput";
+import { Instituts_medicauxOrderByRelationAggregateInput } from "../inputs/Instituts_medicauxOrderByRelationAggregateInput";
 import { Lab_requestsOrderByRelationAggregateInput } from "../inputs/Lab_requestsOrderByRelationAggregateInput";
+import { MessageOrderByRelationAggregateInput } from "../inputs/MessageOrderByRelationAggregateInput";
 import { PrescriptionsOrderByRelationAggregateInput } from "../inputs/PrescriptionsOrderByRelationAggregateInput";
 import { Rdv_requestsOrderByRelationAggregateInput } from "../inputs/Rdv_requestsOrderByRelationAggregateInput";
 import { RdvsOrderByRelationAggregateInput } from "../inputs/RdvsOrderByRelationAggregateInput";
@@ -24,6 +26,11 @@ export class DoctorsOrderByWithRelationInput {
     nullable: true
   })
   type?: "asc" | "desc" | undefined;
+
+  @TypeGraphQL.Field(_type => SortOrder, {
+    nullable: true
+  })
+  is_license_verified?: "asc" | "desc" | undefined;
 
   @TypeGraphQL.Field(_type => SortOrderInput, {
     nullable: true
@@ -109,4 +116,19 @@ export class DoctorsOrderByWithRelationInput {
     nullable: true
   })
   rdvs?: RdvsOrderByRelationAggregateInput | undefined;
+
+  @TypeGraphQL.Field(_type => MessageOrderByRelationAggregateInput, {
+    nullable: true
+  })
+  sentMessages?: MessageOrderByRelationAggregateInput | undefined;
+
+  @TypeGraphQL.Field(_type => MessageOrderByRelationAggregateInput, {
+    nullable: true
+  })
+  receivedMessages?: MessageOrderByRelationAggregateInput | undefined;
+
+  @TypeGraphQL.Field(_type => Instituts_medicauxOrderByRelationAggregateInput, {
+    nullable: true
+  })
+  instituts?: Instituts_medicauxOrderByRelationAggregateInput | undefined;
 }

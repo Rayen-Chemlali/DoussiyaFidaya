@@ -17,10 +17,10 @@ export class PatientsOrderByWithAggregationInput {
   })
   id?: "asc" | "desc" | undefined;
 
-  @TypeGraphQL.Field(_type => SortOrderInput, {
+  @TypeGraphQL.Field(_type => SortOrder, {
     nullable: true
   })
-  cin?: SortOrderInput | undefined;
+  cin?: "asc" | "desc" | undefined;
 
   @TypeGraphQL.Field(_type => SortOrder, {
     nullable: true

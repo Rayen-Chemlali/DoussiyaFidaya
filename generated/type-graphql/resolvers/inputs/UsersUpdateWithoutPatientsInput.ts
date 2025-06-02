@@ -4,11 +4,12 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { BoolFieldUpdateOperationsInput } from "../inputs/BoolFieldUpdateOperationsInput";
 import { DateTimeFieldUpdateOperationsInput } from "../inputs/DateTimeFieldUpdateOperationsInput";
-import { DoctorsUpdateOneWithoutUsersNestedInput } from "../inputs/DoctorsUpdateOneWithoutUsersNestedInput";
+import { DoctorsUpdateManyWithoutUsersNestedInput } from "../inputs/DoctorsUpdateManyWithoutUsersNestedInput";
 import { Enumusers_role_enumFieldUpdateOperationsInput } from "../inputs/Enumusers_role_enumFieldUpdateOperationsInput";
 import { NullableDateTimeFieldUpdateOperationsInput } from "../inputs/NullableDateTimeFieldUpdateOperationsInput";
 import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
 import { StringFieldUpdateOperationsInput } from "../inputs/StringFieldUpdateOperationsInput";
+import { Verification_tokensUpdateOneWithoutUserNestedInput } from "../inputs/Verification_tokensUpdateOneWithoutUserNestedInput";
 
 @TypeGraphQL.InputType("UsersUpdateWithoutPatientsInput", {})
 export class UsersUpdateWithoutPatientsInput {
@@ -47,6 +48,16 @@ export class UsersUpdateWithoutPatientsInput {
   })
   is_verified?: BoolFieldUpdateOperationsInput | undefined;
 
+  @TypeGraphQL.Field(_type => StringFieldUpdateOperationsInput, {
+    nullable: true
+  })
+  password?: StringFieldUpdateOperationsInput | undefined;
+
+  @TypeGraphQL.Field(_type => StringFieldUpdateOperationsInput, {
+    nullable: true
+  })
+  salt?: StringFieldUpdateOperationsInput | undefined;
+
   @TypeGraphQL.Field(_type => NullableDateTimeFieldUpdateOperationsInput, {
     nullable: true
   })
@@ -77,8 +88,13 @@ export class UsersUpdateWithoutPatientsInput {
   })
   updated_at?: DateTimeFieldUpdateOperationsInput | undefined;
 
-  @TypeGraphQL.Field(_type => DoctorsUpdateOneWithoutUsersNestedInput, {
+  @TypeGraphQL.Field(_type => Verification_tokensUpdateOneWithoutUserNestedInput, {
     nullable: true
   })
-  doctors?: DoctorsUpdateOneWithoutUsersNestedInput | undefined;
+  validation_token?: Verification_tokensUpdateOneWithoutUserNestedInput | undefined;
+
+  @TypeGraphQL.Field(_type => DoctorsUpdateManyWithoutUsersNestedInput, {
+    nullable: true
+  })
+  doctors?: DoctorsUpdateManyWithoutUsersNestedInput | undefined;
 }

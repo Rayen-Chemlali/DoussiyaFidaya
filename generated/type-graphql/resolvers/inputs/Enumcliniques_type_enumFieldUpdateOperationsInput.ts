@@ -9,5 +9,5 @@ export class Enumcliniques_type_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => cliniques_type_enum, {
     nullable: true
   })
-  set?: "doctor" | "clinique" | "hopital" | undefined;
+  set?: "PRIVATE" | "PUBLIC" | undefined;
 }

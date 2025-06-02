@@ -39,7 +39,7 @@ export class Prescriptions {
   @TypeGraphQL.Field(_type => prescriptions_status_enum, {
     nullable: false
   })
-  status!: "Pending" | "Approved" | "Rejected";
+  status!: "ACTIVE" | "COMPLETED" | "CANCELLED";
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: false
@@ -56,7 +56,7 @@ export class Prescriptions {
   })
   patient_id!: string;
 
-  consultations?: Consultations | null;
+  consultations?: Consultations[];
 
   medications?: Medications[];
 

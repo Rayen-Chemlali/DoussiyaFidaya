@@ -14,9 +14,12 @@ export { Lab_requestsRelationsResolver } from "./Lab_requests/Lab_requestsRelati
 export { Lab_resultsRelationsResolver } from "./Lab_results/Lab_resultsRelationsResolver";
 export { LaboratoriesRelationsResolver } from "./Laboratories/LaboratoriesRelationsResolver";
 export { MedicationsRelationsResolver } from "./Medications/MedicationsRelationsResolver";
+export { MessageRelationsResolver } from "./Message/MessageRelationsResolver";
+export { MessageAttachmentRelationsResolver } from "./MessageAttachment/MessageAttachmentRelationsResolver";
 export { PatientsRelationsResolver } from "./Patients/PatientsRelationsResolver";
 export { PrescriptionsRelationsResolver } from "./Prescriptions/PrescriptionsRelationsResolver";
 export { Rdv_requestsRelationsResolver } from "./Rdv_requests/Rdv_requestsRelationsResolver";
 export { RdvsRelationsResolver } from "./Rdvs/RdvsRelationsResolver";
 export { UsersRelationsResolver } from "./Users/UsersRelationsResolver";
+export { Verification_tokensRelationsResolver } from "./Verification_tokens/Verification_tokensRelationsResolver";
 export { Xray_resultsRelationsResolver } from "./Xray_results/Xray_resultsRelationsResolver";

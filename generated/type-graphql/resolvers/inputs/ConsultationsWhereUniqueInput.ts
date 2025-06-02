@@ -8,6 +8,7 @@ import { DateTimeFilter } from "../inputs/DateTimeFilter";
 import { DoctorsNullableRelationFilter } from "../inputs/DoctorsNullableRelationFilter";
 import { Instituts_medicauxNullableRelationFilter } from "../inputs/Instituts_medicauxNullableRelationFilter";
 import { JsonNullableFilter } from "../inputs/JsonNullableFilter";
+import { Lab_requestsListRelationFilter } from "../inputs/Lab_requestsListRelationFilter";
 import { PatientsRelationFilter } from "../inputs/PatientsRelationFilter";
 import { PrescriptionsNullableRelationFilter } from "../inputs/PrescriptionsNullableRelationFilter";
 import { RdvsNullableRelationFilter } from "../inputs/RdvsNullableRelationFilter";
@@ -107,4 +108,9 @@ export class ConsultationsWhereUniqueInput {
     nullable: true
   })
   rdvs?: RdvsNullableRelationFilter | undefined;
+
+  @TypeGraphQL.Field(_type => Lab_requestsListRelationFilter, {
+    nullable: true
+  })
+  lab_requests?: Lab_requestsListRelationFilter | undefined;
 }

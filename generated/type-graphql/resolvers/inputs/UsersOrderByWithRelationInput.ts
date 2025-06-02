@@ -2,9 +2,10 @@ import * as TypeGraphQL from "type-graphql";
 import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
-import { DoctorsOrderByWithRelationInput } from "../inputs/DoctorsOrderByWithRelationInput";
-import { PatientsOrderByWithRelationInput } from "../inputs/PatientsOrderByWithRelationInput";
+import { DoctorsOrderByRelationAggregateInput } from "../inputs/DoctorsOrderByRelationAggregateInput";
+import { PatientsOrderByRelationAggregateInput } from "../inputs/PatientsOrderByRelationAggregateInput";
 import { SortOrderInput } from "../inputs/SortOrderInput";
+import { Verification_tokensOrderByWithRelationInput } from "../inputs/Verification_tokensOrderByWithRelationInput";
 import { SortOrder } from "../../enums/SortOrder";
 
 @TypeGraphQL.InputType("UsersOrderByWithRelationInput", {})
@@ -44,6 +45,16 @@ export class UsersOrderByWithRelationInput {
   })
   is_verified?: "asc" | "desc" | undefined;
 
+  @TypeGraphQL.Field(_type => SortOrder, {
+    nullable: true
+  })
+  password?: "asc" | "desc" | undefined;
+
+  @TypeGraphQL.Field(_type => SortOrder, {
+    nullable: true
+  })
+  salt?: "asc" | "desc" | undefined;
+
   @TypeGraphQL.Field(_type => SortOrderInput, {
     nullable: true
   })
@@ -74,13 +85,18 @@ export class UsersOrderByWithRelationInput {
   })
   updated_at?: "asc" | "desc" | undefined;
 
-  @TypeGraphQL.Field(_type => DoctorsOrderByWithRelationInput, {
+  @TypeGraphQL.Field(_type => Verification_tokensOrderByWithRelationInput, {
     nullable: true
   })
-  doctors?: DoctorsOrderByWithRelationInput | undefined;
+  validation_token?: Verification_tokensOrderByWithRelationInput | undefined;
 
-  @TypeGraphQL.Field(_type => PatientsOrderByWithRelationInput, {
+  @TypeGraphQL.Field(_type => DoctorsOrderByRelationAggregateInput, {
     nullable: true
   })
-  patients?: PatientsOrderByWithRelationInput | undefined;
+  doctors?: DoctorsOrderByRelationAggregateInput | undefined;
+
+  @TypeGraphQL.Field(_type => PatientsOrderByRelationAggregateInput, {
+    nullable: true
+  })
+  patients?: PatientsOrderByRelationAggregateInput | undefined;
 }

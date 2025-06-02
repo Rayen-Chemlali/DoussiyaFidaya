@@ -9,5 +9,5 @@ export class Enumanalysis_results_result_type_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => analysis_results_result_type_enum, {
     nullable: true
   })
-  set?: "analysis" | "xray" | "ctscan" | undefined;
+  set?: "NORMAL" | "ABNORMAL" | "CRITICAL" | undefined;
 }

@@ -4,7 +4,9 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../scalars";
 import { Doctors } from "../models/Doctors";
 import { Patients } from "../models/Patients";
+import { Verification_tokens } from "../models/Verification_tokens";
 import { users_role_enum } from "../enums/users_role_enum";
+import { UsersCount } from "../resolvers/outputs/UsersCount";
 
 @TypeGraphQL.ObjectType("Users", {})
 export class Users {
@@ -38,10 +40,22 @@ export class Users {
   })
   last_name!: string;
 
+  validation_token?: Verification_tokens | null;
+
   @TypeGraphQL.Field(_type => Boolean, {
     nullable: false
   })
   is_verified!: boolean;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  password!: string;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  salt!: string;
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: true
@@ -61,7 +75,7 @@ export class Users {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: false
   })
-  role!: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin";
+  role!: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true
@@ -73,7 +87,12 @@ export class Users {
   })
   updated_at!: Date;
 
-  doctors?: Doctors | null;
+  doctors?: Doctors[];
 
-  patients?: Patients | null;
+  patients?: Patients[];
+
+  @TypeGraphQL.Field(_type => UsersCount, {
+    nullable: true
+  })
+  _count?: UsersCount | null;
 }

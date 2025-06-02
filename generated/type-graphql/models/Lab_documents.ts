@@ -43,7 +43,7 @@ export class Lab_documents {
   @TypeGraphQL.Field(_type => lab_documents_status_enum, {
     nullable: false
   })
-  status!: "pending" | "in_progress" | "completed" | "cancelled";
+  status!: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

@@ -12,17 +12,17 @@ export class Enumlab_documents_status_enumWithAggregatesFilter {
   @TypeGraphQL.Field(_type => lab_documents_status_enum, {
     nullable: true
   })
-  equals?: "pending" | "in_progress" | "completed" | "cancelled" | undefined;
+  equals?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | undefined;
 
   @TypeGraphQL.Field(_type => [lab_documents_status_enum], {
     nullable: true
   })
-  in?: Array<"pending" | "in_progress" | "completed" | "cancelled"> | undefined;
+  in?: Array<"PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED"> | undefined;
 
   @TypeGraphQL.Field(_type => [lab_documents_status_enum], {
     nullable: true
   })
-  notIn?: Array<"pending" | "in_progress" | "completed" | "cancelled"> | undefined;
+  notIn?: Array<"PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumlab_documents_status_enumWithAggregatesFilter, {
     nullable: true

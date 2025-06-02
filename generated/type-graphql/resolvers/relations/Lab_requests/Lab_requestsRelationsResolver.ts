@@ -1,11 +1,13 @@
 import * as TypeGraphQL from "type-graphql";
 import type { GraphQLResolveInfo } from "graphql";
 import { Consultation_lab_requests } from "../../../models/Consultation_lab_requests";
+import { Consultations } from "../../../models/Consultations";
 import { Doctors } from "../../../models/Doctors";
 import { Lab_documents } from "../../../models/Lab_documents";
 import { Lab_requests } from "../../../models/Lab_requests";
 import { Patients } from "../../../models/Patients";
 import { Lab_requestsConsultation_lab_requestsArgs } from "./args/Lab_requestsConsultation_lab_requestsArgs";
+import { Lab_requestsConsultationsArgs } from "./args/Lab_requestsConsultationsArgs";
 import { Lab_requestsDoctorsArgs } from "./args/Lab_requestsDoctorsArgs";
 import { Lab_requestsLab_documentsArgs } from "./args/Lab_requestsLab_documentsArgs";
 import { transformInfoIntoPrismaArgs, getPrismaFromContext, transformCountFieldIntoSelectRelationsCount } from "../../../helpers";
@@ -67,6 +69,21 @@ export class Lab_requestsRelationsResolver {
         id: lab_requests.id,
       },
     }).patients({
+      ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
+    });
+  }
+
+  @TypeGraphQL.FieldResolver(_type => [Consultations], {
+    nullable: false
+  })
+  async consultations(@TypeGraphQL.Root() lab_requests: Lab_requests, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: Lab_requestsConsultationsArgs): Promise<Consultations[]> {
+    const { _count } = transformInfoIntoPrismaArgs(info);
+    return getPrismaFromContext(ctx).lab_requests.findUniqueOrThrow({
+      where: {
+        id: lab_requests.id,
+      },
+    }).consultations({
+      ...args,
       ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
     });
   }

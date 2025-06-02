@@ -3,6 +3,7 @@ import * as TypeGraphQL from "type-graphql";
 export enum DoctorsScalarFieldEnum {
   id = "id",
   type = "type",
+  is_license_verified = "is_license_verified",
   bio = "bio",
   education = "education",
   experience = "experience",

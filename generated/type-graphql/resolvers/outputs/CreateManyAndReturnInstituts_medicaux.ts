@@ -14,5 +14,5 @@ export class CreateManyAndReturnInstituts_medicaux {
   @TypeGraphQL.Field(_type => instituts_medicaux_type_enum, {
     nullable: false
   })
-  type!: "doctor" | "clinique" | "hopital";
+  type!: "CLINIC" | "HOSPITAL" | "LABORATORY";
 }
