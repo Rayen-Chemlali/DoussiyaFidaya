@@ -45,7 +45,7 @@ import Redis from 'ioredis';
         }),
         context: ({ req }) => {
           const prisma = new PrismaClient();
-          prismaMiddleware.applyMiddleware(prisma, req);
+          // prismaMiddleware.applyMiddleware(prisma, req);
           const userId = req.user?.userId;
           return { req, prisma, userId };
         },

@@ -11,13 +11,22 @@ import {
 import { Server, Socket } from 'socket.io';
 import { UsePipes, ValidationPipe, Logger } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { SendMessageDto } from './dto/send-message.dto'; // Includes patientId
-import { Message } from '../types/chat.types'; // Import your Message type
+import { SendMessageDto } from './dto/send-message.dto';
+import { Message } from '../types/chat.types';
 
-// Assuming your Doctor type is available or you can define a subset
 interface AuthenticatedDoctorData {
   id: string;
-  // other fields from doctor object if needed by client on connection
+  first_name: string;
+  last_name: string;
+  specialty: string;
+  type: string;
+  is_license_verified: boolean;
+  bio?: string;
+  education: string[];
+  experience: string[];
+  languages: string[];
+  user_id: string;
+  profile_image?: string;
 }
 
 @WebSocketGateway({
@@ -32,7 +41,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   private readonly logger = new Logger(ChatGateway.name);
-  private connectedClients: Map<string, Socket> = new Map();
+  // Map des docteurs connectés par doctor.id (associated_id du token)
+  private connectedDoctors: Map<string, Socket> = new Map();
 
   constructor(
     private readonly chatService: ChatService,
@@ -54,17 +64,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      this.connectedClients.set(doctor.id, client);
-      client.data.doctorId = doctor.id; // Store doctor's own ID on the socket
-      client.data.doctor = doctor; // Store full doctor object if needed by client
-      client.join(doctor.id); // Room for general notifications to this doctor
-      this.logger.log(`Client connected: ${doctor.id} (Socket ID: ${client.id})`);
+      this.connectedDoctors.set(doctor.id, client);
+      client.data.doctorId = doctor.id;
+      client.data.doctor = doctor;
 
-      // Emit confirmation with user info
-      client.emit('connected_user_info', { id: doctor.id, firstName: doctor.first_name, lastName: doctor.last_name });
+      client.join(doctor.id);
 
+      this.logger.log(`Doctor connected: ${doctor.id} - ${doctor.first_name} ${doctor.last_name} (Socket: ${client.id})`);
 
-      this.server.emit('doctorOnline', { doctorId: doctor.id, status: 'online' });
+      client.emit('connected_user_info', {
+        id: doctor.id,
+        firstName: doctor.first_name,
+        lastName: doctor.last_name,
+        specialty: doctor.specialty,
+        type: doctor.type,
+        isLicenseVerified: doctor.is_license_verified,
+        profileImage: doctor.profile_image
+      });
+
+      this.server.emit('doctorOnline', {
+        doctorId: doctor.id,
+        status: 'online',
+        firstName: doctor.first_name,
+        lastName: doctor.last_name
+      });
 
     } catch (error) {
       this.logger.error('Error during WebSocket connection handling', error);
@@ -75,10 +98,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
     const doctorId = client.data.doctorId;
     if (doctorId) {
-      this.connectedClients.delete(doctorId);
-      // client.leave(doctorId); // No need to leave if room is just doctor.id
-      this.logger.log(`Client disconnected: ${doctorId} (Socket ID: ${client.id})`);
-      this.server.emit('doctorOffline', { doctorId: doctorId, status: 'offline' });
+      this.connectedDoctors.delete(doctorId);
+      this.logger.log(`Doctor disconnected: ${doctorId} (Socket: ${client.id})`);
+
+      this.server.emit('doctorOffline', {
+        doctorId: doctorId,
+        status: 'offline'
+      });
     } else {
       this.logger.log(`Socket disconnected without doctorId: ${client.id}`);
     }
@@ -88,7 +114,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('sendMessage')
   async handleMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: SendMessageDto, // Now includes patientId
+    @MessageBody() data: SendMessageDto,
   ): Promise<any> {
     try {
       const senderId = client.data.doctorId;
@@ -96,37 +122,38 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         throw new WsException('Unauthorized: No senderId found on socket.');
       }
 
-      // Ensure patientId is present (already validated by DTO if required)
       if (!data.patientId) {
         throw new WsException('Patient ID is required to send a message.');
       }
 
+      if (!data.receiverId) {
+        throw new WsException('Receiver ID is required to send a message.');
+      }
+
       const message = await this.chatService.createMessage(senderId, data);
 
-      // Prepare message payload for emission (e.g., with signed URLs for attachments)
       const populatedMessage = { ...message };
-      if (populatedMessage.attachments) {
+      if (populatedMessage.attachments && populatedMessage.attachments.length > 0) {
         for (const att of populatedMessage.attachments) {
-          if (att.path) {
+          if (att.path && !att.url) {
             att.url = await this.chatService.getSignedUrlForAttachment(att.path);
           }
         }
       }
 
-
-      // Emit to the receiver's specific room (doctor.id)
-      const receiverSocket = this.connectedClients.get(data.receiverId);
+      // Envoyer le message au destinataire s'il est connecté
+      const receiverSocket = this.connectedDoctors.get(data.receiverId);
       if (receiverSocket) {
-        // The 'newMessage' event should carry patientId to allow client to route it correctly
         receiverSocket.emit('newMessage', populatedMessage);
+        this.logger.log(`Message sent from ${senderId} to ${data.receiverId} for patient ${data.patientId}`);
       } else {
-        this.logger.log(`Receiver ${data.receiverId} is offline for patient ${data.patientId}. TODO: Trigger push notification.`);
+        this.logger.log(`Receiver ${data.receiverId} is offline for patient ${data.patientId}. Message stored in database.`);
+        // TODO: Trigger push notification
         // await this.notificationService.sendChatPushNotification(data.receiverId, message);
       }
 
-      // Acknowledge to sender, also with patientId
       client.emit('messageSent', populatedMessage);
-      return populatedMessage; // For Socket.IO ack
+      return populatedMessage;
 
     } catch (error) {
       this.logger.error(`Failed to send message from ${client.data.doctorId} for patient ${data.patientId}`, error);
@@ -140,41 +167,55 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('markAsRead')
   async handleMarkAsRead(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { messageId: string, patientId: string }, // client should send patientId for context
+    @MessageBody() data: { messageId: string, patientId: string },
   ): Promise<any> {
     try {
       const readerId = client.data.doctorId;
+      if (!readerId) {
+        throw new WsException('Unauthorized: No readerId found on socket.');
+      }
+
       const message = await this.chatService.markMessageAsRead(data.messageId, readerId);
 
-      const senderSocket = this.connectedClients.get(message.senderId);
+      const senderSocket = this.connectedDoctors.get(message.senderId);
       if (senderSocket) {
         senderSocket.emit('messageRead', {
           messageId: message.id,
           readBy: readerId,
-          patientId: message.patientId, // Send patientId back
-          // conversationId: `${message.senderId}-${message.patientId}` // Or however the client identifies convos
+          patientId: message.patientId,
+          readAt: new Date().toISOString()
         });
       }
-      return { status: 'success', messageId: message.id, patientId: message.patientId };
+
+      return {
+        status: 'success',
+        messageId: message.id,
+        patientId: message.patientId
+      };
     } catch (error) {
       this.logger.error(`Failed to mark message ${data.messageId} as read by ${client.data.doctorId}`, error);
       throw new WsException(error.message || 'Failed to mark message as read');
     }
   }
 
-  // Typing indicators now need patientId for context
   @SubscribeMessage('startTyping')
   handleStartTyping(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { receiverId: string, patientId: string },
   ): void {
     const senderId = client.data.doctorId;
-    if (!senderId || !data.receiverId || !data.patientId) return;
+    if (!senderId || !data.receiverId || !data.patientId) {
+      this.logger.warn('Invalid typing data received');
+      return;
+    }
 
-    const receiverSocket = this.connectedClients.get(data.receiverId);
+    const receiverSocket = this.connectedDoctors.get(data.receiverId);
     if (receiverSocket) {
-      // Emit with patientId so client can show typing in correct chat window
-      receiverSocket.emit('typing', { doctorId: senderId, patientId: data.patientId, isTyping: true });
+      receiverSocket.emit('typing', {
+        doctorId: senderId,
+        patientId: data.patientId,
+        isTyping: true
+      });
     }
     this.logger.debug(`Doctor ${senderId} started typing to ${data.receiverId} for patient ${data.patientId}`);
   }
@@ -185,11 +226,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { receiverId: string, patientId: string },
   ): void {
     const senderId = client.data.doctorId;
-    if (!senderId || !data.receiverId || !data.patientId) return;
+    if (!senderId || !data.receiverId || !data.patientId) {
+      this.logger.warn('Invalid typing data received');
+      return;
+    }
 
-    const receiverSocket = this.connectedClients.get(data.receiverId);
+    const receiverSocket = this.connectedDoctors.get(data.receiverId);
     if (receiverSocket) {
-      receiverSocket.emit('typing', { doctorId: senderId, patientId: data.patientId, isTyping: false });
+      receiverSocket.emit('typing', {
+        doctorId: senderId,
+        patientId: data.patientId,
+        isTyping: false
+      });
     }
     this.logger.debug(`Doctor ${senderId} stopped typing to ${data.receiverId} for patient ${data.patientId}`);
   }
@@ -197,26 +245,82 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('deleteMessage')
   async handleDeleteMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { messageId: string, patientId: string, receiverId: string } // receiverId needed to notify other party
+    @MessageBody() data: { messageId: string, patientId: string, receiverId: string }
   ): Promise<any> {
     const doctorId = client.data.doctorId;
     if (!doctorId) {
       throw new WsException('Unauthorized');
     }
+
     try {
       await this.chatService.deleteMessage(data.messageId, doctorId);
-      // Notify both sender (ack) and receiver
-      client.emit('messageDeleted', { messageId: data.messageId, patientId: data.patientId, status: 'success' });
 
-      const receiverSocket = this.connectedClients.get(data.receiverId);
+      client.emit('messageDeleted', {
+        messageId: data.messageId,
+        patientId: data.patientId,
+        status: 'success'
+      });
+
+      const receiverSocket = this.connectedDoctors.get(data.receiverId);
       if (receiverSocket) {
-        receiverSocket.emit('messageDeleted', { messageId: data.messageId, patientId: data.patientId });
+        receiverSocket.emit('messageDeleted', {
+          messageId: data.messageId,
+          patientId: data.patientId,
+          deletedBy: doctorId
+        });
       }
+
       this.logger.log(`Message ${data.messageId} deleted by ${doctorId} for patient ${data.patientId}`);
-      return { status: 'success', messageId: data.messageId, patientId: data.patientId };
+      return {
+        status: 'success',
+        messageId: data.messageId,
+        patientId: data.patientId
+      };
     } catch (error) {
       this.logger.error(`Failed to delete message ${data.messageId} by ${doctorId}`, error);
       throw new WsException(error.message || 'Failed to delete message');
     }
+  }
+
+  @SubscribeMessage('joinPatientRoom')
+  handleJoinPatientRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { patientId: string, otherDoctorId: string },
+  ): void {
+    const doctorId = client.data.doctorId;
+    if (!doctorId || !data.patientId || !data.otherDoctorId) {
+      this.logger.warn('Invalid room join data received');
+      return;
+    }
+
+    const roomName = `patient_${data.patientId}_doctors_${[doctorId, data.otherDoctorId].sort().join('_')}`;
+    client.join(roomName);
+
+    this.logger.log(`Doctor ${doctorId} joined room ${roomName}`);
+    client.emit('joinedRoom', { roomName, patientId: data.patientId });
+  }
+
+  @SubscribeMessage('leavePatientRoom')
+  handleLeavePatientRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { patientId: string, otherDoctorId: string },
+  ): void {
+    const doctorId = client.data.doctorId;
+    if (!doctorId || !data.patientId || !data.otherDoctorId) {
+      this.logger.warn('Invalid room leave data received');
+      return;
+    }
+
+    const roomName = `patient_${data.patientId}_doctors_${[doctorId, data.otherDoctorId].sort().join('_')}`;
+    client.leave(roomName);
+
+    this.logger.log(`Doctor ${doctorId} left room ${roomName}`);
+    client.emit('leftRoom', { roomName, patientId: data.patientId });
+  }
+
+  @SubscribeMessage('getOnlineDoctors')
+  handleGetOnlineDoctors(@ConnectedSocket() client: Socket): void {
+    const onlineDoctorIds = Array.from(this.connectedDoctors.keys());
+    client.emit('onlineDoctors', { doctorIds: onlineDoctorIds });
   }
 }

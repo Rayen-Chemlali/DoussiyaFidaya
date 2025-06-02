@@ -15,6 +15,8 @@
         .connection-status { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; }
         .connection-status.connected { background: #d4edda; color: #155724; }
         .connection-status.disconnected { background: #f8d7da; color: #721c24; }
+        .connection-status.connecting { background: #fff3cd; color: #856404; }
+        .connection-status.error { background: #f8d7da; color: #721c24;}
         .auth-section textarea, .auth-section input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; resize: vertical; font-size: 12px; margin-bottom: 8px; }
         .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background-color 0.2s; }
         .btn-primary { background: #1877f2; color: white; }
@@ -62,7 +64,7 @@
         .message.own .message-time { text-align: right; }
         .message:not(.own) .message-time { text-align: left; }
         .message-read-status { font-size: 10px; color: #1877f2; margin-left: 5px; }
-        .message-actions { display: none; position: absolute; top: -10px; background: white; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); padding: 2px; }
+        .message-actions { display: none; position: absolute; top: -10px; background: white; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); padding: 2px; z-index: 1; }
         .message:hover .message-actions { display: flex; }
         .message.own .message-actions { right: 0; margin-right: 5px; } /* Adjust based on bubble */
         .message:not(.own) .message-actions { left: 0; margin-left: 5px; }
@@ -117,11 +119,10 @@
             </div>
             <div class="auth-section">
                 <textarea id="tokenInput" placeholder="JWT Token..." rows="3"></textarea>
-                <input type="text" id="serverUrl" value="http://localhost:3000" placeholder="Server URL">
-                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <button id="connectBtn" class="btn btn-primary">Connect</button>
-                    <button id="disconnectBtn" class="btn btn-danger" disabled>Disconnect</button>
-                </div>
+                <input type="text" id="serverUrl" value="http://localhost:3000" placeholder="Server URL"> <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button id="connectBtn" class="btn btn-primary">Connect</button>
+                <button id="disconnectBtn" class="btn btn-danger" disabled>Disconnect</button>
+            </div>
                 <p id="currentUserInfo" style="font-size: 12px; margin-top: 8px; color: #333;"></p>
             </div>
         </div>
@@ -130,12 +131,12 @@
             <h4 style="margin-bottom:8px; font-weight: 600;">Start New Discussion</h4>
             <input type="text" id="newPatientId" placeholder="Patient ID (UUID)">
             <input type="text" id="newDoctorId" placeholder="Other Doctor ID (UUID)">
-            <button id="startNewConversationBtn" class="btn btn-primary" style="width:100%; margin-top:4px;">Start/Open Discussion</button>
+            <button id="startNewConversationBtn" class="btn btn-primary" style="width:100%; margin-top:4px;" disabled>Start/Open Discussion</button>
         </div>
 
         <div class="conversations-header">
             <span>Discussions</span>
-            <button class="refresh-btn" id="refreshConversations" title="Refresh">🔄</button>
+            <button class="refresh-btn" id="refreshConversations" title="Refresh" disabled>🔄</button>
         </div>
         <div class="conversations-list" id="conversationsList">
             <div class="empty-state"><h3>No discussions</h3><p>Connect to load.</p></div>
@@ -159,15 +160,14 @@
     class ChatApp {
         constructor() {
             this.socket = null;
-            this.currentConversation = null; // { partnerDoctorId: string, patientId: string, patientName: string, partnerDoctorName: string }
-            this.conversations = new Map(); // Key: "partnerDoctorId-patientId", Value: conversation object
+            this.currentConversation = null; // { id: "partnerDoctorId-patientId", partnerDoctorId, patientId, patientName, partnerDoctorName, partnerDoctorAvatar, partnerDoctorSpecialty }
+            this.conversations = new Map(); // Key: "partnerDoctorId-patientId", Value: conversation object from API
             this.messages = new Map(); // Key: "partnerDoctorId-patientId", Value: { messages: [], hasMore: true, nextCursor: null }
-            this.currentUser = null; // { id: string, firstName: string, lastName: string }
+            this.currentUser = null; // { id: string (doctor's own associated_id), firstName: string, lastName: string }
             this.isTyping = false;
             this.typingTimeout = null;
             this.typingCleanupTimeout = null;
             this.selectedFiles = [];
-            this.messageCursors = new Map(); // Stores nextCursor for pagination
 
             this.initializeElements();
             this.bindEvents();
@@ -203,7 +203,7 @@
 
         loadFromStorage() {
             const token = localStorage.getItem('chat_token');
-            const serverUrl = localStorage.getItem('chat_server_url');
+            const serverUrl = localStorage.getItem('chat_server_url'); // Use chat_server_url to avoid conflict
             if (token) this.elements.tokenInput.value = token;
             if (serverUrl) this.elements.serverUrl.value = serverUrl;
         }
@@ -218,6 +218,7 @@
                 return jwt_decode(token);
             } catch (e) {
                 console.error("Failed to decode JWT:", e);
+                this.updateConnectionStatus('Invalid Token', 'error');
                 return null;
             }
         }
@@ -227,21 +228,25 @@
             const url = this.elements.serverUrl.value.trim();
 
             if (!token) { alert('Please enter a JWT token'); return; }
-
-            // Attempt to decode JWT to get user ID early for UI consistency
-            const decodedToken = this.decodeJwt(token);
-            if (decodedToken && decodedToken.associated_data && decodedToken.associated_data.id) {
-                // Placeholder, actual name comes from 'connected_user_info'
-                this.currentUser = { id: decodedToken.associated_data.id, firstName: "Loading", lastName: "User..." };
-                this.elements.currentUserInfo.textContent = `Logged in as: ${this.currentUser.id.substring(0,8)}...`;
-            } else {
-                console.warn("Could not extract user ID from token structure immediately.");
-                // If you can't decode or structure is different, wait for server confirmation
-            }
-
+            if (!url) { alert('Please enter a Server URL'); return; }
 
             this.saveToStorage();
             this.updateConnectionStatus('Connecting...', 'connecting');
+
+
+            // Attempt to decode JWT to get user ID from associated_data.id (doctor's own ID)
+            const decodedToken = this.decodeJwt(token);
+            if (decodedToken && decodedToken.associated_data && decodedToken.associated_data.id) {
+                // This is a placeholder, actual name comes from 'connected_user_info' event
+                // The ID here is the doctor's own primary key from the 'doctors' table (associated_id)
+                this.currentUser = { id: decodedToken.associated_data.id, firstName: "Loading", lastName: "User..." };
+                this.elements.currentUserInfo.textContent = `Logged in as: ${this.currentUser.id.substring(0,8)}... (Verifying)`;
+            } else {
+                console.warn("Could not extract user ID (associated_data.id) from token structure immediately.");
+                this.elements.currentUserInfo.textContent = `Awaiting server confirmation...`;
+                // If you can't decode or structure is different, wait for server confirmation via 'connected_user_info'
+            }
+
 
             if (this.socket) { this.socket.disconnect(); }
             this.socket = io(url, { auth: { token }, transports: ['websocket', 'polling'] });
@@ -250,7 +255,7 @@
 
         disconnect() {
             if (this.socket) { this.socket.disconnect(); }
-            // State reset handled in 'disconnect' event
+            // State reset handled in 'disconnect' socket event
         }
 
         resetAppState() {
@@ -258,8 +263,7 @@
             this.currentConversation = null;
             this.conversations.clear();
             this.messages.clear();
-            this.messageCursors.clear();
-            this.currentUser = null;
+            this.currentUser = null; // Reset current user
             this.selectedFiles = [];
             this.elements.conversationsList.innerHTML = '<div class="empty-state"><h3>No discussions</h3><p>Connect to load.</p></div>';
             this.elements.chatContent.innerHTML = '<div class="empty-state"><h3>Welcome</h3><p>Select a discussion.</p></div>';
@@ -271,40 +275,40 @@
 
         setupSocketEvents() {
             this.socket.on('connect', () => {
-                this.updateConnectionStatus('Connected', 'connected');
-                this.updateButtons(true);
-                // User info might be confirmed by server here
-                // this.loadConversations(); // Moved to after 'connected_user_info'
+                // Status will be updated by 'connected_user_info' or error events
+                // this.updateButtons(true) will be called after 'connected_user_info'
             });
 
-            this.socket.on('connected_user_info', (userInfo) => {
-                this.currentUser = userInfo; // { id, firstName, lastName }
+            // This event confirms connection and provides the definite user info (including the ID used by the backend for this socket)
+            this.socket.on('connected_user_info', (userInfo) => { // userInfo should be { id: string (doctor's associated_id), firstName: string, lastName: string }
+                this.currentUser = userInfo; // The ID here is the one the backend associates with this socket
                 this.elements.currentUserInfo.textContent = `Logged in as: ${this.currentUser.firstName} ${this.currentUser.lastName} (${this.currentUser.id.substring(0,8)}...)`;
-                this.loadConversations(); // Now load conversations
+                this.updateConnectionStatus('Connected', 'connected');
+                this.updateButtons(true);
+                this.loadConversations();
             });
 
             this.socket.on('disconnect', (reason) => {
                 console.log('Disconnected:', reason);
-                this.resetAppState(); // Full reset
+                this.resetAppState();
             });
 
             this.socket.on('connect_error', (error) => {
                 console.error('Connection error:', error);
-                this.resetAppState();
+                this.resetAppState(); // Full reset
                 this.updateConnectionStatus(`Error: ${error.message}`, 'error');
             });
 
             this.socket.on('newMessage', (message) => this.handleNewMessage(message, false));
-            this.socket.on('messageSent', (message) => this.handleNewMessage(message, true)); // Handle own sent message for UI update
-            this.socket.on('messageRead', (data) => this.handleMessageRead(data)); // { messageId, patientId, readBy }
-            this.socket.on('typing', (data) => this.handleTyping(data)); // { doctorId, patientId, isTyping }
-            this.socket.on('messageDeleted', (data) => this.handleMessageDeleted(data)); // { messageId, patientId }
-            // doctorOnline/Offline can be used to update UI elements if needed
+            this.socket.on('messageSent', (message) => this.handleNewMessage(message, true));
+            this.socket.on('messageRead', (data) => this.handleMessageRead(data));
+            this.socket.on('typing', (data) => this.handleTyping(data));
+            this.socket.on('messageDeleted', (data) => this.handleMessageDeleted(data));
         }
 
         updateConnectionStatus(text, type) {
             const status = this.elements.connectionStatus;
-            status.className = `connection-status ${type}`;
+            status.className = `connection-status ${type}`; // e.g., 'connected', 'disconnected', 'connecting', 'error'
             const emoji = type === 'connected' ? '🟢' : type === 'connecting' ? '🟡' : '🔴';
             status.innerHTML = `<span>${emoji}</span><span>${text}</span>`;
         }
@@ -317,9 +321,9 @@
         }
 
         async fetchApi(endpoint, options = {}) {
-            if (!this.currentUser || !this.elements.tokenInput.value) {
-                console.error("Fetch API: Not authenticated.");
-                // alert("Authentication token is missing. Please reconnect.");
+            if (!this.elements.tokenInput.value) { // Check token existence, currentUser might not be set yet during initial fetches
+                console.error("Fetch API: Authentication token is missing.");
+                // alert("Authentication token is missing. Please reconnect."); // Could be too intrusive
                 return null;
             }
             const headers = {
@@ -327,48 +331,63 @@
                 'Content-Type': 'application/json',
                 ...options.headers,
             };
-            const response = await fetch(`${this.elements.serverUrl.value}${endpoint}`, { ...options, headers });
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: response.statusText }));
-                console.error(`API Error ${response.status} for ${endpoint}:`, errorData);
-                alert(`Error: ${errorData.message || 'Failed to fetch data.'}`);
-                if(response.status === 401) this.disconnect(); // Auto-disconnect on auth error
+            try {
+                const response = await fetch(`${this.elements.serverUrl.value}${endpoint}`, { ...options, headers });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                    console.error(`API Error ${response.status} for ${endpoint}:`, errorData);
+                    alert(`Error: ${errorData.message || 'Failed to fetch data.'}`);
+                    if (response.status === 401) {
+                        this.updateConnectionStatus('Unauthorized. Reconnecting...', 'error');
+                        this.disconnect(); // Auto-disconnect on auth error
+                    }
+                    return null;
+                }
+                if (response.status === 204) return true; // No content success
+                return response.json();
+            } catch (error) {
+                console.error(`Network or fetch error for ${endpoint}:`, error);
+                alert(`Network error: ${error.message || 'Failed to connect to server.'}`);
+                this.updateConnectionStatus('Network Error', 'error');
                 return null;
             }
-            if (response.status === 204) return true; // No content
-            return response.json();
         }
 
 
         async loadConversations() {
-            if (!this.socket || !this.socket.connected || !this.currentUser) return;
+            if (!this.socket || !this.socket.connected || !this.currentUser) {
+                console.warn("Cannot load conversations: not connected or no current user.");
+                return;
+            }
             this.elements.conversationsList.innerHTML = '<div class="empty-state"><p>Loading discussions...</p></div>';
 
             const conversationsData = await this.fetchApi('/chat/conversations');
             if (conversationsData) {
                 this.conversations.clear();
-                conversationsData.forEach(conv => this.conversations.set(conv.id, conv)); // conv.id is "partnerDoctorId-patientId"
+                // Ensure conversation.id is "partnerDoctorId-patientId"
+                conversationsData.forEach(conv => this.conversations.set(conv.id, conv));
                 this.renderConversations();
             } else {
-                this.elements.conversationsList.innerHTML = '<div class="empty-state"><h3>Failed to load</h3><p>Try refreshing.</p></div>';
+                this.elements.conversationsList.innerHTML = '<div class="empty-state"><h3>Failed to load</h3><p>Try refreshing or check connection.</p></div>';
             }
         }
 
         renderConversations() {
             const container = this.elements.conversationsList;
+            if (!this.conversations || this.conversations.size === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No discussions</h3><p>Start a new one below.</p></div>`;
+                return;
+            }
+
             const sortedConversations = Array.from(this.conversations.values()).sort((a, b) => {
                 const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0);
                 const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0);
                 return dateB - dateA;
             });
 
-            if (sortedConversations.length === 0) {
-                container.innerHTML = `<div class="empty-state"><h3>No discussions</h3><p>Start a new one below.</p></div>`;
-                return;
-            }
 
             container.innerHTML = sortedConversations.map(conv => {
-                const doctor = conv.partnerDoctor;
+                const doctor = conv.partnerDoctor; // This is the OTHER doctor
                 const patient = conv.patient;
                 const lastMessage = conv.lastMessage;
                 const unreadCount = conv.unreadCount || 0;
@@ -377,7 +396,14 @@
                 const fullName = `${doctor.first_name || 'Doctor'} ${doctor.last_name || ''}`.trim();
                 const patientName = patient.name || `Patient ${patient.id.substring(0,8)}`;
 
-                let preview = lastMessage?.content ? (lastMessage.content.length > 30 ? lastMessage.content.substring(0,27)+'...' : lastMessage.content) : (lastMessage?.attachments?.length > 0 ? '📎 Attachment' : 'No messages yet');
+                let preview = 'No messages yet';
+                if (lastMessage) {
+                    if (lastMessage.content) {
+                        preview = lastMessage.content.length > 30 ? lastMessage.content.substring(0, 27) + '...' : lastMessage.content;
+                    } else if (lastMessage.attachments?.length > 0) {
+                        preview = '📎 Attachment';
+                    }
+                }
                 let timeText = lastMessage ? this.formatTime(lastMessage.createdAt) : '';
                 const conversationId = conv.id; // "partnerDoctorId-patientId"
 
@@ -400,6 +426,10 @@
         }
 
         handleStartNewConversation() {
+            if (!this.currentUser) {
+                alert("Cannot start conversation: current user not identified.");
+                return;
+            }
             const patientId = this.elements.newPatientIdInput.value.trim();
             const otherDoctorId = this.elements.newDoctorIdInput.value.trim();
 
@@ -411,55 +441,53 @@
                 alert("You cannot start a conversation with yourself.");
                 return;
             }
-            // Basic UUID validation (very simple)
             const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
             if (!uuidRegex.test(patientId) || !uuidRegex.test(otherDoctorId)) {
                 alert("Patient ID and Doctor ID must be valid UUIDs.");
                 return;
             }
 
+            const conversationId = `${otherDoctorId}-${patientId}`; // Consistent ID format
 
-            const conversationId = `${otherDoctorId}-${patientId}`;
-
-            // If conversation exists, select it. Otherwise, prepare a new one.
             if (this.conversations.has(conversationId)) {
                 this.selectConversation(conversationId);
             } else {
-                // Create a temporary conversation object to open the chat window
-                // This assumes you can fetch doctor/patient details if needed, or use placeholders
-                // For now, we'll create a shell and let the first message "officially" create it via backend
-                // Or, you might need an API to get doctor details by ID
+                // Create a temporary conversation object to open the chat window.
+                // Backend will fully create it on first message or API call if needed.
+                // For now, we need partnerDoctor and patient objects for selectConversation.
+                // We assume these IDs are enough to fetch details if needed, or use placeholders.
                 const tempNewConv = {
                     id: conversationId,
-                    partnerDoctor: { id: otherDoctorId, first_name: "Doctor", last_name: otherDoctorId.substring(0,8), profile_image: null /* more fields */ },
+                    partnerDoctor: { id: otherDoctorId, first_name: "Doctor", last_name: otherDoctorId.substring(0,8), profile_image: null, specialty: "Unknown" },
                     patient: { id: patientId, name: `Patient ${patientId.substring(0,8)}` },
                     lastMessage: null,
                     unreadCount: 0
                 };
-                this.conversations.set(conversationId, tempNewConv); // Add to map
-                this.renderConversations(); // Re-render list
-                this.selectConversation(conversationId); // Select it
+                this.conversations.set(conversationId, tempNewConv);
+                this.renderConversations();
+                this.selectConversation(conversationId);
             }
             this.elements.newPatientIdInput.value = '';
             this.elements.newDoctorIdInput.value = '';
         }
 
 
-        async selectConversation(conversationId) {
+        async selectConversation(conversationId) { // conversationId is "partnerDoctorId-patientId"
             const conversation = this.conversations.get(conversationId);
             if (!conversation) {
                 console.error("Selected conversation not found in map:", conversationId);
+                alert("Error: Could not open conversation.");
                 return;
             }
 
             this.currentConversation = {
-                id: conversation.id, // "partnerDoctorId-patientId"
+                id: conversation.id,
                 partnerDoctorId: conversation.partnerDoctor.id,
                 patientId: conversation.patient.id,
-                patientName: conversation.patient.name,
-                partnerDoctorName: `${conversation.partnerDoctor.first_name} ${conversation.partnerDoctor.last_name}`,
+                patientName: conversation.patient.name || `Patient ${conversation.patient.id.substring(0,8)}`,
+                partnerDoctorName: `${conversation.partnerDoctor.first_name || 'Doctor'} ${conversation.partnerDoctor.last_name || ''}`.trim(),
                 partnerDoctorAvatar: conversation.partnerDoctor.profile_image,
-                partnerDoctorSpecialty: conversation.partnerDoctor.specialty,
+                partnerDoctorSpecialty: conversation.partnerDoctor.specialty || 'Doctor',
             };
 
             document.querySelectorAll('.conversation-item').forEach(item => item.classList.remove('active'));
@@ -467,32 +495,30 @@
             if (currentConvElement) currentConvElement.classList.add('active');
 
             this.renderChatInterface();
-            await this.loadMessages(true); // Load initial messages for this new conversation
+            await this.loadMessages(true);
 
-            // Mark messages as read (if any unread for this specific conversation)
-            // This needs a more refined logic: iterate messages and call markAsRead if they are unread and receiver is current user.
-            // For simplicity, new messages received will trigger read status.
-            // Or, if conversation.unreadCount > 0, loop through its messages when loaded and mark them.
-            // Let's assume opening the chat and loading messages implies they are seen. The backend should update read status for messages fetched.
-            // A more proactive approach:
             if (conversation.unreadCount > 0) {
+                // Optimistically update UI for unread count
+                conversation.unreadCount = 0;
+                this.renderConversations(); // Re-render list to remove badge
+
+                // Inform backend that messages are read (implicitly by opening chat, or more explicitly)
+                // For simplicity, we assume messages loaded are marked as read by the recipient (current user)
+                // A more robust way is to iterate through loaded messages and send 'markAsRead' for unread ones received by current user.
                 const messagesData = this.messages.get(this.currentConversation.id);
                 if (messagesData && messagesData.messages) {
                     messagesData.messages.forEach(msg => {
-                        if (!msg.isRead && msg.receiverId === this.currentUser.id) {
+                        // If the message was from the partner and not read by current user
+                        if (msg.senderId === this.currentConversation.partnerDoctorId && !msg.isRead && this.currentUser && msg.receiverId === this.currentUser.id) {
                             this.socket.emit('markAsRead', { messageId: msg.id, patientId: this.currentConversation.patientId });
                         }
                     });
                 }
-                // Optimistically update UI
-                conversation.unreadCount = 0;
-                this.renderConversations();
             }
-
         }
 
         async loadMessages(isInitialLoad = false) {
-            if (!this.socket || !this.socket.connected || !this.currentConversation) return;
+            if (!this.socket || !this.socket.connected || !this.currentConversation || !this.currentUser) return;
 
             const { partnerDoctorId, patientId, id: conversationId } = this.currentConversation;
             let currentMessagesData = this.messages.get(conversationId);
@@ -501,27 +527,35 @@
                 this.messages.set(conversationId, { messages: [], hasMore: true, nextCursor: null });
                 currentMessagesData = this.messages.get(conversationId);
                 const messagesContentEl = document.getElementById('messagesContent');
-                if(messagesContentEl) messagesContentEl.innerHTML = '<div class="empty-state"><p>Loading messages...</p></div>';
+                if (messagesContentEl) messagesContentEl.innerHTML = '<div class="empty-state"><p>Loading messages...</p></div>';
             }
 
+            const loadMoreBtn = document.getElementById('loadMoreMessagesBtn');
             if (!currentMessagesData.hasMore && !isInitialLoad) {
-                const loadMoreBtn = document.getElementById('loadMoreMessagesBtn');
                 if(loadMoreBtn) loadMoreBtn.disabled = true;
-                return; // No more messages to load
+                return;
             }
+            if(loadMoreBtn && !isInitialLoad) loadMoreBtn.disabled = true; // Disable while loading
 
             const cursor = currentMessagesData.nextCursor;
-
+            // The otherDoctorId for the API is currentConversation.partnerDoctorId
             const url = `/chat/messages?doctorId=${partnerDoctorId}&patientId=${patientId}&limit=20${cursor ? '&cursor=' + cursor : ''}`;
             const data = await this.fetchApi(url);
 
+            if(loadMoreBtn && !isInitialLoad) loadMoreBtn.disabled = !(data && data.hasMore);
+
+
             if (data && data.messages) {
-                const newMessages = data.messages.reverse(); // API returns newest first, reverse for prepending
-                currentMessagesData.messages = isInitialLoad ? newMessages : [...newMessages, ...currentMessagesData.messages];
+                const newMessages = data.messages; // API returns newest first with cursor logic, so should be newest to oldest
+                currentMessagesData.messages = isInitialLoad ? newMessages.reverse() : [...newMessages.reverse(), ...currentMessagesData.messages];
                 currentMessagesData.hasMore = data.hasMore;
                 currentMessagesData.nextCursor = data.nextCursor;
                 this.messages.set(conversationId, currentMessagesData);
-                this.renderMessages(isInitialLoad);
+                this.renderMessages(isInitialLoad); // Scroll to bottom on initial load
+            } else if (isInitialLoad) {
+                const messagesContentEl = document.getElementById('messagesContent');
+                if(messagesContentEl) messagesContentEl.innerHTML = '<div class="empty-state"><h3>No messages</h3><p>Start the conversation!</p></div>';
+                if(loadMoreBtn) loadMoreBtn.style.display = 'none';
             }
         }
 
@@ -531,7 +565,7 @@
                 return;
             }
             const { partnerDoctorName, patientName, partnerDoctorAvatar, partnerDoctorSpecialty } = this.currentConversation;
-            const avatarText = partnerDoctorName.split(" ").map(n => n[0]).join("").toUpperCase();
+            const avatarText = partnerDoctorName.split(" ").map(n => n[0]).filter(Boolean).join("").toUpperCase() || 'DR';
 
             this.elements.chatContent.innerHTML = `
                 <div class="chat-header">
@@ -572,20 +606,25 @@
             messageInputEl.addEventListener('input', () => {
                 document.getElementById('sendBtn').disabled = messageInputEl.value.trim() === '' && this.selectedFiles.length === 0;
             });
+            document.getElementById('sendBtn').disabled = true; // Initially disable send button
         }
 
-        renderMessages(scrollToBottom = true) {
-            if (!this.currentConversation) return;
+        renderMessages(scrollToBottomIfAtBottom = true) {
+            if (!this.currentConversation || !this.currentUser) return;
             const conversationId = this.currentConversation.id;
             const messagesData = this.messages.get(conversationId);
             const container = document.getElementById('messagesContent');
             const loadMoreBtn = document.getElementById('loadMoreMessagesBtn');
+            const msgContainer = document.getElementById('messagesContainer');
 
             if (!container || !messagesData) return;
 
+            const shouldScroll = scrollToBottomIfAtBottom && msgContainer && (msgContainer.scrollHeight - msgContainer.scrollTop - msgContainer.clientHeight < 100);
+
+
             if (loadMoreBtn) {
                 loadMoreBtn.disabled = !messagesData.hasMore;
-                document.getElementById('loadMoreContainer').style.display = messagesData.messages.length === 0 && !messagesData.hasMore ? 'none' : 'block';
+                document.getElementById('loadMoreContainer').style.display = messagesData.messages.length === 0 && !messagesData.hasMore ? 'none' : (messagesData.hasMore ? 'block' : 'none');
             }
 
 
@@ -613,16 +652,16 @@
                         </div>
                         <div class="message-actions">
                            ${isOwn ? `<button class="message-action-btn" title="Delete" onclick="chatApp.confirmDeleteMessage('${message.id}')">🗑️</button>` : ''}
-                           </div>
+                        </div>
                     </div>
                     <div class="message-time ${isOwn ? 'own' : ''}">
                         ${time}
-                        ${isOwn && message.isRead ? '<span class="message-read-status">✓✓</span>' : (isOwn ? '✓' : '')}
+                        ${isOwn ? (message.isRead ? '<span class="message-read-status">✓✓</span>' : '✓') : ''}
                     </div>`;
             });
             container.innerHTML = html;
 
-            if (scrollToBottom) {
+            if (shouldScroll) {
                 this.scrollToBottom();
             }
         }
@@ -635,10 +674,11 @@
 
         deleteMessage(messageId) {
             if (!this.socket || !this.socket.connected || !this.currentConversation) return;
+            // For socket emission, we need receiverId to be the partner doctor.
             this.socket.emit('deleteMessage', {
                 messageId: messageId,
                 patientId: this.currentConversation.patientId,
-                receiverId: this.currentConversation.partnerDoctorId // Needed for backend to notify partner
+                receiverId: this.currentConversation.partnerDoctorId
             });
         }
 
@@ -647,11 +687,14 @@
                 const messagesData = this.messages.get(this.currentConversation.id);
                 if (messagesData) {
                     messagesData.messages = messagesData.messages.filter(m => m.id !== data.messageId);
-                    this.renderMessages(false); // Don't auto-scroll, user might be looking at history
+                    this.renderMessages(false);
                 }
             }
-            // Potentially update conversation preview if the deleted message was the last one
-            this.loadConversations(); // Easiest way to refresh last message preview
+            // Refresh conversations list to update last message preview if needed
+            const convToUpdate = this.conversations.get(`${this.currentConversation?.partnerDoctorId}-${data.patientId}`) || this.conversations.get(`${data.senderId}-${data.patientId}`);
+            if(convToUpdate && convToUpdate.lastMessage && convToUpdate.lastMessage.id === data.messageId) {
+                this.loadConversations(); // Reload all conversations for simplicity to update last message
+            }
         }
 
 
@@ -660,14 +703,14 @@
             return `<div class="message-attachments">
                 ${attachments.map(att => `
                     <div class="attachment-item">
-                        <a href="${att.url || '#'}" target="_blank" title="Download ${att.filename} (${(att.size / 1024).toFixed(1)} KB)">
+                        <a href="${att.url || '#'}" target="_blank" title="Download ${att.filename} (${att.size ? (att.size / 1024).toFixed(1) + ' KB' : ''})">
                             📎 ${att.filename.length > 20 ? att.filename.substring(0,17)+'...' : att.filename}
                         </a>
                     </div>`).join('')}
             </div>`;
         }
 
-        formatDate(dateStr) { /* ... same as before ... */
+        formatDate(dateStr) {
             const d = new Date(dateStr);
             const today = new Date();
             const yesterday = new Date(today);
@@ -677,7 +720,7 @@
             if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
             return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: d.getFullYear() !== today.getFullYear() ? 'numeric' : undefined });
         }
-        formatTime(dateStr) { /* ... same as before ... */
+        formatTime(dateStr) {
             return new Date(dateStr).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
         }
 
@@ -687,15 +730,14 @@
                 const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 200;
                 scrollToBottomBtn.classList.toggle('show', !isNearBottom && container.scrollHeight > container.clientHeight + 50);
             }
-            if (container.scrollTop < 50 && this.currentConversation) { // Threshold to trigger load
+
+            // Load more messages when scrolling to the top
+            if (container.scrollTop < 50 && this.currentConversation) {
                 const messagesData = this.messages.get(this.currentConversation.id);
                 if (messagesData && messagesData.hasMore) {
                     const loadMoreBtn = document.getElementById('loadMoreMessagesBtn');
-                    if(loadMoreBtn && !loadMoreBtn.disabled) { // Check if not already loading
-                        loadMoreBtn.disabled = true; // Prevent multiple quick calls
-                        this.loadMessages(false).finally(() => {
-                            if(loadMoreBtn && messagesData.hasMore) loadMoreBtn.disabled = false;
-                        });
+                    if (loadMoreBtn && !loadMoreBtn.disabled) {
+                        this.loadMessages(false); // Pass false for not initial load
                     }
                 }
             }
@@ -708,16 +750,18 @@
         handleInputKeydown(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                this.sendMessage();
+                const sendBtn = document.getElementById('sendBtn');
+                if(!sendBtn.disabled) this.sendMessage();
             }
         }
         handleInputChange(event) {
             const input = event.target;
             input.style.height = 'auto';
-            input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+            input.style.height = Math.min(input.scrollHeight, 100) + 'px'; // Max height 100px
             document.getElementById('sendBtn').disabled = input.value.trim() === '' && this.selectedFiles.length === 0;
 
-            if (!this.currentConversation) return;
+            if (!this.currentConversation || !this.socket || !this.socket.connected) return;
+
             if (!this.isTyping) {
                 this.isTyping = true;
                 this.socket.emit('startTyping', { receiverId: this.currentConversation.partnerDoctorId, patientId: this.currentConversation.patientId });
@@ -726,26 +770,25 @@
             this.typingTimeout = setTimeout(() => {
                 this.isTyping = false;
                 this.socket.emit('stopTyping', { receiverId: this.currentConversation.partnerDoctorId, patientId: this.currentConversation.patientId });
-            }, 2000); // User considered stopped typing after 2s of inactivity
+            }, 2000);
         }
 
         handleFileSelect(event) {
             const files = Array.from(event.target.files);
-            // Basic validation (example: max 5 files, max 10MB each)
             if (this.selectedFiles.length + files.length > 5) {
                 alert("You can select a maximum of 5 files.");
-                return;
+                event.target.value = null; return;
             }
             for (let file of files) {
                 if (file.size > 10 * 1024 * 1024) { // 10 MB
                     alert(`File ${file.name} is too large (max 10MB).`);
-                    continue; // Skip this file
+                    continue;
                 }
                 this.selectedFiles.push(file);
             }
             this.renderFilePreview();
             document.getElementById('sendBtn').disabled = document.getElementById('messageInput').value.trim() === '' && this.selectedFiles.length === 0;
-            event.target.value = null; // Reset file input
+            event.target.value = null;
         }
 
         renderFilePreview() {
@@ -756,7 +799,7 @@
                 <div class="file-item">
                     <div class="file-info">
                         <span>📎</span>
-                        <span>${file.name} (${(file.size/1024).toFixed(1)}KB)</span>
+                        <span>${file.name.length > 30 ? file.name.substring(0,27)+'...' : file.name} (${(file.size/1024).toFixed(1)}KB)</span>
                     </div>
                     <button class="remove-file" onclick="chatApp.removeFile(${index})" title="Remove file">×</button>
                 </div>`).join('');
@@ -768,19 +811,22 @@
         }
 
         async sendMessage() {
-            if (!this.socket || !this.socket.connected || !this.currentConversation) return;
+            if (!this.socket || !this.socket.connected || !this.currentConversation || !this.currentUser) return;
             const input = document.getElementById('messageInput');
             const content = input.value.trim();
             if (!content && this.selectedFiles.length === 0) return;
 
             const sendBtn = document.getElementById('sendBtn');
-            sendBtn.disabled = true; // Disable while sending
+            const originalSendBtnText = sendBtn.innerHTML;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '...';
+
 
             try {
                 let uploadedAttachments = [];
                 if (this.selectedFiles.length > 0) {
                     const formData = new FormData();
-                    this.selectedFiles.forEach(file => formData.append('files', file)); // Key must match FilesInterceptor
+                    this.selectedFiles.forEach(file => formData.append('files', file));
 
                     const uploadResponse = await fetch(`${this.elements.serverUrl.value}/chat/upload`, {
                         method: 'POST',
@@ -789,14 +835,14 @@
                     });
 
                     if (uploadResponse.ok) {
-                        const result = await uploadResponse.json(); // Expects { files: AttachmentDto[] }
-                        if (result.files) {
-                            uploadedAttachments = result.files;
+                        const result = await uploadResponse.json();
+                        if (result.files && Array.isArray(result.files)) {
+                            uploadedAttachments = result.files; // These should be AttachmentDto[]
                         } else {
-                            throw new Error("Uploaded files data not in expected format.");
+                            throw new Error("Uploaded files data not in expected format from server.");
                         }
                     } else {
-                        const errorData = await uploadResponse.json().catch(()=>({message: "File upload failed."}));
+                        const errorData = await uploadResponse.json().catch(()=>({message: "File upload failed with no error details."}));
                         throw new Error(`File upload failed: ${errorData.message || uploadResponse.statusText}`);
                     }
                 }
@@ -805,117 +851,138 @@
                     content: content,
                     receiverId: this.currentConversation.partnerDoctorId,
                     patientId: this.currentConversation.patientId,
-                    attachments: uploadedAttachments
+                    attachments: uploadedAttachments // Send AttachmentDto[]
                 });
 
                 input.value = '';
-                input.style.height = 'auto'; // Reset height
+                input.style.height = 'auto';
                 this.selectedFiles = [];
                 this.renderFilePreview();
+                // Send button will be re-enabled by input change if needed, or kept disabled
+                document.getElementById('sendBtn').disabled = true;
+
 
             } catch (error) {
                 console.error('Error sending message:', error);
                 alert(`Failed to send message: ${error.message}`);
+                sendBtn.disabled = false; // Re-enable on error
             } finally {
-                if (input.value.trim() === '' && this.selectedFiles.length === 0) {
-                    // Re-enable only if there's content or files after an error perhaps.
-                    // But typically, after successful send, it should be disabled until new input.
+                sendBtn.innerHTML = originalSendBtnText; // Restore button text
+                // Final check on send button state
+                if (document.getElementById('messageInput').value.trim() === '' && this.selectedFiles.length === 0) {
+                    sendBtn.disabled = true;
                 } else {
-                    sendBtn.disabled = false; // Re-enable if there's still content (e.g. if only file send failed)
+                    sendBtn.disabled = false;
                 }
+
             }
         }
 
         handleNewMessage(message, isOwnSentMessage) {
-            // Ensure message has patientId and senderId/receiverId
-            if (!message || !message.patientId || (!message.senderId && !message.receiverId)) {
-                console.warn("Received malformed message object:", message);
+            if (!message || !message.patientId || !this.currentUser) {
+                console.warn("Received malformed message or currentUser not set:", message);
                 return;
             }
 
-            const relevantDoctorId = isOwnSentMessage ? message.receiverId : message.senderId;
-            const conversationId = `${relevantDoctorId}-${message.patientId}`;
+            // Determine the conversation ID based on sender/receiver and patient
+            // If it's our own sent message, the partner is the receiverId
+            // If it's an incoming message, the partner is the senderId
+            const partnerId = isOwnSentMessage ? message.receiverId : message.senderId;
+            if (!partnerId) {
+                console.warn("Could not determine partner ID from message:", message);
+                return;
+            }
+            const conversationId = `${partnerId}-${message.patientId}`;
 
-            if (!this.messages.has(conversationId)) {
+
+            let conversationMessages = this.messages.get(conversationId);
+            if (!conversationMessages) {
                 this.messages.set(conversationId, { messages: [], hasMore: false, nextCursor: null });
+                conversationMessages = this.messages.get(conversationId);
             }
-            const conversationMessages = this.messages.get(conversationId);
 
-            // Avoid duplicates if messageSent and newMessage both add it (though typically only one should for one client)
-            if (!conversationMessages.messages.find(m => m.id === message.id)) {
+            const existingMessage = conversationMessages.messages.find(m => m.id === message.id);
+            if (!existingMessage) {
                 conversationMessages.messages.push(message);
+            } else { // Update existing message (e.g. if messageSent comes after newMessage with more details)
+                Object.assign(existingMessage, message);
             }
 
 
-            // Update UI if this is the currently active chat
             if (this.currentConversation && this.currentConversation.id === conversationId) {
-                this.renderMessages(true); // Scroll to bottom for new message
-                // If message received from other doctor, mark as read
+                this.renderMessages(true);
                 if (!isOwnSentMessage && message.senderId === this.currentConversation.partnerDoctorId) {
                     this.socket.emit('markAsRead', { messageId: message.id, patientId: message.patientId });
                 }
             }
 
-            // Update conversation list (last message, unread count)
             const convData = this.conversations.get(conversationId);
             if (convData) {
                 convData.lastMessage = message;
-                if (!isOwnSentMessage && message.senderId === relevantDoctorId && (!this.currentConversation || this.currentConversation.id !== conversationId)) {
+                if (!isOwnSentMessage && message.senderId === partnerId && (!this.currentConversation || this.currentConversation.id !== conversationId)) {
                     convData.unreadCount = (convData.unreadCount || 0) + 1;
-                } else if (isOwnSentMessage || (this.currentConversation && this.currentConversation.id === conversationId)) {
-                    // If it's our own message, or we are viewing the chat, reset unread for this convo
-                    convData.unreadCount = 0;
+                } else if (this.currentConversation && this.currentConversation.id === conversationId) {
+                    convData.unreadCount = 0; // We are viewing the chat, so reset unread
                 }
-                this.renderConversations(); // Re-render to show new preview/badge
+                this.renderConversations();
             } else if (!isOwnSentMessage) {
-                // This is a message for a conversation not yet in the list (e.g. new doctor messaged us)
-                // We should fetch updated conversations or try to create a temporary one
-                this.loadConversations(); // Simplest is to reload all conversations
+                // New message for a conversation not in the list (e.g., new doctor initiated)
+                this.loadConversations(); // Reload all conversations to include the new one
             }
         }
 
-        handleMessageRead(data) { // { messageId, patientId, readBy }
-            if (this.currentConversation && this.currentConversation.patientId === data.patientId && this.currentUser.id === data.readBy) {
-                // This is an ack that a message *I* sent was read by the other party.
-                // Or, if I marked a message as read, this confirms it.
-                const messagesData = this.messages.get(this.currentConversation.id);
-                if (messagesData) {
-                    const msgToUpdate = messagesData.messages.find(m => m.id === data.messageId);
-                    if (msgToUpdate && msgToUpdate.senderId === this.currentUser.id) { // Only update my sent messages' read status
-                        msgToUpdate.isRead = true;
-                        this.renderMessages(false); // Re-render without scrolling
+        handleMessageRead(data) { // { messageId, patientId, readBy (the one who read it) }
+            if (!this.currentUser) return;
+
+            const conversationIdForMessage = this.findConversationIdForMessage(data.messageId, data.patientId);
+            if (!conversationIdForMessage) return;
+
+            const messagesData = this.messages.get(conversationIdForMessage);
+            if (messagesData) {
+                const msgToUpdate = messagesData.messages.find(m => m.id === data.messageId);
+                // If the message was sent by me (currentUser) and read by the other party (data.readBy is my partner)
+                if (msgToUpdate && msgToUpdate.senderId === this.currentUser.id && data.readBy !== this.currentUser.id) {
+                    msgToUpdate.isRead = true;
+                    if (this.currentConversation && this.currentConversation.id === conversationIdForMessage) {
+                        this.renderMessages(false); // Re-render without scrolling if current chat
                     }
                 }
             }
-            // If the read receipt is for the current conversation, update unread count in sidebar
-            const conversationIdForRead = `${data.readBy}-${data.patientId}`; // If data.readBy is the other doctor
-            const otherPartyId = (this.currentConversation && data.patientId === this.currentConversation.patientId) ? this.currentConversation.partnerDoctorId : null;
-            if (otherPartyId){
-                const actualConvId = `${otherPartyId}-${data.patientId}`;
-                const convInList = this.conversations.get(actualConvId);
-                if(convInList && convInList.lastMessage && convInList.lastMessage.id === data.messageId && convInList.lastMessage.senderId === otherPartyId) {
-                    // This logic is tricky. If the other person read MY message, their unread count for ME doesn't change.
-                    // If I read THEIR message, then MY unread count for THEM decreases.
-                    // The `messageRead` event is more for the SENDER to know their message was seen.
+            // If this read receipt is for a message in the currently open chat, update its unread count (should be 0)
+            if (this.currentConversation && this.currentConversation.id === conversationIdForMessage) {
+                const convInList = this.conversations.get(this.currentConversation.id);
+                if (convInList) {
+                    // convInList.unreadCount = 0; // This should already be handled by opening the chat.
+                    // More for updating the "read ticks" on sent messages.
                 }
             }
-            // The `getConversations` logic should correctly calculate unread counts from the DB.
-            // We can refresh conversations to get the latest unread counts after a message is read.
-            // this.loadConversations(); // Could be too chatty.
         }
 
-        handleTyping(data) { // { doctorId, patientId, isTyping }
-            if (this.currentConversation && this.currentConversation.partnerDoctorId === data.doctorId && this.currentConversation.patientId === data.patientId) {
+        findConversationIdForMessage(messageId, patientId) {
+            for (const [convId, data] of this.messages.entries()) {
+                if (data.messages.some(m => m.id === messageId && m.patientId === patientId)) {
+                    // convId is "partnerId-patientId"
+                    // We need to ensure this is the correct partner
+                    return convId;
+                }
+            }
+            return null;
+        }
+
+
+        handleTyping(data) { // { doctorId (who is typing), patientId, isTyping }
+            if (this.currentConversation &&
+              this.currentConversation.partnerDoctorId === data.doctorId &&
+              this.currentConversation.patientId === data.patientId) {
                 const indicator = document.getElementById('typingIndicator');
-                const msgContainer = document.getElementById('messagesContainer');
-                if (indicator && msgContainer) {
+                if (indicator) {
                     if (data.isTyping) {
                         indicator.classList.add('show');
-                        this.scrollToBottom();
-                        clearTimeout(this.typingCleanupTimeout); // Clear previous cleanup
-                        this.typingCleanupTimeout = setTimeout(() => { // Add a safety net timeout
+                        this.scrollToBottom(); // Scroll to show indicator if user is near bottom
+                        clearTimeout(this.typingCleanupTimeout);
+                        this.typingCleanupTimeout = setTimeout(() => {
                             if(indicator.classList.contains('show')) indicator.classList.remove('show');
-                        }, 4000); // Hide after 4s if no 'stopTyping' received
+                        }, 4000); // Safety net to hide if stopTyping not received
                     } else {
                         indicator.classList.remove('show');
                         clearTimeout(this.typingCleanupTimeout);

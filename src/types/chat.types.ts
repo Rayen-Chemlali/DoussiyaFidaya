@@ -55,3 +55,16 @@ export interface PatientCentricConversation {
   lastMessage?: Message;
   unreadCount: number;
 }
+export interface DoctorCentricConversation {
+  id: string;
+  partnerDoctor: Doctor;
+  patients: Array<{
+    id: string;
+    name: string;
+    messageCount: number;
+    lastActivity: Date;
+  }>;
+  lastMessage: Message;
+  unreadCount: number;
+  totalMessageCount: number;
+}
