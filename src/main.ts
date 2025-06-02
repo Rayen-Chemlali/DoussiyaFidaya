@@ -23,10 +23,9 @@ async function bootstrap() {
 
   // Start the server
   const port = process.env.PORT || 4000;
+  app.enableCors({ origin: 'http://localhost:8080' });
   await app.listen(port, '0.0.0.0');
   console.log(`Application is running on: http://localhost:${port}`);
-  app.enableCors({ origin: 'http://localhost:8080' });
-  // await app.listen(process.env.PORT ?? 3000);
 
   const worker = await NestFactory.createMicroservice(NotificationWorkerModule, {
     transport: Transport.RMQ,

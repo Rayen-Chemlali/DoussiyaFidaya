@@ -84,6 +84,7 @@ model consultations {
   prescription_id           String?                     @unique @db.Uuid
   patient_id                String                      @db.Uuid
   consultation_lab_requests consultation_lab_requests[]
+  lab_requests             lab_requests[]
   prescriptions             prescriptions?              @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   instituts_medicaux        instituts_medicaux?         @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -128,6 +129,7 @@ model doctors {
   certificates        certificates[]
   consultations       consultations[]
   doctor_instituts    doctor_instituts[]
+  instituts           instituts_medicaux[]
   users               users                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   lab_requests        lab_requests[]
   prescriptions       prescriptions[]
@@ -152,6 +154,7 @@ model instituts_medicaux {
   authorizations   authorizations[]
   consultations    consultations[]
   doctor_instituts doctor_instituts[]
+  doctors         doctors[]
 }
 
 model lab_attachments {
@@ -192,6 +195,7 @@ model lab_requests {
   doctor_id                 String?                     @db.Uuid
   patient_id                String                      @db.Uuid
   consultation_lab_requests consultation_lab_requests[]
+  consultations            consultations[]
   lab_documents             lab_documents[]
   doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -493,4 +497,25 @@ model MessageAttachment {
   messageId String   @db.Uuid
   message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade, onUpdate: NoAction) // Consider Cascade delete for attachments
   createdAt DateTime @default(now()) @db.Timestamp(6)
+}
+
+model ActionHistory {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId      String
+  eventName   String
+  entity      Json
+  timestamp   DateTime  @default(now())
+  isSensitive Boolean   @default(false)
+  expiresAt   DateTime?
+
+  @@index([userId, eventName, timestamp])
+}
+
+model UserNotification {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String
+  eventName String
+  payload   String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
 }

@@ -11,13 +11,15 @@ import { NotificationHandler } from './handlers/notification.handler';
 import { PrismaMiddlewareService } from './services/prisma-middleware.service';
 import { TestEventController } from './controllers/test-event.controller';
 import Redis from 'ioredis';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
   imports: [EventEmitterModule.forRoot(
     {
       wildcard: true,
     }
-  )],
+  ),
+  PrismaModule],
   controllers: [SseController, ActionHistoryController,TestEventController],
   providers: [
     NotificationService,

@@ -3,8 +3,8 @@ import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class UserPreferencesService {
-  constructor(private prisma: PrismaService) {}
-
+  // constructor(private prisma: PrismaService) {}
+  //
   // async filterUsersByPreferences(userIds: string[], channel: string): Promise<string[]> {
   //   const preferences = await this.prisma.userNotificationPreference.findMany({
   //     where: {
