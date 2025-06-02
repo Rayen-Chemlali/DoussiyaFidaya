@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
-import { PrismaService } from '../notifications/services/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Controller()
 export class NotificationWorkerService {

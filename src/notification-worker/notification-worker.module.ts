@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { NotificationWorkerService } from './notification-worker.service';
 import { NotificationsModule } from '../notifications/notifications.module';
-import { PrismaService } from '../notifications/services/prisma.service';
 
 @Module({
   imports: [

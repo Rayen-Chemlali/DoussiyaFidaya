@@ -107,20 +107,6 @@ type AggregateMedications {
   _sum: MedicationsSumAggregate
 }
 
-type AggregateMessage {
-  _count: MessageCountAggregate
-  _max: MessageMaxAggregate
-  _min: MessageMinAggregate
-}
-
-type AggregateMessageAttachment {
-  _avg: MessageAttachmentAvgAggregate
-  _count: MessageAttachmentCountAggregate
-  _max: MessageAttachmentMaxAggregate
-  _min: MessageAttachmentMinAggregate
-  _sum: MessageAttachmentSumAggregate
-}
-
 type AggregatePatients {
   _avg: PatientsAvgAggregate
   _count: PatientsCountAggregate
@@ -157,14 +143,6 @@ type AggregateUsers {
   _count: UsersCountAggregate
   _max: UsersMaxAggregate
   _min: UsersMinAggregate
-}
-
-type AggregateVerification_tokens {
-  _avg: Verification_tokensAvgAggregate
-  _count: Verification_tokensCountAggregate
-  _max: Verification_tokensMaxAggregate
-  _min: Verification_tokensMinAggregate
-  _sum: Verification_tokensSumAggregate
 }
 
 type AggregateXray_results {
@@ -2306,30 +2284,6 @@ type CreateManyAndReturnMedications {
   quantity: Float!
 }
 
-type CreateManyAndReturnMessage {
-  content: String!
-  createdAt: DateTimeISO!
-  id: String!
-  isRead: Boolean!
-  patientId: String
-  receiver: Doctors!
-  receiverId: String!
-  sender: Doctors!
-  senderId: String!
-  updatedAt: DateTimeISO!
-}
-
-type CreateManyAndReturnMessageAttachment {
-  createdAt: DateTimeISO!
-  filename: String!
-  id: String!
-  message: Message!
-  messageId: String!
-  mimeType: String!
-  path: String!
-  size: Int!
-}
-
 type CreateManyAndReturnPatients {
   GeneralMedicalRecords_patients_general_medical_record_idToGeneralMedicalRecords(where: GeneralMedicalRecordsWhereInput): GeneralMedicalRecords
   cin: Int!
@@ -2402,22 +2356,10 @@ type CreateManyAndReturnUsers {
   is_verified: Boolean!
   last_login: DateTimeISO
   last_name: String!
-  password: String!
   phone: String
   profile_picture: String
   role: users_role_enum!
-  salt: String!
   updated_at: DateTimeISO!
-}
-
-type CreateManyAndReturnVerification_tokens {
-  createdAt: DateTimeISO!
-  expireAt: DateTimeISO!
-  id: String!
-  numberofTries: Int!
-  token: String!
-  user: Users!
-  userId: String!
 }
 
 type CreateManyAndReturnXray_results {
@@ -2781,8 +2723,6 @@ type Doctors {
   profile_image: String
   rdv_requests(cursor: Rdv_requestsWhereUniqueInput, distinct: [Rdv_requestsScalarFieldEnum!], orderBy: [Rdv_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Rdv_requestsWhereInput): [Rdv_requests!]!
   rdvs(cursor: RdvsWhereUniqueInput, distinct: [RdvsScalarFieldEnum!], orderBy: [RdvsOrderByWithRelationInput!], skip: Int, take: Int, where: RdvsWhereInput): [Rdvs!]!
-  receivedMessages(cursor: MessageWhereUniqueInput, distinct: [MessageScalarFieldEnum!], orderBy: [MessageOrderByWithRelationInput!], skip: Int, take: Int, where: MessageWhereInput): [Message!]!
-  sentMessages(cursor: MessageWhereUniqueInput, distinct: [MessageScalarFieldEnum!], orderBy: [MessageOrderByWithRelationInput!], skip: Int, take: Int, where: MessageWhereInput): [Message!]!
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   user_id: String!
@@ -2797,8 +2737,6 @@ type DoctorsCount {
   prescriptions(where: PrescriptionsWhereInput): Int!
   rdv_requests(where: Rdv_requestsWhereInput): Int!
   rdvs(where: RdvsWhereInput): Int!
-  receivedMessages(where: MessageWhereInput): Int!
-  sentMessages(where: MessageWhereInput): Int!
 }
 
 type DoctorsCountAggregate {
@@ -2849,8 +2787,6 @@ input DoctorsCreateInput {
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -2939,18 +2875,6 @@ input DoctorsCreateNestedOneWithoutRdvsInput {
   create: DoctorsCreateWithoutRdvsInput
 }
 
-input DoctorsCreateNestedOneWithoutReceivedMessagesInput {
-  connect: DoctorsWhereUniqueInput
-  connectOrCreate: DoctorsCreateOrConnectWithoutReceivedMessagesInput
-  create: DoctorsCreateWithoutReceivedMessagesInput
-}
-
-input DoctorsCreateNestedOneWithoutSentMessagesInput {
-  connect: DoctorsWhereUniqueInput
-  connectOrCreate: DoctorsCreateOrConnectWithoutSentMessagesInput
-  create: DoctorsCreateWithoutSentMessagesInput
-}
-
 input DoctorsCreateOrConnectWithoutCertificatesInput {
   create: DoctorsCreateWithoutCertificatesInput!
   where: DoctorsWhereUniqueInput!
@@ -2986,16 +2910,6 @@ input DoctorsCreateOrConnectWithoutRdvsInput {
   where: DoctorsWhereUniqueInput!
 }
 
-input DoctorsCreateOrConnectWithoutReceivedMessagesInput {
-  create: DoctorsCreateWithoutReceivedMessagesInput!
-  where: DoctorsWhereUniqueInput!
-}
-
-input DoctorsCreateOrConnectWithoutSentMessagesInput {
-  create: DoctorsCreateWithoutSentMessagesInput!
-  where: DoctorsWhereUniqueInput!
-}
-
 input DoctorsCreateOrConnectWithoutUsersInput {
   create: DoctorsCreateWithoutUsersInput!
   where: DoctorsWhereUniqueInput!
@@ -3017,8 +2931,6 @@ input DoctorsCreateWithoutCertificatesInput {
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -3040,8 +2952,6 @@ input DoctorsCreateWithoutConsultationsInput {
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -3063,8 +2973,6 @@ input DoctorsCreateWithoutInstitutsInput {
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -3086,8 +2994,6 @@ input DoctorsCreateWithoutLab_requestsInput {
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -3109,8 +3015,6 @@ input DoctorsCreateWithoutPrescriptionsInput {
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -3132,8 +3036,6 @@ input DoctorsCreateWithoutRdv_requestsInput {
   prescriptions: PrescriptionsCreateNestedManyWithoutDoctorsInput
   profile_image: String
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -3155,54 +3057,6 @@ input DoctorsCreateWithoutRdvsInput {
   prescriptions: PrescriptionsCreateNestedManyWithoutDoctorsInput
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
-  specialty: doctors_specialty_enum!
-  type: doctors_type_enum!
-  users: UsersCreateNestedOneWithoutDoctorsInput!
-}
-
-input DoctorsCreateWithoutReceivedMessagesInput {
-  bio: String
-  certificates: CertificatesCreateNestedManyWithoutDoctorsInput
-  consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  education: DoctorsCreateeducationInput
-  experience: DoctorsCreateexperienceInput
-  first_name: String!
-  id: String
-  instituts: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
-  is_license_verified: Boolean
-  lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
-  languages: DoctorsCreatelanguagesInput
-  last_name: String!
-  prescriptions: PrescriptionsCreateNestedManyWithoutDoctorsInput
-  profile_image: String
-  rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
-  rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
-  specialty: doctors_specialty_enum!
-  type: doctors_type_enum!
-  users: UsersCreateNestedOneWithoutDoctorsInput!
-}
-
-input DoctorsCreateWithoutSentMessagesInput {
-  bio: String
-  certificates: CertificatesCreateNestedManyWithoutDoctorsInput
-  consultations: ConsultationsCreateNestedManyWithoutDoctorsInput
-  education: DoctorsCreateeducationInput
-  experience: DoctorsCreateexperienceInput
-  first_name: String!
-  id: String
-  instituts: Instituts_medicauxCreateNestedManyWithoutDoctorsInput
-  is_license_verified: Boolean
-  lab_requests: Lab_requestsCreateNestedManyWithoutDoctorsInput
-  languages: DoctorsCreatelanguagesInput
-  last_name: String!
-  prescriptions: PrescriptionsCreateNestedManyWithoutDoctorsInput
-  profile_image: String
-  rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
-  rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
   users: UsersCreateNestedOneWithoutDoctorsInput!
@@ -3225,8 +3079,6 @@ input DoctorsCreateWithoutUsersInput {
   profile_image: String
   rdv_requests: Rdv_requestsCreateNestedManyWithoutDoctorsInput
   rdvs: RdvsCreateNestedManyWithoutDoctorsInput
-  receivedMessages: MessageCreateNestedManyWithoutReceiverInput
-  sentMessages: MessageCreateNestedManyWithoutSenderInput
   specialty: doctors_specialty_enum!
   type: doctors_type_enum!
 }
@@ -3359,17 +3211,10 @@ input DoctorsOrderByWithRelationInput {
   profile_image: SortOrderInput
   rdv_requests: Rdv_requestsOrderByRelationAggregateInput
   rdvs: RdvsOrderByRelationAggregateInput
-  receivedMessages: MessageOrderByRelationAggregateInput
-  sentMessages: MessageOrderByRelationAggregateInput
   specialty: SortOrder
   type: SortOrder
   user_id: SortOrder
   users: UsersOrderByWithRelationInput
-}
-
-input DoctorsRelationFilter {
-  is: DoctorsWhereInput
-  isNot: DoctorsWhereInput
 }
 
 enum DoctorsScalarFieldEnum {
@@ -3440,8 +3285,6 @@ input DoctorsUpdateInput {
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3496,22 +3339,6 @@ input DoctorsUpdateManyWithoutUsersNestedInput {
   update: [DoctorsUpdateWithWhereUniqueWithoutUsersInput!]
   updateMany: [DoctorsUpdateManyWithWhereWithoutUsersInput!]
   upsert: [DoctorsUpsertWithWhereUniqueWithoutUsersInput!]
-}
-
-input DoctorsUpdateOneRequiredWithoutReceivedMessagesNestedInput {
-  connect: DoctorsWhereUniqueInput
-  connectOrCreate: DoctorsCreateOrConnectWithoutReceivedMessagesInput
-  create: DoctorsCreateWithoutReceivedMessagesInput
-  update: DoctorsUpdateToOneWithWhereWithoutReceivedMessagesInput
-  upsert: DoctorsUpsertWithoutReceivedMessagesInput
-}
-
-input DoctorsUpdateOneRequiredWithoutSentMessagesNestedInput {
-  connect: DoctorsWhereUniqueInput
-  connectOrCreate: DoctorsCreateOrConnectWithoutSentMessagesInput
-  create: DoctorsCreateWithoutSentMessagesInput
-  update: DoctorsUpdateToOneWithWhereWithoutSentMessagesInput
-  upsert: DoctorsUpsertWithoutSentMessagesInput
 }
 
 input DoctorsUpdateOneWithoutCertificatesNestedInput {
@@ -3604,16 +3431,6 @@ input DoctorsUpdateToOneWithWhereWithoutRdvsInput {
   where: DoctorsWhereInput
 }
 
-input DoctorsUpdateToOneWithWhereWithoutReceivedMessagesInput {
-  data: DoctorsUpdateWithoutReceivedMessagesInput!
-  where: DoctorsWhereInput
-}
-
-input DoctorsUpdateToOneWithWhereWithoutSentMessagesInput {
-  data: DoctorsUpdateWithoutSentMessagesInput!
-  where: DoctorsWhereInput
-}
-
 input DoctorsUpdateWithWhereUniqueWithoutInstitutsInput {
   data: DoctorsUpdateWithoutInstitutsInput!
   where: DoctorsWhereUniqueInput!
@@ -3640,8 +3457,6 @@ input DoctorsUpdateWithoutCertificatesInput {
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3663,8 +3478,6 @@ input DoctorsUpdateWithoutConsultationsInput {
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3686,8 +3499,6 @@ input DoctorsUpdateWithoutInstitutsInput {
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3709,8 +3520,6 @@ input DoctorsUpdateWithoutLab_requestsInput {
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3732,8 +3541,6 @@ input DoctorsUpdateWithoutPrescriptionsInput {
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3755,8 +3562,6 @@ input DoctorsUpdateWithoutRdv_requestsInput {
   prescriptions: PrescriptionsUpdateManyWithoutDoctorsNestedInput
   profile_image: NullableStringFieldUpdateOperationsInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3778,54 +3583,6 @@ input DoctorsUpdateWithoutRdvsInput {
   prescriptions: PrescriptionsUpdateManyWithoutDoctorsNestedInput
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
-  specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
-  type: Enumdoctors_type_enumFieldUpdateOperationsInput
-  users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
-}
-
-input DoctorsUpdateWithoutReceivedMessagesInput {
-  bio: NullableStringFieldUpdateOperationsInput
-  certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
-  consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  education: DoctorsUpdateeducationInput
-  experience: DoctorsUpdateexperienceInput
-  first_name: StringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  instituts: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
-  is_license_verified: BoolFieldUpdateOperationsInput
-  lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
-  languages: DoctorsUpdatelanguagesInput
-  last_name: StringFieldUpdateOperationsInput
-  prescriptions: PrescriptionsUpdateManyWithoutDoctorsNestedInput
-  profile_image: NullableStringFieldUpdateOperationsInput
-  rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
-  rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
-  specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
-  type: Enumdoctors_type_enumFieldUpdateOperationsInput
-  users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
-}
-
-input DoctorsUpdateWithoutSentMessagesInput {
-  bio: NullableStringFieldUpdateOperationsInput
-  certificates: CertificatesUpdateManyWithoutDoctorsNestedInput
-  consultations: ConsultationsUpdateManyWithoutDoctorsNestedInput
-  education: DoctorsUpdateeducationInput
-  experience: DoctorsUpdateexperienceInput
-  first_name: StringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  instituts: Instituts_medicauxUpdateManyWithoutDoctorsNestedInput
-  is_license_verified: BoolFieldUpdateOperationsInput
-  lab_requests: Lab_requestsUpdateManyWithoutDoctorsNestedInput
-  languages: DoctorsUpdatelanguagesInput
-  last_name: StringFieldUpdateOperationsInput
-  prescriptions: PrescriptionsUpdateManyWithoutDoctorsNestedInput
-  profile_image: NullableStringFieldUpdateOperationsInput
-  rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
-  rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
   users: UsersUpdateOneRequiredWithoutDoctorsNestedInput
@@ -3848,8 +3605,6 @@ input DoctorsUpdateWithoutUsersInput {
   profile_image: NullableStringFieldUpdateOperationsInput
   rdv_requests: Rdv_requestsUpdateManyWithoutDoctorsNestedInput
   rdvs: RdvsUpdateManyWithoutDoctorsNestedInput
-  receivedMessages: MessageUpdateManyWithoutReceiverNestedInput
-  sentMessages: MessageUpdateManyWithoutSenderNestedInput
   specialty: Enumdoctors_specialty_enumFieldUpdateOperationsInput
   type: Enumdoctors_type_enumFieldUpdateOperationsInput
 }
@@ -3917,18 +3672,6 @@ input DoctorsUpsertWithoutRdvsInput {
   where: DoctorsWhereInput
 }
 
-input DoctorsUpsertWithoutReceivedMessagesInput {
-  create: DoctorsCreateWithoutReceivedMessagesInput!
-  update: DoctorsUpdateWithoutReceivedMessagesInput!
-  where: DoctorsWhereInput
-}
-
-input DoctorsUpsertWithoutSentMessagesInput {
-  create: DoctorsCreateWithoutSentMessagesInput!
-  update: DoctorsUpdateWithoutSentMessagesInput!
-  where: DoctorsWhereInput
-}
-
 input DoctorsWhereInput {
   AND: [DoctorsWhereInput!]
   NOT: [DoctorsWhereInput!]
@@ -3949,8 +3692,6 @@ input DoctorsWhereInput {
   profile_image: StringNullableFilter
   rdv_requests: Rdv_requestsListRelationFilter
   rdvs: RdvsListRelationFilter
-  receivedMessages: MessageListRelationFilter
-  sentMessages: MessageListRelationFilter
   specialty: Enumdoctors_specialty_enumFilter
   type: Enumdoctors_type_enumFilter
   user_id: UuidFilter
@@ -3977,8 +3718,6 @@ input DoctorsWhereUniqueInput {
   profile_image: StringNullableFilter
   rdv_requests: Rdv_requestsListRelationFilter
   rdvs: RdvsListRelationFilter
-  receivedMessages: MessageListRelationFilter
-  sentMessages: MessageListRelationFilter
   specialty: Enumdoctors_specialty_enumFilter
   type: Enumdoctors_type_enumFilter
   user_id: String
@@ -7739,792 +7478,6 @@ input MedicationsWhereUniqueInput {
   quantity: FloatFilter
 }
 
-type Message {
-  _count: MessageCount
-  attachments(cursor: MessageAttachmentWhereUniqueInput, distinct: [MessageAttachmentScalarFieldEnum!], orderBy: [MessageAttachmentOrderByWithRelationInput!], skip: Int, take: Int, where: MessageAttachmentWhereInput): [MessageAttachment!]!
-  content: String!
-  createdAt: DateTimeISO!
-  id: String!
-  isRead: Boolean!
-  patientId: String
-  receiver: Doctors!
-  receiverId: String!
-  sender: Doctors!
-  senderId: String!
-  updatedAt: DateTimeISO!
-}
-
-type MessageAttachment {
-  createdAt: DateTimeISO!
-  filename: String!
-  id: String!
-  message: Message!
-  messageId: String!
-  mimeType: String!
-  path: String!
-  size: Int!
-}
-
-type MessageAttachmentAvgAggregate {
-  size: Float
-}
-
-input MessageAttachmentAvgOrderByAggregateInput {
-  size: SortOrder
-}
-
-type MessageAttachmentCountAggregate {
-  _all: Int!
-  createdAt: Int!
-  filename: Int!
-  id: Int!
-  messageId: Int!
-  mimeType: Int!
-  path: Int!
-  size: Int!
-}
-
-input MessageAttachmentCountOrderByAggregateInput {
-  createdAt: SortOrder
-  filename: SortOrder
-  id: SortOrder
-  messageId: SortOrder
-  mimeType: SortOrder
-  path: SortOrder
-  size: SortOrder
-}
-
-input MessageAttachmentCreateInput {
-  createdAt: DateTimeISO
-  filename: String!
-  id: String
-  message: MessageCreateNestedOneWithoutAttachmentsInput!
-  mimeType: String!
-  path: String!
-  size: Int!
-}
-
-input MessageAttachmentCreateManyInput {
-  createdAt: DateTimeISO
-  filename: String!
-  id: String
-  messageId: String!
-  mimeType: String!
-  path: String!
-  size: Int!
-}
-
-input MessageAttachmentCreateManyMessageInput {
-  createdAt: DateTimeISO
-  filename: String!
-  id: String
-  mimeType: String!
-  path: String!
-  size: Int!
-}
-
-input MessageAttachmentCreateManyMessageInputEnvelope {
-  data: [MessageAttachmentCreateManyMessageInput!]!
-  skipDuplicates: Boolean
-}
-
-input MessageAttachmentCreateNestedManyWithoutMessageInput {
-  connect: [MessageAttachmentWhereUniqueInput!]
-  connectOrCreate: [MessageAttachmentCreateOrConnectWithoutMessageInput!]
-  create: [MessageAttachmentCreateWithoutMessageInput!]
-  createMany: MessageAttachmentCreateManyMessageInputEnvelope
-}
-
-input MessageAttachmentCreateOrConnectWithoutMessageInput {
-  create: MessageAttachmentCreateWithoutMessageInput!
-  where: MessageAttachmentWhereUniqueInput!
-}
-
-input MessageAttachmentCreateWithoutMessageInput {
-  createdAt: DateTimeISO
-  filename: String!
-  id: String
-  mimeType: String!
-  path: String!
-  size: Int!
-}
-
-type MessageAttachmentGroupBy {
-  _avg: MessageAttachmentAvgAggregate
-  _count: MessageAttachmentCountAggregate
-  _max: MessageAttachmentMaxAggregate
-  _min: MessageAttachmentMinAggregate
-  _sum: MessageAttachmentSumAggregate
-  createdAt: DateTimeISO!
-  filename: String!
-  id: String!
-  messageId: String!
-  mimeType: String!
-  path: String!
-  size: Int!
-}
-
-input MessageAttachmentListRelationFilter {
-  every: MessageAttachmentWhereInput
-  none: MessageAttachmentWhereInput
-  some: MessageAttachmentWhereInput
-}
-
-type MessageAttachmentMaxAggregate {
-  createdAt: DateTimeISO
-  filename: String
-  id: String
-  messageId: String
-  mimeType: String
-  path: String
-  size: Int
-}
-
-input MessageAttachmentMaxOrderByAggregateInput {
-  createdAt: SortOrder
-  filename: SortOrder
-  id: SortOrder
-  messageId: SortOrder
-  mimeType: SortOrder
-  path: SortOrder
-  size: SortOrder
-}
-
-type MessageAttachmentMinAggregate {
-  createdAt: DateTimeISO
-  filename: String
-  id: String
-  messageId: String
-  mimeType: String
-  path: String
-  size: Int
-}
-
-input MessageAttachmentMinOrderByAggregateInput {
-  createdAt: SortOrder
-  filename: SortOrder
-  id: SortOrder
-  messageId: SortOrder
-  mimeType: SortOrder
-  path: SortOrder
-  size: SortOrder
-}
-
-input MessageAttachmentOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
-input MessageAttachmentOrderByWithAggregationInput {
-  _avg: MessageAttachmentAvgOrderByAggregateInput
-  _count: MessageAttachmentCountOrderByAggregateInput
-  _max: MessageAttachmentMaxOrderByAggregateInput
-  _min: MessageAttachmentMinOrderByAggregateInput
-  _sum: MessageAttachmentSumOrderByAggregateInput
-  createdAt: SortOrder
-  filename: SortOrder
-  id: SortOrder
-  messageId: SortOrder
-  mimeType: SortOrder
-  path: SortOrder
-  size: SortOrder
-}
-
-input MessageAttachmentOrderByWithRelationInput {
-  createdAt: SortOrder
-  filename: SortOrder
-  id: SortOrder
-  message: MessageOrderByWithRelationInput
-  messageId: SortOrder
-  mimeType: SortOrder
-  path: SortOrder
-  size: SortOrder
-}
-
-enum MessageAttachmentScalarFieldEnum {
-  createdAt
-  filename
-  id
-  messageId
-  mimeType
-  path
-  size
-}
-
-input MessageAttachmentScalarWhereInput {
-  AND: [MessageAttachmentScalarWhereInput!]
-  NOT: [MessageAttachmentScalarWhereInput!]
-  OR: [MessageAttachmentScalarWhereInput!]
-  createdAt: DateTimeFilter
-  filename: StringFilter
-  id: UuidFilter
-  messageId: UuidFilter
-  mimeType: StringFilter
-  path: StringFilter
-  size: IntFilter
-}
-
-input MessageAttachmentScalarWhereWithAggregatesInput {
-  AND: [MessageAttachmentScalarWhereWithAggregatesInput!]
-  NOT: [MessageAttachmentScalarWhereWithAggregatesInput!]
-  OR: [MessageAttachmentScalarWhereWithAggregatesInput!]
-  createdAt: DateTimeWithAggregatesFilter
-  filename: StringWithAggregatesFilter
-  id: UuidWithAggregatesFilter
-  messageId: UuidWithAggregatesFilter
-  mimeType: StringWithAggregatesFilter
-  path: StringWithAggregatesFilter
-  size: IntWithAggregatesFilter
-}
-
-type MessageAttachmentSumAggregate {
-  size: Int
-}
-
-input MessageAttachmentSumOrderByAggregateInput {
-  size: SortOrder
-}
-
-input MessageAttachmentUpdateInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  filename: StringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  message: MessageUpdateOneRequiredWithoutAttachmentsNestedInput
-  mimeType: StringFieldUpdateOperationsInput
-  path: StringFieldUpdateOperationsInput
-  size: IntFieldUpdateOperationsInput
-}
-
-input MessageAttachmentUpdateManyMutationInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  filename: StringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  mimeType: StringFieldUpdateOperationsInput
-  path: StringFieldUpdateOperationsInput
-  size: IntFieldUpdateOperationsInput
-}
-
-input MessageAttachmentUpdateManyWithWhereWithoutMessageInput {
-  data: MessageAttachmentUpdateManyMutationInput!
-  where: MessageAttachmentScalarWhereInput!
-}
-
-input MessageAttachmentUpdateManyWithoutMessageNestedInput {
-  connect: [MessageAttachmentWhereUniqueInput!]
-  connectOrCreate: [MessageAttachmentCreateOrConnectWithoutMessageInput!]
-  create: [MessageAttachmentCreateWithoutMessageInput!]
-  createMany: MessageAttachmentCreateManyMessageInputEnvelope
-  delete: [MessageAttachmentWhereUniqueInput!]
-  deleteMany: [MessageAttachmentScalarWhereInput!]
-  disconnect: [MessageAttachmentWhereUniqueInput!]
-  set: [MessageAttachmentWhereUniqueInput!]
-  update: [MessageAttachmentUpdateWithWhereUniqueWithoutMessageInput!]
-  updateMany: [MessageAttachmentUpdateManyWithWhereWithoutMessageInput!]
-  upsert: [MessageAttachmentUpsertWithWhereUniqueWithoutMessageInput!]
-}
-
-input MessageAttachmentUpdateWithWhereUniqueWithoutMessageInput {
-  data: MessageAttachmentUpdateWithoutMessageInput!
-  where: MessageAttachmentWhereUniqueInput!
-}
-
-input MessageAttachmentUpdateWithoutMessageInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  filename: StringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  mimeType: StringFieldUpdateOperationsInput
-  path: StringFieldUpdateOperationsInput
-  size: IntFieldUpdateOperationsInput
-}
-
-input MessageAttachmentUpsertWithWhereUniqueWithoutMessageInput {
-  create: MessageAttachmentCreateWithoutMessageInput!
-  update: MessageAttachmentUpdateWithoutMessageInput!
-  where: MessageAttachmentWhereUniqueInput!
-}
-
-input MessageAttachmentWhereInput {
-  AND: [MessageAttachmentWhereInput!]
-  NOT: [MessageAttachmentWhereInput!]
-  OR: [MessageAttachmentWhereInput!]
-  createdAt: DateTimeFilter
-  filename: StringFilter
-  id: UuidFilter
-  message: MessageRelationFilter
-  messageId: UuidFilter
-  mimeType: StringFilter
-  path: StringFilter
-  size: IntFilter
-}
-
-input MessageAttachmentWhereUniqueInput {
-  AND: [MessageAttachmentWhereInput!]
-  NOT: [MessageAttachmentWhereInput!]
-  OR: [MessageAttachmentWhereInput!]
-  createdAt: DateTimeFilter
-  filename: StringFilter
-  id: String
-  message: MessageRelationFilter
-  messageId: UuidFilter
-  mimeType: StringFilter
-  path: StringFilter
-  size: IntFilter
-}
-
-type MessageCount {
-  attachments(where: MessageAttachmentWhereInput): Int!
-}
-
-type MessageCountAggregate {
-  _all: Int!
-  content: Int!
-  createdAt: Int!
-  id: Int!
-  isRead: Int!
-  patientId: Int!
-  receiverId: Int!
-  senderId: Int!
-  updatedAt: Int!
-}
-
-input MessageCountOrderByAggregateInput {
-  content: SortOrder
-  createdAt: SortOrder
-  id: SortOrder
-  isRead: SortOrder
-  patientId: SortOrder
-  receiverId: SortOrder
-  senderId: SortOrder
-  updatedAt: SortOrder
-}
-
-input MessageCreateInput {
-  attachments: MessageAttachmentCreateNestedManyWithoutMessageInput
-  content: String!
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  receiver: DoctorsCreateNestedOneWithoutReceivedMessagesInput!
-  sender: DoctorsCreateNestedOneWithoutSentMessagesInput!
-  updatedAt: DateTimeISO
-}
-
-input MessageCreateManyInput {
-  content: String!
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  receiverId: String!
-  senderId: String!
-  updatedAt: DateTimeISO
-}
-
-input MessageCreateManyReceiverInput {
-  content: String!
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  senderId: String!
-  updatedAt: DateTimeISO
-}
-
-input MessageCreateManyReceiverInputEnvelope {
-  data: [MessageCreateManyReceiverInput!]!
-  skipDuplicates: Boolean
-}
-
-input MessageCreateManySenderInput {
-  content: String!
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  receiverId: String!
-  updatedAt: DateTimeISO
-}
-
-input MessageCreateManySenderInputEnvelope {
-  data: [MessageCreateManySenderInput!]!
-  skipDuplicates: Boolean
-}
-
-input MessageCreateNestedManyWithoutReceiverInput {
-  connect: [MessageWhereUniqueInput!]
-  connectOrCreate: [MessageCreateOrConnectWithoutReceiverInput!]
-  create: [MessageCreateWithoutReceiverInput!]
-  createMany: MessageCreateManyReceiverInputEnvelope
-}
-
-input MessageCreateNestedManyWithoutSenderInput {
-  connect: [MessageWhereUniqueInput!]
-  connectOrCreate: [MessageCreateOrConnectWithoutSenderInput!]
-  create: [MessageCreateWithoutSenderInput!]
-  createMany: MessageCreateManySenderInputEnvelope
-}
-
-input MessageCreateNestedOneWithoutAttachmentsInput {
-  connect: MessageWhereUniqueInput
-  connectOrCreate: MessageCreateOrConnectWithoutAttachmentsInput
-  create: MessageCreateWithoutAttachmentsInput
-}
-
-input MessageCreateOrConnectWithoutAttachmentsInput {
-  create: MessageCreateWithoutAttachmentsInput!
-  where: MessageWhereUniqueInput!
-}
-
-input MessageCreateOrConnectWithoutReceiverInput {
-  create: MessageCreateWithoutReceiverInput!
-  where: MessageWhereUniqueInput!
-}
-
-input MessageCreateOrConnectWithoutSenderInput {
-  create: MessageCreateWithoutSenderInput!
-  where: MessageWhereUniqueInput!
-}
-
-input MessageCreateWithoutAttachmentsInput {
-  content: String!
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  receiver: DoctorsCreateNestedOneWithoutReceivedMessagesInput!
-  sender: DoctorsCreateNestedOneWithoutSentMessagesInput!
-  updatedAt: DateTimeISO
-}
-
-input MessageCreateWithoutReceiverInput {
-  attachments: MessageAttachmentCreateNestedManyWithoutMessageInput
-  content: String!
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  sender: DoctorsCreateNestedOneWithoutSentMessagesInput!
-  updatedAt: DateTimeISO
-}
-
-input MessageCreateWithoutSenderInput {
-  attachments: MessageAttachmentCreateNestedManyWithoutMessageInput
-  content: String!
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  receiver: DoctorsCreateNestedOneWithoutReceivedMessagesInput!
-  updatedAt: DateTimeISO
-}
-
-type MessageGroupBy {
-  _count: MessageCountAggregate
-  _max: MessageMaxAggregate
-  _min: MessageMinAggregate
-  content: String!
-  createdAt: DateTimeISO!
-  id: String!
-  isRead: Boolean!
-  patientId: String
-  receiverId: String!
-  senderId: String!
-  updatedAt: DateTimeISO!
-}
-
-input MessageListRelationFilter {
-  every: MessageWhereInput
-  none: MessageWhereInput
-  some: MessageWhereInput
-}
-
-type MessageMaxAggregate {
-  content: String
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  receiverId: String
-  senderId: String
-  updatedAt: DateTimeISO
-}
-
-input MessageMaxOrderByAggregateInput {
-  content: SortOrder
-  createdAt: SortOrder
-  id: SortOrder
-  isRead: SortOrder
-  patientId: SortOrder
-  receiverId: SortOrder
-  senderId: SortOrder
-  updatedAt: SortOrder
-}
-
-type MessageMinAggregate {
-  content: String
-  createdAt: DateTimeISO
-  id: String
-  isRead: Boolean
-  patientId: String
-  receiverId: String
-  senderId: String
-  updatedAt: DateTimeISO
-}
-
-input MessageMinOrderByAggregateInput {
-  content: SortOrder
-  createdAt: SortOrder
-  id: SortOrder
-  isRead: SortOrder
-  patientId: SortOrder
-  receiverId: SortOrder
-  senderId: SortOrder
-  updatedAt: SortOrder
-}
-
-input MessageOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
-input MessageOrderByWithAggregationInput {
-  _count: MessageCountOrderByAggregateInput
-  _max: MessageMaxOrderByAggregateInput
-  _min: MessageMinOrderByAggregateInput
-  content: SortOrder
-  createdAt: SortOrder
-  id: SortOrder
-  isRead: SortOrder
-  patientId: SortOrderInput
-  receiverId: SortOrder
-  senderId: SortOrder
-  updatedAt: SortOrder
-}
-
-input MessageOrderByWithRelationInput {
-  attachments: MessageAttachmentOrderByRelationAggregateInput
-  content: SortOrder
-  createdAt: SortOrder
-  id: SortOrder
-  isRead: SortOrder
-  patientId: SortOrderInput
-  receiver: DoctorsOrderByWithRelationInput
-  receiverId: SortOrder
-  sender: DoctorsOrderByWithRelationInput
-  senderId: SortOrder
-  updatedAt: SortOrder
-}
-
-input MessageRelationFilter {
-  is: MessageWhereInput
-  isNot: MessageWhereInput
-}
-
-enum MessageScalarFieldEnum {
-  content
-  createdAt
-  id
-  isRead
-  patientId
-  receiverId
-  senderId
-  updatedAt
-}
-
-input MessageScalarWhereInput {
-  AND: [MessageScalarWhereInput!]
-  NOT: [MessageScalarWhereInput!]
-  OR: [MessageScalarWhereInput!]
-  content: StringFilter
-  createdAt: DateTimeFilter
-  id: UuidFilter
-  isRead: BoolFilter
-  patientId: UuidNullableFilter
-  receiverId: UuidFilter
-  senderId: UuidFilter
-  updatedAt: DateTimeFilter
-}
-
-input MessageScalarWhereWithAggregatesInput {
-  AND: [MessageScalarWhereWithAggregatesInput!]
-  NOT: [MessageScalarWhereWithAggregatesInput!]
-  OR: [MessageScalarWhereWithAggregatesInput!]
-  content: StringWithAggregatesFilter
-  createdAt: DateTimeWithAggregatesFilter
-  id: UuidWithAggregatesFilter
-  isRead: BoolWithAggregatesFilter
-  patientId: UuidNullableWithAggregatesFilter
-  receiverId: UuidWithAggregatesFilter
-  senderId: UuidWithAggregatesFilter
-  updatedAt: DateTimeWithAggregatesFilter
-}
-
-input MessageUpdateInput {
-  attachments: MessageAttachmentUpdateManyWithoutMessageNestedInput
-  content: StringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  isRead: BoolFieldUpdateOperationsInput
-  patientId: NullableStringFieldUpdateOperationsInput
-  receiver: DoctorsUpdateOneRequiredWithoutReceivedMessagesNestedInput
-  sender: DoctorsUpdateOneRequiredWithoutSentMessagesNestedInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input MessageUpdateManyMutationInput {
-  content: StringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  isRead: BoolFieldUpdateOperationsInput
-  patientId: NullableStringFieldUpdateOperationsInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input MessageUpdateManyWithWhereWithoutReceiverInput {
-  data: MessageUpdateManyMutationInput!
-  where: MessageScalarWhereInput!
-}
-
-input MessageUpdateManyWithWhereWithoutSenderInput {
-  data: MessageUpdateManyMutationInput!
-  where: MessageScalarWhereInput!
-}
-
-input MessageUpdateManyWithoutReceiverNestedInput {
-  connect: [MessageWhereUniqueInput!]
-  connectOrCreate: [MessageCreateOrConnectWithoutReceiverInput!]
-  create: [MessageCreateWithoutReceiverInput!]
-  createMany: MessageCreateManyReceiverInputEnvelope
-  delete: [MessageWhereUniqueInput!]
-  deleteMany: [MessageScalarWhereInput!]
-  disconnect: [MessageWhereUniqueInput!]
-  set: [MessageWhereUniqueInput!]
-  update: [MessageUpdateWithWhereUniqueWithoutReceiverInput!]
-  updateMany: [MessageUpdateManyWithWhereWithoutReceiverInput!]
-  upsert: [MessageUpsertWithWhereUniqueWithoutReceiverInput!]
-}
-
-input MessageUpdateManyWithoutSenderNestedInput {
-  connect: [MessageWhereUniqueInput!]
-  connectOrCreate: [MessageCreateOrConnectWithoutSenderInput!]
-  create: [MessageCreateWithoutSenderInput!]
-  createMany: MessageCreateManySenderInputEnvelope
-  delete: [MessageWhereUniqueInput!]
-  deleteMany: [MessageScalarWhereInput!]
-  disconnect: [MessageWhereUniqueInput!]
-  set: [MessageWhereUniqueInput!]
-  update: [MessageUpdateWithWhereUniqueWithoutSenderInput!]
-  updateMany: [MessageUpdateManyWithWhereWithoutSenderInput!]
-  upsert: [MessageUpsertWithWhereUniqueWithoutSenderInput!]
-}
-
-input MessageUpdateOneRequiredWithoutAttachmentsNestedInput {
-  connect: MessageWhereUniqueInput
-  connectOrCreate: MessageCreateOrConnectWithoutAttachmentsInput
-  create: MessageCreateWithoutAttachmentsInput
-  update: MessageUpdateToOneWithWhereWithoutAttachmentsInput
-  upsert: MessageUpsertWithoutAttachmentsInput
-}
-
-input MessageUpdateToOneWithWhereWithoutAttachmentsInput {
-  data: MessageUpdateWithoutAttachmentsInput!
-  where: MessageWhereInput
-}
-
-input MessageUpdateWithWhereUniqueWithoutReceiverInput {
-  data: MessageUpdateWithoutReceiverInput!
-  where: MessageWhereUniqueInput!
-}
-
-input MessageUpdateWithWhereUniqueWithoutSenderInput {
-  data: MessageUpdateWithoutSenderInput!
-  where: MessageWhereUniqueInput!
-}
-
-input MessageUpdateWithoutAttachmentsInput {
-  content: StringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  isRead: BoolFieldUpdateOperationsInput
-  patientId: NullableStringFieldUpdateOperationsInput
-  receiver: DoctorsUpdateOneRequiredWithoutReceivedMessagesNestedInput
-  sender: DoctorsUpdateOneRequiredWithoutSentMessagesNestedInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input MessageUpdateWithoutReceiverInput {
-  attachments: MessageAttachmentUpdateManyWithoutMessageNestedInput
-  content: StringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  isRead: BoolFieldUpdateOperationsInput
-  patientId: NullableStringFieldUpdateOperationsInput
-  sender: DoctorsUpdateOneRequiredWithoutSentMessagesNestedInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input MessageUpdateWithoutSenderInput {
-  attachments: MessageAttachmentUpdateManyWithoutMessageNestedInput
-  content: StringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  isRead: BoolFieldUpdateOperationsInput
-  patientId: NullableStringFieldUpdateOperationsInput
-  receiver: DoctorsUpdateOneRequiredWithoutReceivedMessagesNestedInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-}
-
-input MessageUpsertWithWhereUniqueWithoutReceiverInput {
-  create: MessageCreateWithoutReceiverInput!
-  update: MessageUpdateWithoutReceiverInput!
-  where: MessageWhereUniqueInput!
-}
-
-input MessageUpsertWithWhereUniqueWithoutSenderInput {
-  create: MessageCreateWithoutSenderInput!
-  update: MessageUpdateWithoutSenderInput!
-  where: MessageWhereUniqueInput!
-}
-
-input MessageUpsertWithoutAttachmentsInput {
-  create: MessageCreateWithoutAttachmentsInput!
-  update: MessageUpdateWithoutAttachmentsInput!
-  where: MessageWhereInput
-}
-
-input MessageWhereInput {
-  AND: [MessageWhereInput!]
-  NOT: [MessageWhereInput!]
-  OR: [MessageWhereInput!]
-  attachments: MessageAttachmentListRelationFilter
-  content: StringFilter
-  createdAt: DateTimeFilter
-  id: UuidFilter
-  isRead: BoolFilter
-  patientId: UuidNullableFilter
-  receiver: DoctorsRelationFilter
-  receiverId: UuidFilter
-  sender: DoctorsRelationFilter
-  senderId: UuidFilter
-  updatedAt: DateTimeFilter
-}
-
-input MessageWhereUniqueInput {
-  AND: [MessageWhereInput!]
-  NOT: [MessageWhereInput!]
-  OR: [MessageWhereInput!]
-  attachments: MessageAttachmentListRelationFilter
-  content: StringFilter
-  createdAt: DateTimeFilter
-  id: String
-  isRead: BoolFilter
-  patientId: UuidNullableFilter
-  receiver: DoctorsRelationFilter
-  receiverId: UuidFilter
-  sender: DoctorsRelationFilter
-  senderId: UuidFilter
-  updatedAt: DateTimeFilter
-}
-
 type Mutation {
   createManyAnalysis_results(data: [Analysis_resultsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyAndReturnAnalysis_results(data: [Analysis_resultsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnAnalysis_results!]!
@@ -8543,15 +7496,12 @@ type Mutation {
   createManyAndReturnLab_results(data: [Lab_resultsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnLab_results!]!
   createManyAndReturnLaboratories(data: [LaboratoriesCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnLaboratories!]!
   createManyAndReturnMedications(data: [MedicationsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnMedications!]!
-  createManyAndReturnMessage(data: [MessageCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnMessage!]!
-  createManyAndReturnMessageAttachment(data: [MessageAttachmentCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnMessageAttachment!]!
   createManyAndReturnPatients(data: [PatientsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnPatients!]!
   createManyAndReturnPharmacies(data: [PharmaciesCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnPharmacies!]!
   createManyAndReturnPrescriptions(data: [PrescriptionsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnPrescriptions!]!
   createManyAndReturnRdv_requests(data: [Rdv_requestsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnRdv_requests!]!
   createManyAndReturnRdvs(data: [RdvsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnRdvs!]!
   createManyAndReturnUsers(data: [UsersCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnUsers!]!
-  createManyAndReturnVerification_tokens(data: [Verification_tokensCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnVerification_tokens!]!
   createManyAndReturnXray_results(data: [Xray_resultsCreateManyInput!]!, skipDuplicates: Boolean): [CreateManyAndReturnXray_results!]!
   createManyAuthorizations(data: [AuthorizationsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyCertificates(data: [CertificatesCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
@@ -8568,15 +7518,12 @@ type Mutation {
   createManyLab_results(data: [Lab_resultsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyLaboratories(data: [LaboratoriesCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyMedications(data: [MedicationsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
-  createManyMessage(data: [MessageCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
-  createManyMessageAttachment(data: [MessageAttachmentCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyPatients(data: [PatientsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyPharmacies(data: [PharmaciesCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyPrescriptions(data: [PrescriptionsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyRdv_requests(data: [Rdv_requestsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyRdvs(data: [RdvsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyUsers(data: [UsersCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
-  createManyVerification_tokens(data: [Verification_tokensCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createManyXray_results(data: [Xray_resultsCreateManyInput!]!, skipDuplicates: Boolean): AffectedRowsOutput!
   createOneAnalysis_results(data: Analysis_resultsCreateInput!): Analysis_results!
   createOneAuthorizations(data: AuthorizationsCreateInput!): Authorizations!
@@ -8594,15 +7541,12 @@ type Mutation {
   createOneLab_results(data: Lab_resultsCreateInput!): Lab_results!
   createOneLaboratories(data: LaboratoriesCreateInput!): Laboratories!
   createOneMedications(data: MedicationsCreateInput!): Medications!
-  createOneMessage(data: MessageCreateInput!): Message!
-  createOneMessageAttachment(data: MessageAttachmentCreateInput!): MessageAttachment!
   createOnePatients(data: PatientsCreateInput!): Patients!
   createOnePharmacies(data: PharmaciesCreateInput!): Pharmacies!
   createOnePrescriptions(data: PrescriptionsCreateInput!): Prescriptions!
   createOneRdv_requests(data: Rdv_requestsCreateInput!): Rdv_requests!
   createOneRdvs(data: RdvsCreateInput!): Rdvs!
   createOneUsers(data: UsersCreateInput!): Users!
-  createOneVerification_tokens(data: Verification_tokensCreateInput!): Verification_tokens!
   createOneXray_results(data: Xray_resultsCreateInput!): Xray_results!
   deleteManyAnalysis_results(where: Analysis_resultsWhereInput): AffectedRowsOutput!
   deleteManyAuthorizations(where: AuthorizationsWhereInput): AffectedRowsOutput!
@@ -8620,15 +7564,12 @@ type Mutation {
   deleteManyLab_results(where: Lab_resultsWhereInput): AffectedRowsOutput!
   deleteManyLaboratories(where: LaboratoriesWhereInput): AffectedRowsOutput!
   deleteManyMedications(where: MedicationsWhereInput): AffectedRowsOutput!
-  deleteManyMessage(where: MessageWhereInput): AffectedRowsOutput!
-  deleteManyMessageAttachment(where: MessageAttachmentWhereInput): AffectedRowsOutput!
   deleteManyPatients(where: PatientsWhereInput): AffectedRowsOutput!
   deleteManyPharmacies(where: PharmaciesWhereInput): AffectedRowsOutput!
   deleteManyPrescriptions(where: PrescriptionsWhereInput): AffectedRowsOutput!
   deleteManyRdv_requests(where: Rdv_requestsWhereInput): AffectedRowsOutput!
   deleteManyRdvs(where: RdvsWhereInput): AffectedRowsOutput!
   deleteManyUsers(where: UsersWhereInput): AffectedRowsOutput!
-  deleteManyVerification_tokens(where: Verification_tokensWhereInput): AffectedRowsOutput!
   deleteManyXray_results(where: Xray_resultsWhereInput): AffectedRowsOutput!
   deleteOneAnalysis_results(where: Analysis_resultsWhereUniqueInput!): Analysis_results
   deleteOneAuthorizations(where: AuthorizationsWhereUniqueInput!): Authorizations
@@ -8646,15 +7587,12 @@ type Mutation {
   deleteOneLab_results(where: Lab_resultsWhereUniqueInput!): Lab_results
   deleteOneLaboratories(where: LaboratoriesWhereUniqueInput!): Laboratories
   deleteOneMedications(where: MedicationsWhereUniqueInput!): Medications
-  deleteOneMessage(where: MessageWhereUniqueInput!): Message
-  deleteOneMessageAttachment(where: MessageAttachmentWhereUniqueInput!): MessageAttachment
   deleteOnePatients(where: PatientsWhereUniqueInput!): Patients
   deleteOnePharmacies(where: PharmaciesWhereUniqueInput!): Pharmacies
   deleteOnePrescriptions(where: PrescriptionsWhereUniqueInput!): Prescriptions
   deleteOneRdv_requests(where: Rdv_requestsWhereUniqueInput!): Rdv_requests
   deleteOneRdvs(where: RdvsWhereUniqueInput!): Rdvs
   deleteOneUsers(where: UsersWhereUniqueInput!): Users
-  deleteOneVerification_tokens(where: Verification_tokensWhereUniqueInput!): Verification_tokens
   deleteOneXray_results(where: Xray_resultsWhereUniqueInput!): Xray_results
   updateManyAnalysis_results(data: Analysis_resultsUpdateManyMutationInput!, where: Analysis_resultsWhereInput): AffectedRowsOutput!
   updateManyAuthorizations(data: AuthorizationsUpdateManyMutationInput!, where: AuthorizationsWhereInput): AffectedRowsOutput!
@@ -8672,15 +7610,12 @@ type Mutation {
   updateManyLab_results(data: Lab_resultsUpdateManyMutationInput!, where: Lab_resultsWhereInput): AffectedRowsOutput!
   updateManyLaboratories(data: LaboratoriesUpdateManyMutationInput!, where: LaboratoriesWhereInput): AffectedRowsOutput!
   updateManyMedications(data: MedicationsUpdateManyMutationInput!, where: MedicationsWhereInput): AffectedRowsOutput!
-  updateManyMessage(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): AffectedRowsOutput!
-  updateManyMessageAttachment(data: MessageAttachmentUpdateManyMutationInput!, where: MessageAttachmentWhereInput): AffectedRowsOutput!
   updateManyPatients(data: PatientsUpdateManyMutationInput!, where: PatientsWhereInput): AffectedRowsOutput!
   updateManyPharmacies(data: PharmaciesUpdateManyMutationInput!, where: PharmaciesWhereInput): AffectedRowsOutput!
   updateManyPrescriptions(data: PrescriptionsUpdateManyMutationInput!, where: PrescriptionsWhereInput): AffectedRowsOutput!
   updateManyRdv_requests(data: Rdv_requestsUpdateManyMutationInput!, where: Rdv_requestsWhereInput): AffectedRowsOutput!
   updateManyRdvs(data: RdvsUpdateManyMutationInput!, where: RdvsWhereInput): AffectedRowsOutput!
   updateManyUsers(data: UsersUpdateManyMutationInput!, where: UsersWhereInput): AffectedRowsOutput!
-  updateManyVerification_tokens(data: Verification_tokensUpdateManyMutationInput!, where: Verification_tokensWhereInput): AffectedRowsOutput!
   updateManyXray_results(data: Xray_resultsUpdateManyMutationInput!, where: Xray_resultsWhereInput): AffectedRowsOutput!
   updateOneAnalysis_results(data: Analysis_resultsUpdateInput!, where: Analysis_resultsWhereUniqueInput!): Analysis_results
   updateOneAuthorizations(data: AuthorizationsUpdateInput!, where: AuthorizationsWhereUniqueInput!): Authorizations
@@ -8698,15 +7633,12 @@ type Mutation {
   updateOneLab_results(data: Lab_resultsUpdateInput!, where: Lab_resultsWhereUniqueInput!): Lab_results
   updateOneLaboratories(data: LaboratoriesUpdateInput!, where: LaboratoriesWhereUniqueInput!): Laboratories
   updateOneMedications(data: MedicationsUpdateInput!, where: MedicationsWhereUniqueInput!): Medications
-  updateOneMessage(data: MessageUpdateInput!, where: MessageWhereUniqueInput!): Message
-  updateOneMessageAttachment(data: MessageAttachmentUpdateInput!, where: MessageAttachmentWhereUniqueInput!): MessageAttachment
   updateOnePatients(data: PatientsUpdateInput!, where: PatientsWhereUniqueInput!): Patients
   updateOnePharmacies(data: PharmaciesUpdateInput!, where: PharmaciesWhereUniqueInput!): Pharmacies
   updateOnePrescriptions(data: PrescriptionsUpdateInput!, where: PrescriptionsWhereUniqueInput!): Prescriptions
   updateOneRdv_requests(data: Rdv_requestsUpdateInput!, where: Rdv_requestsWhereUniqueInput!): Rdv_requests
   updateOneRdvs(data: RdvsUpdateInput!, where: RdvsWhereUniqueInput!): Rdvs
   updateOneUsers(data: UsersUpdateInput!, where: UsersWhereUniqueInput!): Users
-  updateOneVerification_tokens(data: Verification_tokensUpdateInput!, where: Verification_tokensWhereUniqueInput!): Verification_tokens
   updateOneXray_results(data: Xray_resultsUpdateInput!, where: Xray_resultsWhereUniqueInput!): Xray_results
   upsertOneAnalysis_results(create: Analysis_resultsCreateInput!, update: Analysis_resultsUpdateInput!, where: Analysis_resultsWhereUniqueInput!): Analysis_results!
   upsertOneAuthorizations(create: AuthorizationsCreateInput!, update: AuthorizationsUpdateInput!, where: AuthorizationsWhereUniqueInput!): Authorizations!
@@ -8724,15 +7656,12 @@ type Mutation {
   upsertOneLab_results(create: Lab_resultsCreateInput!, update: Lab_resultsUpdateInput!, where: Lab_resultsWhereUniqueInput!): Lab_results!
   upsertOneLaboratories(create: LaboratoriesCreateInput!, update: LaboratoriesUpdateInput!, where: LaboratoriesWhereUniqueInput!): Laboratories!
   upsertOneMedications(create: MedicationsCreateInput!, update: MedicationsUpdateInput!, where: MedicationsWhereUniqueInput!): Medications!
-  upsertOneMessage(create: MessageCreateInput!, update: MessageUpdateInput!, where: MessageWhereUniqueInput!): Message!
-  upsertOneMessageAttachment(create: MessageAttachmentCreateInput!, update: MessageAttachmentUpdateInput!, where: MessageAttachmentWhereUniqueInput!): MessageAttachment!
   upsertOnePatients(create: PatientsCreateInput!, update: PatientsUpdateInput!, where: PatientsWhereUniqueInput!): Patients!
   upsertOnePharmacies(create: PharmaciesCreateInput!, update: PharmaciesUpdateInput!, where: PharmaciesWhereUniqueInput!): Pharmacies!
   upsertOnePrescriptions(create: PrescriptionsCreateInput!, update: PrescriptionsUpdateInput!, where: PrescriptionsWhereUniqueInput!): Prescriptions!
   upsertOneRdv_requests(create: Rdv_requestsCreateInput!, update: Rdv_requestsUpdateInput!, where: Rdv_requestsWhereUniqueInput!): Rdv_requests!
   upsertOneRdvs(create: RdvsCreateInput!, update: RdvsUpdateInput!, where: RdvsWhereUniqueInput!): Rdvs!
   upsertOneUsers(create: UsersCreateInput!, update: UsersUpdateInput!, where: UsersWhereUniqueInput!): Users!
-  upsertOneVerification_tokens(create: Verification_tokensCreateInput!, update: Verification_tokensUpdateInput!, where: Verification_tokensWhereUniqueInput!): Verification_tokens!
   upsertOneXray_results(create: Xray_resultsCreateInput!, update: Xray_resultsUpdateInput!, where: Xray_resultsWhereUniqueInput!): Xray_results!
 }
 
@@ -11124,15 +10053,12 @@ type Query {
   aggregateLab_results(cursor: Lab_resultsWhereUniqueInput, orderBy: [Lab_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Lab_resultsWhereInput): AggregateLab_results!
   aggregateLaboratories(cursor: LaboratoriesWhereUniqueInput, orderBy: [LaboratoriesOrderByWithRelationInput!], skip: Int, take: Int, where: LaboratoriesWhereInput): AggregateLaboratories!
   aggregateMedications(cursor: MedicationsWhereUniqueInput, orderBy: [MedicationsOrderByWithRelationInput!], skip: Int, take: Int, where: MedicationsWhereInput): AggregateMedications!
-  aggregateMessage(cursor: MessageWhereUniqueInput, orderBy: [MessageOrderByWithRelationInput!], skip: Int, take: Int, where: MessageWhereInput): AggregateMessage!
-  aggregateMessageAttachment(cursor: MessageAttachmentWhereUniqueInput, orderBy: [MessageAttachmentOrderByWithRelationInput!], skip: Int, take: Int, where: MessageAttachmentWhereInput): AggregateMessageAttachment!
   aggregatePatients(cursor: PatientsWhereUniqueInput, orderBy: [PatientsOrderByWithRelationInput!], skip: Int, take: Int, where: PatientsWhereInput): AggregatePatients!
   aggregatePharmacies(cursor: PharmaciesWhereUniqueInput, orderBy: [PharmaciesOrderByWithRelationInput!], skip: Int, take: Int, where: PharmaciesWhereInput): AggregatePharmacies!
   aggregatePrescriptions(cursor: PrescriptionsWhereUniqueInput, orderBy: [PrescriptionsOrderByWithRelationInput!], skip: Int, take: Int, where: PrescriptionsWhereInput): AggregatePrescriptions!
   aggregateRdv_requests(cursor: Rdv_requestsWhereUniqueInput, orderBy: [Rdv_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Rdv_requestsWhereInput): AggregateRdv_requests!
   aggregateRdvs(cursor: RdvsWhereUniqueInput, orderBy: [RdvsOrderByWithRelationInput!], skip: Int, take: Int, where: RdvsWhereInput): AggregateRdvs!
   aggregateUsers(cursor: UsersWhereUniqueInput, orderBy: [UsersOrderByWithRelationInput!], skip: Int, take: Int, where: UsersWhereInput): AggregateUsers!
-  aggregateVerification_tokens(cursor: Verification_tokensWhereUniqueInput, orderBy: [Verification_tokensOrderByWithRelationInput!], skip: Int, take: Int, where: Verification_tokensWhereInput): AggregateVerification_tokens!
   aggregateXray_results(cursor: Xray_resultsWhereUniqueInput, orderBy: [Xray_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Xray_resultsWhereInput): AggregateXray_results!
   findFirstAnalysis_results(cursor: Analysis_resultsWhereUniqueInput, distinct: [Analysis_resultsScalarFieldEnum!], orderBy: [Analysis_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Analysis_resultsWhereInput): Analysis_results
   findFirstAnalysis_resultsOrThrow(cursor: Analysis_resultsWhereUniqueInput, distinct: [Analysis_resultsScalarFieldEnum!], orderBy: [Analysis_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Analysis_resultsWhereInput): Analysis_results
@@ -11166,10 +10092,6 @@ type Query {
   findFirstLaboratoriesOrThrow(cursor: LaboratoriesWhereUniqueInput, distinct: [LaboratoriesScalarFieldEnum!], orderBy: [LaboratoriesOrderByWithRelationInput!], skip: Int, take: Int, where: LaboratoriesWhereInput): Laboratories
   findFirstMedications(cursor: MedicationsWhereUniqueInput, distinct: [MedicationsScalarFieldEnum!], orderBy: [MedicationsOrderByWithRelationInput!], skip: Int, take: Int, where: MedicationsWhereInput): Medications
   findFirstMedicationsOrThrow(cursor: MedicationsWhereUniqueInput, distinct: [MedicationsScalarFieldEnum!], orderBy: [MedicationsOrderByWithRelationInput!], skip: Int, take: Int, where: MedicationsWhereInput): Medications
-  findFirstMessage(cursor: MessageWhereUniqueInput, distinct: [MessageScalarFieldEnum!], orderBy: [MessageOrderByWithRelationInput!], skip: Int, take: Int, where: MessageWhereInput): Message
-  findFirstMessageAttachment(cursor: MessageAttachmentWhereUniqueInput, distinct: [MessageAttachmentScalarFieldEnum!], orderBy: [MessageAttachmentOrderByWithRelationInput!], skip: Int, take: Int, where: MessageAttachmentWhereInput): MessageAttachment
-  findFirstMessageAttachmentOrThrow(cursor: MessageAttachmentWhereUniqueInput, distinct: [MessageAttachmentScalarFieldEnum!], orderBy: [MessageAttachmentOrderByWithRelationInput!], skip: Int, take: Int, where: MessageAttachmentWhereInput): MessageAttachment
-  findFirstMessageOrThrow(cursor: MessageWhereUniqueInput, distinct: [MessageScalarFieldEnum!], orderBy: [MessageOrderByWithRelationInput!], skip: Int, take: Int, where: MessageWhereInput): Message
   findFirstPatients(cursor: PatientsWhereUniqueInput, distinct: [PatientsScalarFieldEnum!], orderBy: [PatientsOrderByWithRelationInput!], skip: Int, take: Int, where: PatientsWhereInput): Patients
   findFirstPatientsOrThrow(cursor: PatientsWhereUniqueInput, distinct: [PatientsScalarFieldEnum!], orderBy: [PatientsOrderByWithRelationInput!], skip: Int, take: Int, where: PatientsWhereInput): Patients
   findFirstPharmacies(cursor: PharmaciesWhereUniqueInput, distinct: [PharmaciesScalarFieldEnum!], orderBy: [PharmaciesOrderByWithRelationInput!], skip: Int, take: Int, where: PharmaciesWhereInput): Pharmacies
@@ -11182,8 +10104,6 @@ type Query {
   findFirstRdvsOrThrow(cursor: RdvsWhereUniqueInput, distinct: [RdvsScalarFieldEnum!], orderBy: [RdvsOrderByWithRelationInput!], skip: Int, take: Int, where: RdvsWhereInput): Rdvs
   findFirstUsers(cursor: UsersWhereUniqueInput, distinct: [UsersScalarFieldEnum!], orderBy: [UsersOrderByWithRelationInput!], skip: Int, take: Int, where: UsersWhereInput): Users
   findFirstUsersOrThrow(cursor: UsersWhereUniqueInput, distinct: [UsersScalarFieldEnum!], orderBy: [UsersOrderByWithRelationInput!], skip: Int, take: Int, where: UsersWhereInput): Users
-  findFirstVerification_tokens(cursor: Verification_tokensWhereUniqueInput, distinct: [Verification_tokensScalarFieldEnum!], orderBy: [Verification_tokensOrderByWithRelationInput!], skip: Int, take: Int, where: Verification_tokensWhereInput): Verification_tokens
-  findFirstVerification_tokensOrThrow(cursor: Verification_tokensWhereUniqueInput, distinct: [Verification_tokensScalarFieldEnum!], orderBy: [Verification_tokensOrderByWithRelationInput!], skip: Int, take: Int, where: Verification_tokensWhereInput): Verification_tokens
   findFirstXray_results(cursor: Xray_resultsWhereUniqueInput, distinct: [Xray_resultsScalarFieldEnum!], orderBy: [Xray_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Xray_resultsWhereInput): Xray_results
   findFirstXray_resultsOrThrow(cursor: Xray_resultsWhereUniqueInput, distinct: [Xray_resultsScalarFieldEnum!], orderBy: [Xray_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Xray_resultsWhereInput): Xray_results
   findManyAnalysis_results(cursor: Analysis_resultsWhereUniqueInput, distinct: [Analysis_resultsScalarFieldEnum!], orderBy: [Analysis_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Analysis_resultsWhereInput): [Analysis_results!]!
@@ -11206,7 +10126,6 @@ type Query {
   findManyRdv_requests(cursor: Rdv_requestsWhereUniqueInput, distinct: [Rdv_requestsScalarFieldEnum!], orderBy: [Rdv_requestsOrderByWithRelationInput!], skip: Int, take: Int, where: Rdv_requestsWhereInput): [Rdv_requests!]!
   findManyRdvs(cursor: RdvsWhereUniqueInput, distinct: [RdvsScalarFieldEnum!], orderBy: [RdvsOrderByWithRelationInput!], skip: Int, take: Int, where: RdvsWhereInput): [Rdvs!]!
   findManyUsers(cursor: UsersWhereUniqueInput, distinct: [UsersScalarFieldEnum!], orderBy: [UsersOrderByWithRelationInput!], skip: Int, take: Int, where: UsersWhereInput): [Users!]!
-  findManyVerification_tokens(cursor: Verification_tokensWhereUniqueInput, distinct: [Verification_tokensScalarFieldEnum!], orderBy: [Verification_tokensOrderByWithRelationInput!], skip: Int, take: Int, where: Verification_tokensWhereInput): [Verification_tokens!]!
   findManyXray_results(cursor: Xray_resultsWhereUniqueInput, distinct: [Xray_resultsScalarFieldEnum!], orderBy: [Xray_resultsOrderByWithRelationInput!], skip: Int, take: Int, where: Xray_resultsWhereInput): [Xray_results!]!
   findUniqueAnalysis_results(where: Analysis_resultsWhereUniqueInput!): Analysis_results
   findUniqueAnalysis_resultsOrThrow(where: Analysis_resultsWhereUniqueInput!): Analysis_results
@@ -11248,14 +10167,10 @@ type Query {
   findUniqueRdvsOrThrow(where: RdvsWhereUniqueInput!): Rdvs
   findUniqueUsers(where: UsersWhereUniqueInput!): Users
   findUniqueUsersOrThrow(where: UsersWhereUniqueInput!): Users
-  findUniqueVerification_tokens(where: Verification_tokensWhereUniqueInput!): Verification_tokens
-  findUniqueVerification_tokensOrThrow(where: Verification_tokensWhereUniqueInput!): Verification_tokens
   findUniqueXray_results(where: Xray_resultsWhereUniqueInput!): Xray_results
   findUniqueXray_resultsOrThrow(where: Xray_resultsWhereUniqueInput!): Xray_results
   getHopitaux(where: HopitauxWhereUniqueInput!): Hopitaux
   getInstituts_medicaux(where: Instituts_medicauxWhereUniqueInput!): Instituts_medicaux
-  getMessage(where: MessageWhereUniqueInput!): Message
-  getMessageAttachment(where: MessageAttachmentWhereUniqueInput!): MessageAttachment
   groupByAnalysis_results(by: [Analysis_resultsScalarFieldEnum!]!, having: Analysis_resultsScalarWhereWithAggregatesInput, orderBy: [Analysis_resultsOrderByWithAggregationInput!], skip: Int, take: Int, where: Analysis_resultsWhereInput): [Analysis_resultsGroupBy!]!
   groupByAuthorizations(by: [AuthorizationsScalarFieldEnum!]!, having: AuthorizationsScalarWhereWithAggregatesInput, orderBy: [AuthorizationsOrderByWithAggregationInput!], skip: Int, take: Int, where: AuthorizationsWhereInput): [AuthorizationsGroupBy!]!
   groupByCertificates(by: [CertificatesScalarFieldEnum!]!, having: CertificatesScalarWhereWithAggregatesInput, orderBy: [CertificatesOrderByWithAggregationInput!], skip: Int, take: Int, where: CertificatesWhereInput): [CertificatesGroupBy!]!
@@ -11272,24 +10187,17 @@ type Query {
   groupByLab_results(by: [Lab_resultsScalarFieldEnum!]!, having: Lab_resultsScalarWhereWithAggregatesInput, orderBy: [Lab_resultsOrderByWithAggregationInput!], skip: Int, take: Int, where: Lab_resultsWhereInput): [Lab_resultsGroupBy!]!
   groupByLaboratories(by: [LaboratoriesScalarFieldEnum!]!, having: LaboratoriesScalarWhereWithAggregatesInput, orderBy: [LaboratoriesOrderByWithAggregationInput!], skip: Int, take: Int, where: LaboratoriesWhereInput): [LaboratoriesGroupBy!]!
   groupByMedications(by: [MedicationsScalarFieldEnum!]!, having: MedicationsScalarWhereWithAggregatesInput, orderBy: [MedicationsOrderByWithAggregationInput!], skip: Int, take: Int, where: MedicationsWhereInput): [MedicationsGroupBy!]!
-  groupByMessage(by: [MessageScalarFieldEnum!]!, having: MessageScalarWhereWithAggregatesInput, orderBy: [MessageOrderByWithAggregationInput!], skip: Int, take: Int, where: MessageWhereInput): [MessageGroupBy!]!
-  groupByMessageAttachment(by: [MessageAttachmentScalarFieldEnum!]!, having: MessageAttachmentScalarWhereWithAggregatesInput, orderBy: [MessageAttachmentOrderByWithAggregationInput!], skip: Int, take: Int, where: MessageAttachmentWhereInput): [MessageAttachmentGroupBy!]!
   groupByPatients(by: [PatientsScalarFieldEnum!]!, having: PatientsScalarWhereWithAggregatesInput, orderBy: [PatientsOrderByWithAggregationInput!], skip: Int, take: Int, where: PatientsWhereInput): [PatientsGroupBy!]!
   groupByPharmacies(by: [PharmaciesScalarFieldEnum!]!, having: PharmaciesScalarWhereWithAggregatesInput, orderBy: [PharmaciesOrderByWithAggregationInput!], skip: Int, take: Int, where: PharmaciesWhereInput): [PharmaciesGroupBy!]!
   groupByPrescriptions(by: [PrescriptionsScalarFieldEnum!]!, having: PrescriptionsScalarWhereWithAggregatesInput, orderBy: [PrescriptionsOrderByWithAggregationInput!], skip: Int, take: Int, where: PrescriptionsWhereInput): [PrescriptionsGroupBy!]!
   groupByRdv_requests(by: [Rdv_requestsScalarFieldEnum!]!, having: Rdv_requestsScalarWhereWithAggregatesInput, orderBy: [Rdv_requestsOrderByWithAggregationInput!], skip: Int, take: Int, where: Rdv_requestsWhereInput): [Rdv_requestsGroupBy!]!
   groupByRdvs(by: [RdvsScalarFieldEnum!]!, having: RdvsScalarWhereWithAggregatesInput, orderBy: [RdvsOrderByWithAggregationInput!], skip: Int, take: Int, where: RdvsWhereInput): [RdvsGroupBy!]!
   groupByUsers(by: [UsersScalarFieldEnum!]!, having: UsersScalarWhereWithAggregatesInput, orderBy: [UsersOrderByWithAggregationInput!], skip: Int, take: Int, where: UsersWhereInput): [UsersGroupBy!]!
-  groupByVerification_tokens(by: [Verification_tokensScalarFieldEnum!]!, having: Verification_tokensScalarWhereWithAggregatesInput, orderBy: [Verification_tokensOrderByWithAggregationInput!], skip: Int, take: Int, where: Verification_tokensWhereInput): [Verification_tokensGroupBy!]!
   groupByXray_results(by: [Xray_resultsScalarFieldEnum!]!, having: Xray_resultsScalarWhereWithAggregatesInput, orderBy: [Xray_resultsOrderByWithAggregationInput!], skip: Int, take: Int, where: Xray_resultsWhereInput): [Xray_resultsGroupBy!]!
   hopitaux(where: HopitauxWhereUniqueInput!): Hopitaux
   hopitauxes(cursor: HopitauxWhereUniqueInput, distinct: [HopitauxScalarFieldEnum!], orderBy: [HopitauxOrderByWithRelationInput!], skip: Int, take: Int, where: HopitauxWhereInput): [Hopitaux!]!
   instituts_medicaux(where: Instituts_medicauxWhereUniqueInput!): Instituts_medicaux
   instituts_medicauxes(cursor: Instituts_medicauxWhereUniqueInput, distinct: [Instituts_medicauxScalarFieldEnum!], orderBy: [Instituts_medicauxOrderByWithRelationInput!], skip: Int, take: Int, where: Instituts_medicauxWhereInput): [Instituts_medicaux!]!
-  message(where: MessageWhereUniqueInput!): Message
-  messageAttachment(where: MessageAttachmentWhereUniqueInput!): MessageAttachment
-  messageAttachments(cursor: MessageAttachmentWhereUniqueInput, distinct: [MessageAttachmentScalarFieldEnum!], orderBy: [MessageAttachmentOrderByWithRelationInput!], skip: Int, take: Int, where: MessageAttachmentWhereInput): [MessageAttachment!]!
-  messages(cursor: MessageWhereUniqueInput, distinct: [MessageScalarFieldEnum!], orderBy: [MessageOrderByWithRelationInput!], skip: Int, take: Int, where: MessageWhereInput): [Message!]!
 }
 
 enum QueryMode {
@@ -12471,14 +11379,11 @@ type Users {
   is_verified: Boolean!
   last_login: DateTimeISO
   last_name: String!
-  password: String!
   patients(cursor: PatientsWhereUniqueInput, distinct: [PatientsScalarFieldEnum!], orderBy: [PatientsOrderByWithRelationInput!], skip: Int, take: Int, where: PatientsWhereInput): [Patients!]!
   phone: String
   profile_picture: String
   role: users_role_enum!
-  salt: String!
   updated_at: DateTimeISO!
-  validation_token(where: Verification_tokensWhereInput): Verification_tokens
 }
 
 type UsersCount {
@@ -12497,11 +11402,9 @@ type UsersCountAggregate {
   is_verified: Int!
   last_login: Int!
   last_name: Int!
-  password: Int!
   phone: Int!
   profile_picture: Int!
   role: Int!
-  salt: Int!
   updated_at: Int!
 }
 
@@ -12515,11 +11418,9 @@ input UsersCountOrderByAggregateInput {
   is_verified: SortOrder
   last_login: SortOrder
   last_name: SortOrder
-  password: SortOrder
   phone: SortOrder
   profile_picture: SortOrder
   role: SortOrder
-  salt: SortOrder
   updated_at: SortOrder
 }
 
@@ -12534,14 +11435,11 @@ input UsersCreateInput {
   is_verified: Boolean!
   last_login: DateTimeISO
   last_name: String!
-  password: String!
   patients: PatientsCreateNestedManyWithoutUsersInput
   phone: String
   profile_picture: String
   role: users_role_enum!
-  salt: String!
   updated_at: DateTimeISO
-  validation_token: Verification_tokensCreateNestedOneWithoutUserInput
 }
 
 input UsersCreateManyInput {
@@ -12554,11 +11452,9 @@ input UsersCreateManyInput {
   is_verified: Boolean!
   last_login: DateTimeISO
   last_name: String!
-  password: String!
   phone: String
   profile_picture: String
   role: users_role_enum!
-  salt: String!
   updated_at: DateTimeISO
 }
 
@@ -12574,12 +11470,6 @@ input UsersCreateNestedOneWithoutPatientsInput {
   create: UsersCreateWithoutPatientsInput
 }
 
-input UsersCreateNestedOneWithoutValidation_tokenInput {
-  connect: UsersWhereUniqueInput
-  connectOrCreate: UsersCreateOrConnectWithoutValidation_tokenInput
-  create: UsersCreateWithoutValidation_tokenInput
-}
-
 input UsersCreateOrConnectWithoutDoctorsInput {
   create: UsersCreateWithoutDoctorsInput!
   where: UsersWhereUniqueInput!
@@ -12587,11 +11477,6 @@ input UsersCreateOrConnectWithoutDoctorsInput {
 
 input UsersCreateOrConnectWithoutPatientsInput {
   create: UsersCreateWithoutPatientsInput!
-  where: UsersWhereUniqueInput!
-}
-
-input UsersCreateOrConnectWithoutValidation_tokenInput {
-  create: UsersCreateWithoutValidation_tokenInput!
   where: UsersWhereUniqueInput!
 }
 
@@ -12605,14 +11490,11 @@ input UsersCreateWithoutDoctorsInput {
   is_verified: Boolean!
   last_login: DateTimeISO
   last_name: String!
-  password: String!
   patients: PatientsCreateNestedManyWithoutUsersInput
   phone: String
   profile_picture: String
   role: users_role_enum!
-  salt: String!
   updated_at: DateTimeISO
-  validation_token: Verification_tokensCreateNestedOneWithoutUserInput
 }
 
 input UsersCreateWithoutPatientsInput {
@@ -12626,32 +11508,9 @@ input UsersCreateWithoutPatientsInput {
   is_verified: Boolean!
   last_login: DateTimeISO
   last_name: String!
-  password: String!
   phone: String
   profile_picture: String
   role: users_role_enum!
-  salt: String!
-  updated_at: DateTimeISO
-  validation_token: Verification_tokensCreateNestedOneWithoutUserInput
-}
-
-input UsersCreateWithoutValidation_tokenInput {
-  address: String
-  associated_id: String
-  created_at: DateTimeISO
-  doctors: DoctorsCreateNestedManyWithoutUsersInput
-  email: String!
-  first_name: String!
-  id: String
-  is_verified: Boolean!
-  last_login: DateTimeISO
-  last_name: String!
-  password: String!
-  patients: PatientsCreateNestedManyWithoutUsersInput
-  phone: String
-  profile_picture: String
-  role: users_role_enum!
-  salt: String!
   updated_at: DateTimeISO
 }
 
@@ -12668,11 +11527,9 @@ type UsersGroupBy {
   is_verified: Boolean!
   last_login: DateTimeISO
   last_name: String!
-  password: String!
   phone: String
   profile_picture: String
   role: users_role_enum!
-  salt: String!
   updated_at: DateTimeISO!
 }
 
@@ -12686,11 +11543,9 @@ type UsersMaxAggregate {
   is_verified: Boolean
   last_login: DateTimeISO
   last_name: String
-  password: String
   phone: String
   profile_picture: String
   role: users_role_enum
-  salt: String
   updated_at: DateTimeISO
 }
 
@@ -12704,11 +11559,9 @@ input UsersMaxOrderByAggregateInput {
   is_verified: SortOrder
   last_login: SortOrder
   last_name: SortOrder
-  password: SortOrder
   phone: SortOrder
   profile_picture: SortOrder
   role: SortOrder
-  salt: SortOrder
   updated_at: SortOrder
 }
 
@@ -12722,11 +11575,9 @@ type UsersMinAggregate {
   is_verified: Boolean
   last_login: DateTimeISO
   last_name: String
-  password: String
   phone: String
   profile_picture: String
   role: users_role_enum
-  salt: String
   updated_at: DateTimeISO
 }
 
@@ -12740,11 +11591,9 @@ input UsersMinOrderByAggregateInput {
   is_verified: SortOrder
   last_login: SortOrder
   last_name: SortOrder
-  password: SortOrder
   phone: SortOrder
   profile_picture: SortOrder
   role: SortOrder
-  salt: SortOrder
   updated_at: SortOrder
 }
 
@@ -12766,11 +11615,9 @@ input UsersOrderByWithAggregationInput {
   is_verified: SortOrder
   last_login: SortOrderInput
   last_name: SortOrder
-  password: SortOrder
   phone: SortOrderInput
   profile_picture: SortOrderInput
   role: SortOrder
-  salt: SortOrder
   updated_at: SortOrder
 }
 
@@ -12785,14 +11632,11 @@ input UsersOrderByWithRelationInput {
   is_verified: SortOrder
   last_login: SortOrderInput
   last_name: SortOrder
-  password: SortOrder
   patients: PatientsOrderByRelationAggregateInput
   phone: SortOrderInput
   profile_picture: SortOrderInput
   role: SortOrder
-  salt: SortOrder
   updated_at: SortOrder
-  validation_token: Verification_tokensOrderByWithRelationInput
 }
 
 input UsersRelationFilter {
@@ -12810,11 +11654,9 @@ enum UsersScalarFieldEnum {
   is_verified
   last_login
   last_name
-  password
   phone
   profile_picture
   role
-  salt
   updated_at
 }
 
@@ -12831,11 +11673,9 @@ input UsersScalarWhereWithAggregatesInput {
   is_verified: BoolWithAggregatesFilter
   last_login: DateTimeNullableWithAggregatesFilter
   last_name: StringWithAggregatesFilter
-  password: StringWithAggregatesFilter
   phone: StringNullableWithAggregatesFilter
   profile_picture: StringNullableWithAggregatesFilter
   role: Enumusers_role_enumWithAggregatesFilter
-  salt: StringWithAggregatesFilter
   updated_at: DateTimeWithAggregatesFilter
 }
 
@@ -12850,14 +11690,11 @@ input UsersUpdateInput {
   is_verified: BoolFieldUpdateOperationsInput
   last_login: NullableDateTimeFieldUpdateOperationsInput
   last_name: StringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
   patients: PatientsUpdateManyWithoutUsersNestedInput
   phone: NullableStringFieldUpdateOperationsInput
   profile_picture: NullableStringFieldUpdateOperationsInput
   role: Enumusers_role_enumFieldUpdateOperationsInput
-  salt: StringFieldUpdateOperationsInput
   updated_at: DateTimeFieldUpdateOperationsInput
-  validation_token: Verification_tokensUpdateOneWithoutUserNestedInput
 }
 
 input UsersUpdateManyMutationInput {
@@ -12870,11 +11707,9 @@ input UsersUpdateManyMutationInput {
   is_verified: BoolFieldUpdateOperationsInput
   last_login: NullableDateTimeFieldUpdateOperationsInput
   last_name: StringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
   phone: NullableStringFieldUpdateOperationsInput
   profile_picture: NullableStringFieldUpdateOperationsInput
   role: Enumusers_role_enumFieldUpdateOperationsInput
-  salt: StringFieldUpdateOperationsInput
   updated_at: DateTimeFieldUpdateOperationsInput
 }
 
@@ -12884,14 +11719,6 @@ input UsersUpdateOneRequiredWithoutDoctorsNestedInput {
   create: UsersCreateWithoutDoctorsInput
   update: UsersUpdateToOneWithWhereWithoutDoctorsInput
   upsert: UsersUpsertWithoutDoctorsInput
-}
-
-input UsersUpdateOneRequiredWithoutValidation_tokenNestedInput {
-  connect: UsersWhereUniqueInput
-  connectOrCreate: UsersCreateOrConnectWithoutValidation_tokenInput
-  create: UsersCreateWithoutValidation_tokenInput
-  update: UsersUpdateToOneWithWhereWithoutValidation_tokenInput
-  upsert: UsersUpsertWithoutValidation_tokenInput
 }
 
 input UsersUpdateOneWithoutPatientsNestedInput {
@@ -12914,11 +11741,6 @@ input UsersUpdateToOneWithWhereWithoutPatientsInput {
   where: UsersWhereInput
 }
 
-input UsersUpdateToOneWithWhereWithoutValidation_tokenInput {
-  data: UsersUpdateWithoutValidation_tokenInput!
-  where: UsersWhereInput
-}
-
 input UsersUpdateWithoutDoctorsInput {
   address: NullableStringFieldUpdateOperationsInput
   associated_id: NullableStringFieldUpdateOperationsInput
@@ -12929,14 +11751,11 @@ input UsersUpdateWithoutDoctorsInput {
   is_verified: BoolFieldUpdateOperationsInput
   last_login: NullableDateTimeFieldUpdateOperationsInput
   last_name: StringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
   patients: PatientsUpdateManyWithoutUsersNestedInput
   phone: NullableStringFieldUpdateOperationsInput
   profile_picture: NullableStringFieldUpdateOperationsInput
   role: Enumusers_role_enumFieldUpdateOperationsInput
-  salt: StringFieldUpdateOperationsInput
   updated_at: DateTimeFieldUpdateOperationsInput
-  validation_token: Verification_tokensUpdateOneWithoutUserNestedInput
 }
 
 input UsersUpdateWithoutPatientsInput {
@@ -12950,32 +11769,9 @@ input UsersUpdateWithoutPatientsInput {
   is_verified: BoolFieldUpdateOperationsInput
   last_login: NullableDateTimeFieldUpdateOperationsInput
   last_name: StringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
   phone: NullableStringFieldUpdateOperationsInput
   profile_picture: NullableStringFieldUpdateOperationsInput
   role: Enumusers_role_enumFieldUpdateOperationsInput
-  salt: StringFieldUpdateOperationsInput
-  updated_at: DateTimeFieldUpdateOperationsInput
-  validation_token: Verification_tokensUpdateOneWithoutUserNestedInput
-}
-
-input UsersUpdateWithoutValidation_tokenInput {
-  address: NullableStringFieldUpdateOperationsInput
-  associated_id: NullableStringFieldUpdateOperationsInput
-  created_at: DateTimeFieldUpdateOperationsInput
-  doctors: DoctorsUpdateManyWithoutUsersNestedInput
-  email: StringFieldUpdateOperationsInput
-  first_name: StringFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  is_verified: BoolFieldUpdateOperationsInput
-  last_login: NullableDateTimeFieldUpdateOperationsInput
-  last_name: StringFieldUpdateOperationsInput
-  password: StringFieldUpdateOperationsInput
-  patients: PatientsUpdateManyWithoutUsersNestedInput
-  phone: NullableStringFieldUpdateOperationsInput
-  profile_picture: NullableStringFieldUpdateOperationsInput
-  role: Enumusers_role_enumFieldUpdateOperationsInput
-  salt: StringFieldUpdateOperationsInput
   updated_at: DateTimeFieldUpdateOperationsInput
 }
 
@@ -12988,12 +11784,6 @@ input UsersUpsertWithoutDoctorsInput {
 input UsersUpsertWithoutPatientsInput {
   create: UsersCreateWithoutPatientsInput!
   update: UsersUpdateWithoutPatientsInput!
-  where: UsersWhereInput
-}
-
-input UsersUpsertWithoutValidation_tokenInput {
-  create: UsersCreateWithoutValidation_tokenInput!
-  update: UsersUpdateWithoutValidation_tokenInput!
   where: UsersWhereInput
 }
 
@@ -13011,14 +11801,11 @@ input UsersWhereInput {
   is_verified: BoolFilter
   last_login: DateTimeNullableFilter
   last_name: StringFilter
-  password: StringFilter
   patients: PatientsListRelationFilter
   phone: StringNullableFilter
   profile_picture: StringNullableFilter
   role: Enumusers_role_enumFilter
-  salt: StringFilter
   updated_at: DateTimeFilter
-  validation_token: Verification_tokensNullableRelationFilter
 }
 
 input UsersWhereUniqueInput {
@@ -13035,14 +11822,11 @@ input UsersWhereUniqueInput {
   is_verified: BoolFilter
   last_login: DateTimeNullableFilter
   last_name: StringFilter
-  password: StringFilter
   patients: PatientsListRelationFilter
   phone: StringNullableFilter
   profile_picture: StringNullableFilter
   role: Enumusers_role_enumFilter
-  salt: StringFilter
   updated_at: DateTimeFilter
-  validation_token: Verification_tokensNullableRelationFilter
 }
 
 input UuidFilter {
@@ -13097,260 +11881,6 @@ input UuidWithAggregatesFilter {
   mode: QueryMode
   not: NestedUuidWithAggregatesFilter
   notIn: [String!]
-}
-
-type Verification_tokens {
-  createdAt: DateTimeISO!
-  expireAt: DateTimeISO!
-  id: String!
-  numberofTries: Int!
-  token: String!
-  user: Users!
-  userId: String!
-}
-
-type Verification_tokensAvgAggregate {
-  numberofTries: Float
-}
-
-input Verification_tokensAvgOrderByAggregateInput {
-  numberofTries: SortOrder
-}
-
-type Verification_tokensCountAggregate {
-  _all: Int!
-  createdAt: Int!
-  expireAt: Int!
-  id: Int!
-  numberofTries: Int!
-  token: Int!
-  userId: Int!
-}
-
-input Verification_tokensCountOrderByAggregateInput {
-  createdAt: SortOrder
-  expireAt: SortOrder
-  id: SortOrder
-  numberofTries: SortOrder
-  token: SortOrder
-  userId: SortOrder
-}
-
-input Verification_tokensCreateInput {
-  createdAt: DateTimeISO
-  expireAt: DateTimeISO!
-  id: String
-  numberofTries: Int
-  token: String!
-  user: UsersCreateNestedOneWithoutValidation_tokenInput!
-}
-
-input Verification_tokensCreateManyInput {
-  createdAt: DateTimeISO
-  expireAt: DateTimeISO!
-  id: String
-  numberofTries: Int
-  token: String!
-  userId: String!
-}
-
-input Verification_tokensCreateNestedOneWithoutUserInput {
-  connect: Verification_tokensWhereUniqueInput
-  connectOrCreate: Verification_tokensCreateOrConnectWithoutUserInput
-  create: Verification_tokensCreateWithoutUserInput
-}
-
-input Verification_tokensCreateOrConnectWithoutUserInput {
-  create: Verification_tokensCreateWithoutUserInput!
-  where: Verification_tokensWhereUniqueInput!
-}
-
-input Verification_tokensCreateWithoutUserInput {
-  createdAt: DateTimeISO
-  expireAt: DateTimeISO!
-  id: String
-  numberofTries: Int
-  token: String!
-}
-
-type Verification_tokensGroupBy {
-  _avg: Verification_tokensAvgAggregate
-  _count: Verification_tokensCountAggregate
-  _max: Verification_tokensMaxAggregate
-  _min: Verification_tokensMinAggregate
-  _sum: Verification_tokensSumAggregate
-  createdAt: DateTimeISO!
-  expireAt: DateTimeISO!
-  id: String!
-  numberofTries: Int!
-  token: String!
-  userId: String!
-}
-
-type Verification_tokensMaxAggregate {
-  createdAt: DateTimeISO
-  expireAt: DateTimeISO
-  id: String
-  numberofTries: Int
-  token: String
-  userId: String
-}
-
-input Verification_tokensMaxOrderByAggregateInput {
-  createdAt: SortOrder
-  expireAt: SortOrder
-  id: SortOrder
-  numberofTries: SortOrder
-  token: SortOrder
-  userId: SortOrder
-}
-
-type Verification_tokensMinAggregate {
-  createdAt: DateTimeISO
-  expireAt: DateTimeISO
-  id: String
-  numberofTries: Int
-  token: String
-  userId: String
-}
-
-input Verification_tokensMinOrderByAggregateInput {
-  createdAt: SortOrder
-  expireAt: SortOrder
-  id: SortOrder
-  numberofTries: SortOrder
-  token: SortOrder
-  userId: SortOrder
-}
-
-input Verification_tokensNullableRelationFilter {
-  is: Verification_tokensWhereInput
-  isNot: Verification_tokensWhereInput
-}
-
-input Verification_tokensOrderByWithAggregationInput {
-  _avg: Verification_tokensAvgOrderByAggregateInput
-  _count: Verification_tokensCountOrderByAggregateInput
-  _max: Verification_tokensMaxOrderByAggregateInput
-  _min: Verification_tokensMinOrderByAggregateInput
-  _sum: Verification_tokensSumOrderByAggregateInput
-  createdAt: SortOrder
-  expireAt: SortOrder
-  id: SortOrder
-  numberofTries: SortOrder
-  token: SortOrder
-  userId: SortOrder
-}
-
-input Verification_tokensOrderByWithRelationInput {
-  createdAt: SortOrder
-  expireAt: SortOrder
-  id: SortOrder
-  numberofTries: SortOrder
-  token: SortOrder
-  user: UsersOrderByWithRelationInput
-  userId: SortOrder
-}
-
-enum Verification_tokensScalarFieldEnum {
-  createdAt
-  expireAt
-  id
-  numberofTries
-  token
-  userId
-}
-
-input Verification_tokensScalarWhereWithAggregatesInput {
-  AND: [Verification_tokensScalarWhereWithAggregatesInput!]
-  NOT: [Verification_tokensScalarWhereWithAggregatesInput!]
-  OR: [Verification_tokensScalarWhereWithAggregatesInput!]
-  createdAt: DateTimeWithAggregatesFilter
-  expireAt: DateTimeWithAggregatesFilter
-  id: UuidWithAggregatesFilter
-  numberofTries: IntWithAggregatesFilter
-  token: StringWithAggregatesFilter
-  userId: UuidWithAggregatesFilter
-}
-
-type Verification_tokensSumAggregate {
-  numberofTries: Int
-}
-
-input Verification_tokensSumOrderByAggregateInput {
-  numberofTries: SortOrder
-}
-
-input Verification_tokensUpdateInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  expireAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  numberofTries: IntFieldUpdateOperationsInput
-  token: StringFieldUpdateOperationsInput
-  user: UsersUpdateOneRequiredWithoutValidation_tokenNestedInput
-}
-
-input Verification_tokensUpdateManyMutationInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  expireAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  numberofTries: IntFieldUpdateOperationsInput
-  token: StringFieldUpdateOperationsInput
-}
-
-input Verification_tokensUpdateOneWithoutUserNestedInput {
-  connect: Verification_tokensWhereUniqueInput
-  connectOrCreate: Verification_tokensCreateOrConnectWithoutUserInput
-  create: Verification_tokensCreateWithoutUserInput
-  delete: Verification_tokensWhereInput
-  disconnect: Verification_tokensWhereInput
-  update: Verification_tokensUpdateToOneWithWhereWithoutUserInput
-  upsert: Verification_tokensUpsertWithoutUserInput
-}
-
-input Verification_tokensUpdateToOneWithWhereWithoutUserInput {
-  data: Verification_tokensUpdateWithoutUserInput!
-  where: Verification_tokensWhereInput
-}
-
-input Verification_tokensUpdateWithoutUserInput {
-  createdAt: DateTimeFieldUpdateOperationsInput
-  expireAt: DateTimeFieldUpdateOperationsInput
-  id: StringFieldUpdateOperationsInput
-  numberofTries: IntFieldUpdateOperationsInput
-  token: StringFieldUpdateOperationsInput
-}
-
-input Verification_tokensUpsertWithoutUserInput {
-  create: Verification_tokensCreateWithoutUserInput!
-  update: Verification_tokensUpdateWithoutUserInput!
-  where: Verification_tokensWhereInput
-}
-
-input Verification_tokensWhereInput {
-  AND: [Verification_tokensWhereInput!]
-  NOT: [Verification_tokensWhereInput!]
-  OR: [Verification_tokensWhereInput!]
-  createdAt: DateTimeFilter
-  expireAt: DateTimeFilter
-  id: UuidFilter
-  numberofTries: IntFilter
-  token: StringFilter
-  user: UsersRelationFilter
-  userId: UuidFilter
-}
-
-input Verification_tokensWhereUniqueInput {
-  AND: [Verification_tokensWhereInput!]
-  NOT: [Verification_tokensWhereInput!]
-  OR: [Verification_tokensWhereInput!]
-  createdAt: DateTimeFilter
-  expireAt: DateTimeFilter
-  id: String
-  numberofTries: IntFilter
-  token: StringFilter
-  user: UsersRelationFilter
-  userId: String
 }
 
 type Xray_results {

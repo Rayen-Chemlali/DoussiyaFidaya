@@ -1,7 +1,5 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegistrationInput } from './dtos/registration.input';
-import { Doctor } from 'src/doctors/entities/doctor.entity';
 import { DoctorRegistrationInput } from './dtos/doctor-registration.input';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 

@@ -1,8 +1,6 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { UserPreferencesService } from './user-preferences.service';
-import { EntityUserRelationUtil } from '../utils/entity-user-relation.util';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -15,8 +13,6 @@ export class NotificationService implements OnModuleInit {
   private my_id: number = 0;
 
   constructor(
-    //private userPreferences: UserPreferencesService,
-    private relationUtil: EntityUserRelationUtil,
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
   ) {
@@ -157,17 +153,6 @@ export class NotificationService implements OnModuleInit {
       throw err;
     }
   }
-
-  // async isUserOnline(userId: string): Promise<boolean> {
-  //   try {
-  //     const isOnline = this.clients.has(userId);
-  //     this.logger.log(`User ${userId} isOnline: ${isOnline}`);
-  //     return isOnline;
-  //   } catch (err) {
-  //     this.logger.error(`Error checking online status for ${userId}: ${err.message}`);
-  //     return false;
-  //   }
-  // }
 
   private async notifyClient(userId: string, data: { eventName: string; entity: any }) {
     console.log('this is my id here notifyClient', this.my_id);

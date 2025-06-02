@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../auth/roles.guards';
 import { Roles } from '../../auth/roles.decorator';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PrismaService } from '../services/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @ApiTags('Action History')
 @Controller('action-history')

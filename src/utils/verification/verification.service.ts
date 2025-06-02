@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'prisma.service';
 import { generateOtp } from '../opt.util';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class VerificationService {
