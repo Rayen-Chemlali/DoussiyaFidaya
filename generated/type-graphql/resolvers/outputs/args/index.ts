@@ -22,8 +22,6 @@ export { DoctorsCountLab_requestsArgs } from "./DoctorsCountLab_requestsArgs";
 export { DoctorsCountPrescriptionsArgs } from "./DoctorsCountPrescriptionsArgs";
 export { DoctorsCountRdv_requestsArgs } from "./DoctorsCountRdv_requestsArgs";
 export { DoctorsCountRdvsArgs } from "./DoctorsCountRdvsArgs";
-export { DoctorsCountReceivedMessagesArgs } from "./DoctorsCountReceivedMessagesArgs";
-export { DoctorsCountSentMessagesArgs } from "./DoctorsCountSentMessagesArgs";
 export { Instituts_medicauxCountAuthorizationsArgs } from "./Instituts_medicauxCountAuthorizationsArgs";
 export { Instituts_medicauxCountConsultationsArgs } from "./Instituts_medicauxCountConsultationsArgs";
 export { Instituts_medicauxCountDoctorsArgs } from "./Instituts_medicauxCountDoctorsArgs";
@@ -35,7 +33,6 @@ export { Lab_documentsCountXray_resultsArgs } from "./Lab_documentsCountXray_res
 export { Lab_requestsCountConsultationsArgs } from "./Lab_requestsCountConsultationsArgs";
 export { Lab_requestsCountLab_documentsArgs } from "./Lab_requestsCountLab_documentsArgs";
 export { LaboratoriesCountLab_documentsArgs } from "./LaboratoriesCountLab_documentsArgs";
-export { MessageCountAttachmentsArgs } from "./MessageCountAttachmentsArgs";
 export { PatientsCountAuthorizationsArgs } from "./PatientsCountAuthorizationsArgs";
 export { PatientsCountCertificatesArgs } from "./PatientsCountCertificatesArgs";
 export { PatientsCountConsultationsArgs } from "./PatientsCountConsultationsArgs";

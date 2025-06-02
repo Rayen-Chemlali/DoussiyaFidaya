@@ -11,8 +11,6 @@ import { Enumdoctors_specialty_enumFieldUpdateOperationsInput } from "../inputs/
 import { Enumdoctors_type_enumFieldUpdateOperationsInput } from "../inputs/Enumdoctors_type_enumFieldUpdateOperationsInput";
 import { Instituts_medicauxUpdateManyWithoutDoctorsNestedInput } from "../inputs/Instituts_medicauxUpdateManyWithoutDoctorsNestedInput";
 import { Lab_requestsUpdateManyWithoutDoctorsNestedInput } from "../inputs/Lab_requestsUpdateManyWithoutDoctorsNestedInput";
-import { MessageUpdateManyWithoutReceiverNestedInput } from "../inputs/MessageUpdateManyWithoutReceiverNestedInput";
-import { MessageUpdateManyWithoutSenderNestedInput } from "../inputs/MessageUpdateManyWithoutSenderNestedInput";
 import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
 import { PrescriptionsUpdateManyWithoutDoctorsNestedInput } from "../inputs/PrescriptionsUpdateManyWithoutDoctorsNestedInput";
 import { Rdv_requestsUpdateManyWithoutDoctorsNestedInput } from "../inputs/Rdv_requestsUpdateManyWithoutDoctorsNestedInput";
@@ -106,16 +104,6 @@ export class DoctorsUpdateWithoutConsultationsInput {
     nullable: true
   })
   rdvs?: RdvsUpdateManyWithoutDoctorsNestedInput | undefined;
-
-  @TypeGraphQL.Field(_type => MessageUpdateManyWithoutSenderNestedInput, {
-    nullable: true
-  })
-  sentMessages?: MessageUpdateManyWithoutSenderNestedInput | undefined;
-
-  @TypeGraphQL.Field(_type => MessageUpdateManyWithoutReceiverNestedInput, {
-    nullable: true
-  })
-  receivedMessages?: MessageUpdateManyWithoutReceiverNestedInput | undefined;
 
   @TypeGraphQL.Field(_type => Instituts_medicauxUpdateManyWithoutDoctorsNestedInput, {
     nullable: true

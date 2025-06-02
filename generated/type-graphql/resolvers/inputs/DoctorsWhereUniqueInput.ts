@@ -10,7 +10,6 @@ import { Enumdoctors_specialty_enumFilter } from "../inputs/Enumdoctors_specialt
 import { Enumdoctors_type_enumFilter } from "../inputs/Enumdoctors_type_enumFilter";
 import { Instituts_medicauxListRelationFilter } from "../inputs/Instituts_medicauxListRelationFilter";
 import { Lab_requestsListRelationFilter } from "../inputs/Lab_requestsListRelationFilter";
-import { MessageListRelationFilter } from "../inputs/MessageListRelationFilter";
 import { PrescriptionsListRelationFilter } from "../inputs/PrescriptionsListRelationFilter";
 import { Rdv_requestsListRelationFilter } from "../inputs/Rdv_requestsListRelationFilter";
 import { RdvsListRelationFilter } from "../inputs/RdvsListRelationFilter";
@@ -130,16 +129,6 @@ export class DoctorsWhereUniqueInput {
     nullable: true
   })
   rdvs?: RdvsListRelationFilter | undefined;
-
-  @TypeGraphQL.Field(_type => MessageListRelationFilter, {
-    nullable: true
-  })
-  sentMessages?: MessageListRelationFilter | undefined;
-
-  @TypeGraphQL.Field(_type => MessageListRelationFilter, {
-    nullable: true
-  })
-  receivedMessages?: MessageListRelationFilter | undefined;
 
   @TypeGraphQL.Field(_type => Instituts_medicauxListRelationFilter, {
     nullable: true

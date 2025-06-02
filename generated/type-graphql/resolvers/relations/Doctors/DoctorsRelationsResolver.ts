@@ -5,7 +5,6 @@ import { Consultations } from "../../../models/Consultations";
 import { Doctors } from "../../../models/Doctors";
 import { Instituts_medicaux } from "../../../models/Instituts_medicaux";
 import { Lab_requests } from "../../../models/Lab_requests";
-import { Message } from "../../../models/Message";
 import { Prescriptions } from "../../../models/Prescriptions";
 import { Rdv_requests } from "../../../models/Rdv_requests";
 import { Rdvs } from "../../../models/Rdvs";
@@ -17,8 +16,6 @@ import { DoctorsLab_requestsArgs } from "./args/DoctorsLab_requestsArgs";
 import { DoctorsPrescriptionsArgs } from "./args/DoctorsPrescriptionsArgs";
 import { DoctorsRdv_requestsArgs } from "./args/DoctorsRdv_requestsArgs";
 import { DoctorsRdvsArgs } from "./args/DoctorsRdvsArgs";
-import { DoctorsReceivedMessagesArgs } from "./args/DoctorsReceivedMessagesArgs";
-import { DoctorsSentMessagesArgs } from "./args/DoctorsSentMessagesArgs";
 import { transformInfoIntoPrismaArgs, getPrismaFromContext, transformCountFieldIntoSelectRelationsCount } from "../../../helpers";
 
 @TypeGraphQL.Resolver(_of => Doctors)
@@ -122,36 +119,6 @@ export class DoctorsRelationsResolver {
         id: doctors.id,
       },
     }).rdvs({
-      ...args,
-      ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
-    });
-  }
-
-  @TypeGraphQL.FieldResolver(_type => [Message], {
-    nullable: false
-  })
-  async sentMessages(@TypeGraphQL.Root() doctors: Doctors, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: DoctorsSentMessagesArgs): Promise<Message[]> {
-    const { _count } = transformInfoIntoPrismaArgs(info);
-    return getPrismaFromContext(ctx).doctors.findUniqueOrThrow({
-      where: {
-        id: doctors.id,
-      },
-    }).sentMessages({
-      ...args,
-      ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
-    });
-  }
-
-  @TypeGraphQL.FieldResolver(_type => [Message], {
-    nullable: false
-  })
-  async receivedMessages(@TypeGraphQL.Root() doctors: Doctors, @TypeGraphQL.Ctx() ctx: any, @TypeGraphQL.Info() info: GraphQLResolveInfo, @TypeGraphQL.Args() args: DoctorsReceivedMessagesArgs): Promise<Message[]> {
-    const { _count } = transformInfoIntoPrismaArgs(info);
-    return getPrismaFromContext(ctx).doctors.findUniqueOrThrow({
-      where: {
-        id: doctors.id,
-      },
-    }).receivedMessages({
       ...args,
       ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
     });

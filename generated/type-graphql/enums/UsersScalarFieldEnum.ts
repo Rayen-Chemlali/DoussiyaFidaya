@@ -8,8 +8,6 @@ export enum UsersScalarFieldEnum {
   first_name = "first_name",
   last_name = "last_name",
   is_verified = "is_verified",
-  password = "password",
-  salt = "salt",
   last_login = "last_login",
   phone = "phone",
   profile_picture = "profile_picture",

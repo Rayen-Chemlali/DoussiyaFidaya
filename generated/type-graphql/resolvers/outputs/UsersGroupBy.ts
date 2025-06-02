@@ -44,16 +44,6 @@ export class UsersGroupBy {
   })
   is_verified!: boolean;
 
-  @TypeGraphQL.Field(_type => String, {
-    nullable: false
-  })
-  password!: string;
-
-  @TypeGraphQL.Field(_type => String, {
-    nullable: false
-  })
-  salt!: string;
-
   @TypeGraphQL.Field(_type => Date, {
     nullable: true
   })

@@ -3,7 +3,6 @@ import * as GraphQLScalars from "graphql-scalars";
 import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../../scalars";
 import { DoctorsCreateNestedManyWithoutUsersInput } from "../inputs/DoctorsCreateNestedManyWithoutUsersInput";
-import { Verification_tokensCreateNestedOneWithoutUserInput } from "../inputs/Verification_tokensCreateNestedOneWithoutUserInput";
 import { users_role_enum } from "../../enums/users_role_enum";
 
 @TypeGraphQL.InputType("UsersCreateWithoutPatientsInput", {})
@@ -43,16 +42,6 @@ export class UsersCreateWithoutPatientsInput {
   })
   is_verified!: boolean;
 
-  @TypeGraphQL.Field(_type => String, {
-    nullable: false
-  })
-  password!: string;
-
-  @TypeGraphQL.Field(_type => String, {
-    nullable: false
-  })
-  salt!: string;
-
   @TypeGraphQL.Field(_type => Date, {
     nullable: true
   })
@@ -82,11 +71,6 @@ export class UsersCreateWithoutPatientsInput {
     nullable: true
   })
   updated_at?: Date | undefined;
-
-  @TypeGraphQL.Field(_type => Verification_tokensCreateNestedOneWithoutUserInput, {
-    nullable: true
-  })
-  validation_token?: Verification_tokensCreateNestedOneWithoutUserInput | undefined;
 
   @TypeGraphQL.Field(_type => DoctorsCreateNestedManyWithoutUsersInput, {
     nullable: true

@@ -6,7 +6,6 @@ import { Certificates } from "../models/Certificates";
 import { Consultations } from "../models/Consultations";
 import { Instituts_medicaux } from "../models/Instituts_medicaux";
 import { Lab_requests } from "../models/Lab_requests";
-import { Message } from "../models/Message";
 import { Prescriptions } from "../models/Prescriptions";
 import { Rdv_requests } from "../models/Rdv_requests";
 import { Rdvs } from "../models/Rdvs";
@@ -90,10 +89,6 @@ export class Doctors {
   rdv_requests?: Rdv_requests[];
 
   rdvs?: Rdvs[];
-
-  sentMessages?: Message[];
-
-  receivedMessages?: Message[];
 
   instituts?: Instituts_medicaux[];
 

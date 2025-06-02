@@ -9,8 +9,6 @@ import { DoctorsCountLab_requestsArgs } from "./args/DoctorsCountLab_requestsArg
 import { DoctorsCountPrescriptionsArgs } from "./args/DoctorsCountPrescriptionsArgs";
 import { DoctorsCountRdv_requestsArgs } from "./args/DoctorsCountRdv_requestsArgs";
 import { DoctorsCountRdvsArgs } from "./args/DoctorsCountRdvsArgs";
-import { DoctorsCountReceivedMessagesArgs } from "./args/DoctorsCountReceivedMessagesArgs";
-import { DoctorsCountSentMessagesArgs } from "./args/DoctorsCountSentMessagesArgs";
 
 @TypeGraphQL.ObjectType("DoctorsCount", {})
 export class DoctorsCount {
@@ -20,8 +18,6 @@ export class DoctorsCount {
   prescriptions!: number;
   rdv_requests!: number;
   rdvs!: number;
-  sentMessages!: number;
-  receivedMessages!: number;
   instituts!: number;
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
@@ -70,22 +66,6 @@ export class DoctorsCount {
   })
   getRdvs(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountRdvsArgs): number {
     return root.rdvs;
-  }
-
-  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
-    name: "sentMessages",
-    nullable: false
-  })
-  getSentMessages(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountSentMessagesArgs): number {
-    return root.sentMessages;
-  }
-
-  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
-    name: "receivedMessages",
-    nullable: false
-  })
-  getReceivedMessages(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountReceivedMessagesArgs): number {
-    return root.receivedMessages;
   }
 
   @TypeGraphQL.Field(_type => TypeGraphQL.Int, {

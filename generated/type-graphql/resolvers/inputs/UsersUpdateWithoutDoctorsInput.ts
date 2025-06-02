@@ -9,7 +9,6 @@ import { NullableDateTimeFieldUpdateOperationsInput } from "../inputs/NullableDa
 import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
 import { PatientsUpdateManyWithoutUsersNestedInput } from "../inputs/PatientsUpdateManyWithoutUsersNestedInput";
 import { StringFieldUpdateOperationsInput } from "../inputs/StringFieldUpdateOperationsInput";
-import { Verification_tokensUpdateOneWithoutUserNestedInput } from "../inputs/Verification_tokensUpdateOneWithoutUserNestedInput";
 
 @TypeGraphQL.InputType("UsersUpdateWithoutDoctorsInput", {})
 export class UsersUpdateWithoutDoctorsInput {
@@ -48,16 +47,6 @@ export class UsersUpdateWithoutDoctorsInput {
   })
   is_verified?: BoolFieldUpdateOperationsInput | undefined;
 
-  @TypeGraphQL.Field(_type => StringFieldUpdateOperationsInput, {
-    nullable: true
-  })
-  password?: StringFieldUpdateOperationsInput | undefined;
-
-  @TypeGraphQL.Field(_type => StringFieldUpdateOperationsInput, {
-    nullable: true
-  })
-  salt?: StringFieldUpdateOperationsInput | undefined;
-
   @TypeGraphQL.Field(_type => NullableDateTimeFieldUpdateOperationsInput, {
     nullable: true
   })
@@ -87,11 +76,6 @@ export class UsersUpdateWithoutDoctorsInput {
     nullable: true
   })
   updated_at?: DateTimeFieldUpdateOperationsInput | undefined;
-
-  @TypeGraphQL.Field(_type => Verification_tokensUpdateOneWithoutUserNestedInput, {
-    nullable: true
-  })
-  validation_token?: Verification_tokensUpdateOneWithoutUserNestedInput | undefined;
 
   @TypeGraphQL.Field(_type => PatientsUpdateManyWithoutUsersNestedInput, {
     nullable: true

@@ -63,16 +63,6 @@ export class UsersScalarWhereWithAggregatesInput {
   })
   is_verified?: BoolWithAggregatesFilter | undefined;
 
-  @TypeGraphQL.Field(_type => StringWithAggregatesFilter, {
-    nullable: true
-  })
-  password?: StringWithAggregatesFilter | undefined;
-
-  @TypeGraphQL.Field(_type => StringWithAggregatesFilter, {
-    nullable: true
-  })
-  salt?: StringWithAggregatesFilter | undefined;
-
   @TypeGraphQL.Field(_type => DateTimeNullableWithAggregatesFilter, {
     nullable: true
   })

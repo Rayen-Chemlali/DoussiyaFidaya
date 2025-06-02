@@ -14,13 +14,10 @@ export { Lab_requestsCrudResolver } from "./Lab_requests/Lab_requestsCrudResolve
 export { Lab_resultsCrudResolver } from "./Lab_results/Lab_resultsCrudResolver";
 export { LaboratoriesCrudResolver } from "./Laboratories/LaboratoriesCrudResolver";
 export { MedicationsCrudResolver } from "./Medications/MedicationsCrudResolver";
-export { MessageCrudResolver } from "./Message/MessageCrudResolver";
-export { MessageAttachmentCrudResolver } from "./MessageAttachment/MessageAttachmentCrudResolver";
 export { PatientsCrudResolver } from "./Patients/PatientsCrudResolver";
 export { PharmaciesCrudResolver } from "./Pharmacies/PharmaciesCrudResolver";
 export { PrescriptionsCrudResolver } from "./Prescriptions/PrescriptionsCrudResolver";
 export { Rdv_requestsCrudResolver } from "./Rdv_requests/Rdv_requestsCrudResolver";
 export { RdvsCrudResolver } from "./Rdvs/RdvsCrudResolver";
 export { UsersCrudResolver } from "./Users/UsersCrudResolver";
-export { Verification_tokensCrudResolver } from "./Verification_tokens/Verification_tokensCrudResolver";
 export { Xray_resultsCrudResolver } from "./Xray_results/Xray_resultsCrudResolver";

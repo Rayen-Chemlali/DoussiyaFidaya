@@ -7,7 +7,6 @@ export * from "./Instituts_medicaux/args";
 export * from "./Lab_documents/args";
 export * from "./Lab_requests/args";
 export * from "./Laboratories/args";
-export * from "./Message/args";
 export * from "./Patients/args";
 export * from "./Prescriptions/args";
 export * from "./Rdv_requests/args";

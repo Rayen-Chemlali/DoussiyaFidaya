@@ -9,7 +9,6 @@ import { Enumusers_role_enumFieldUpdateOperationsInput } from "../inputs/Enumuse
 import { NullableDateTimeFieldUpdateOperationsInput } from "../inputs/NullableDateTimeFieldUpdateOperationsInput";
 import { NullableStringFieldUpdateOperationsInput } from "../inputs/NullableStringFieldUpdateOperationsInput";
 import { StringFieldUpdateOperationsInput } from "../inputs/StringFieldUpdateOperationsInput";
-import { Verification_tokensUpdateOneWithoutUserNestedInput } from "../inputs/Verification_tokensUpdateOneWithoutUserNestedInput";
 
 @TypeGraphQL.InputType("UsersUpdateWithoutPatientsInput", {})
 export class UsersUpdateWithoutPatientsInput {
@@ -48,16 +47,6 @@ export class UsersUpdateWithoutPatientsInput {
   })
   is_verified?: BoolFieldUpdateOperationsInput | undefined;
 
-  @TypeGraphQL.Field(_type => StringFieldUpdateOperationsInput, {
-    nullable: true
-  })
-  password?: StringFieldUpdateOperationsInput | undefined;
-
-  @TypeGraphQL.Field(_type => StringFieldUpdateOperationsInput, {
-    nullable: true
-  })
-  salt?: StringFieldUpdateOperationsInput | undefined;
-
   @TypeGraphQL.Field(_type => NullableDateTimeFieldUpdateOperationsInput, {
     nullable: true
   })
@@ -87,11 +76,6 @@ export class UsersUpdateWithoutPatientsInput {
     nullable: true
   })
   updated_at?: DateTimeFieldUpdateOperationsInput | undefined;
-
-  @TypeGraphQL.Field(_type => Verification_tokensUpdateOneWithoutUserNestedInput, {
-    nullable: true
-  })
-  validation_token?: Verification_tokensUpdateOneWithoutUserNestedInput | undefined;
 
   @TypeGraphQL.Field(_type => DoctorsUpdateManyWithoutUsersNestedInput, {
     nullable: true

@@ -12,7 +12,6 @@ import { StringFilter } from "../inputs/StringFilter";
 import { StringNullableFilter } from "../inputs/StringNullableFilter";
 import { UuidFilter } from "../inputs/UuidFilter";
 import { UuidNullableFilter } from "../inputs/UuidNullableFilter";
-import { Verification_tokensNullableRelationFilter } from "../inputs/Verification_tokensNullableRelationFilter";
 
 @TypeGraphQL.InputType("UsersWhereInput", {})
 export class UsersWhereInput {
@@ -66,16 +65,6 @@ export class UsersWhereInput {
   })
   is_verified?: BoolFilter | undefined;
 
-  @TypeGraphQL.Field(_type => StringFilter, {
-    nullable: true
-  })
-  password?: StringFilter | undefined;
-
-  @TypeGraphQL.Field(_type => StringFilter, {
-    nullable: true
-  })
-  salt?: StringFilter | undefined;
-
   @TypeGraphQL.Field(_type => DateTimeNullableFilter, {
     nullable: true
   })
@@ -105,11 +94,6 @@ export class UsersWhereInput {
     nullable: true
   })
   updated_at?: DateTimeFilter | undefined;
-
-  @TypeGraphQL.Field(_type => Verification_tokensNullableRelationFilter, {
-    nullable: true
-  })
-  validation_token?: Verification_tokensNullableRelationFilter | undefined;
 
   @TypeGraphQL.Field(_type => DoctorsListRelationFilter, {
     nullable: true

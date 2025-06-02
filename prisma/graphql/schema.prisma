@@ -116,8 +116,6 @@ model doctors {
   prescriptions       prescriptions[]
   rdv_requests        rdv_requests[]
   rdvs                rdvs[]
-  sentMessages        Message[]              @relation("SentMessages")
-  receivedMessages    Message[]              @relation("ReceivedMessages")
   instituts           instituts_medicaux[]
 }
 

@@ -4,7 +4,6 @@ import { Prisma } from "@prisma/client";
 import { DecimalJSScalar } from "../scalars";
 import { Doctors } from "../models/Doctors";
 import { Patients } from "../models/Patients";
-import { Verification_tokens } from "../models/Verification_tokens";
 import { users_role_enum } from "../enums/users_role_enum";
 import { UsersCount } from "../resolvers/outputs/UsersCount";
 
@@ -40,22 +39,10 @@ export class Users {
   })
   last_name!: string;
 
-  validation_token?: Verification_tokens | null;
-
   @TypeGraphQL.Field(_type => Boolean, {
     nullable: false
   })
   is_verified!: boolean;
-
-  @TypeGraphQL.Field(_type => String, {
-    nullable: false
-  })
-  password!: string;
-
-  @TypeGraphQL.Field(_type => String, {
-    nullable: false
-  })
-  salt!: string;
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: true

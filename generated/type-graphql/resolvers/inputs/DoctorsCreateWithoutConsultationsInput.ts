@@ -8,8 +8,6 @@ import { DoctorsCreateexperienceInput } from "../inputs/DoctorsCreateexperienceI
 import { DoctorsCreatelanguagesInput } from "../inputs/DoctorsCreatelanguagesInput";
 import { Instituts_medicauxCreateNestedManyWithoutDoctorsInput } from "../inputs/Instituts_medicauxCreateNestedManyWithoutDoctorsInput";
 import { Lab_requestsCreateNestedManyWithoutDoctorsInput } from "../inputs/Lab_requestsCreateNestedManyWithoutDoctorsInput";
-import { MessageCreateNestedManyWithoutReceiverInput } from "../inputs/MessageCreateNestedManyWithoutReceiverInput";
-import { MessageCreateNestedManyWithoutSenderInput } from "../inputs/MessageCreateNestedManyWithoutSenderInput";
 import { PrescriptionsCreateNestedManyWithoutDoctorsInput } from "../inputs/PrescriptionsCreateNestedManyWithoutDoctorsInput";
 import { Rdv_requestsCreateNestedManyWithoutDoctorsInput } from "../inputs/Rdv_requestsCreateNestedManyWithoutDoctorsInput";
 import { RdvsCreateNestedManyWithoutDoctorsInput } from "../inputs/RdvsCreateNestedManyWithoutDoctorsInput";
@@ -103,16 +101,6 @@ export class DoctorsCreateWithoutConsultationsInput {
     nullable: true
   })
   rdvs?: RdvsCreateNestedManyWithoutDoctorsInput | undefined;
-
-  @TypeGraphQL.Field(_type => MessageCreateNestedManyWithoutSenderInput, {
-    nullable: true
-  })
-  sentMessages?: MessageCreateNestedManyWithoutSenderInput | undefined;
-
-  @TypeGraphQL.Field(_type => MessageCreateNestedManyWithoutReceiverInput, {
-    nullable: true
-  })
-  receivedMessages?: MessageCreateNestedManyWithoutReceiverInput | undefined;
 
   @TypeGraphQL.Field(_type => Instituts_medicauxCreateNestedManyWithoutDoctorsInput, {
     nullable: true
