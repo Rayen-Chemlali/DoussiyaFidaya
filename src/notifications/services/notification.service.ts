@@ -185,8 +185,9 @@ export class NotificationService implements OnModuleInit {
   }
 
   private async getRelatedUserIds(entity: any): Promise<string[]> {
-    const patientId = entity.patients? entity.patients.users.id : null;
-    const doctorId = entity.doctors? entity.doctors.users.id : null;
+    console.log('this is my id here getRelatedUserIds', entity);
+    const patientId = entity.patient_id ? (await this.prisma.patients.findFirst({ where: { id: entity.patient_id } }))?.user_id : null;
+    const doctorId = entity.doctor_id ? (await this.prisma.doctors.findFirst({ where: { id: entity.doctor_id } }))?.user_id : null;
     const userId = entity.user_id ? entity.user_id : null;
     const myId = entity.hasOwnProperty("email") ? entity.id : null;
     console.log("the ids are", {myId, patientId, doctorId});
