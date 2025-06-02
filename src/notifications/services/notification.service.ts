@@ -8,7 +8,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 @Injectable()
 export class NotificationService implements OnModuleInit {
   private readonly logger = new Logger(NotificationService.name);
-  private clients: Map<string, { channels: string[]; timeout?: NodeJS.Timeout }> = new Map();
+  private clients: Map<string, NodeJS.Timeout > = new Map();
   private rabbitClient: ClientProxy;
   private eventCache: Map<string, { timestamp: number; payload: any }> = new Map();
   private entityUsersCache: Map<string, string[]> = new Map();
@@ -41,18 +41,18 @@ export class NotificationService implements OnModuleInit {
     }
   }
 
-  async registerClient(clientId: string, channels: string[]) {
+  async registerClient(clientId: string) {
     try {
       console.log('this is my id here registerClient', this.my_id);
       // Clear existing timeout if re-registering
       const existing = this.clients.get(clientId);
-      if (existing && existing.timeout) {
-        clearTimeout(existing.timeout);
+      if (existing) {
+        clearTimeout(existing);
       }
       // Set new timeout for 24h (86400s)
       const timeout  = setTimeout(() => this.clients.delete(clientId), 86400 * 1000);
-      this.clients.set(clientId, { channels, timeout });
-      this.logger.log(`Client ${clientId} registered for channels: ${channels.join(', ')}`);
+      this.clients.set(clientId, timeout);
+      this.logger.log(`Client ${clientId} registered`);
     } catch (err) {
       this.logger.error(`Error registering client ${clientId}: ${err.message}`);
       throw err;
@@ -64,9 +64,7 @@ export class NotificationService implements OnModuleInit {
       console.log("i'm unregistering the client", clientId);
       const client = this.clients.get(clientId);
       if (client) {
-        if (client.timeout) {
-          clearTimeout(client.timeout);
-        }
+        clearTimeout(client);
         this.clients.delete(clientId);
         this.logger.log(`Client ${clientId} unregistered`);
       }
@@ -113,7 +111,7 @@ export class NotificationService implements OnModuleInit {
       const offlineUserIds: string[] = [];
       for (const userId of allowedUserIds) {
         const client = this.clients.get(userId);
-        if (client && client.channels.some((ch: string) => this.matchPattern(ch, eventName))) {
+        if (client) {
           console.log('client is online', client);
           onlineUserIds.push(userId);
         } else {
@@ -160,16 +158,16 @@ export class NotificationService implements OnModuleInit {
     }
   }
 
-  async isUserOnline(userId: string): Promise<boolean> {
-    try {
-      const isOnline = this.clients.has(userId);
-      this.logger.log(`User ${userId} isOnline: ${isOnline}`);
-      return isOnline;
-    } catch (err) {
-      this.logger.error(`Error checking online status for ${userId}: ${err.message}`);
-      return false;
-    }
-  }
+  // async isUserOnline(userId: string): Promise<boolean> {
+  //   try {
+  //     const isOnline = this.clients.has(userId);
+  //     this.logger.log(`User ${userId} isOnline: ${isOnline}`);
+  //     return isOnline;
+  //   } catch (err) {
+  //     this.logger.error(`Error checking online status for ${userId}: ${err.message}`);
+  //     return false;
+  //   }
+  // }
 
   private async notifyClient(userId: string, data: { eventName: string; entity: any }) {
     console.log('this is my id here notifyClient', this.my_id);
@@ -186,17 +184,20 @@ export class NotificationService implements OnModuleInit {
   }
 
   private async getRelatedUserIds(entity: any): Promise<string[]> {
-    return [entity.id,entity.patient_id,entity.doctor_id].filter(id => id !== undefined) as string[];
+    const patientId = entity.patients? entity.patients.users.id : null;
+    const doctorId = entity.doctors? entity.doctors.users.id : null;
+    const myId = entity.hasOwnProperty("email") ? entity.id : null;
+    return [myId,patientId,doctorId].filter(id => id !== null) as string[];
   }
 
-  private matchPattern(pattern: string, topic: string): boolean {
-    const patternParts = pattern.split('.');
-    const topicParts = topic.split('.');
-
-    if (patternParts.length !== topicParts.length) return false;
-
-    return patternParts.every((part, i) => part === '*' || part === topicParts[i]);
-  }
+  // private matchPattern(pattern: string, topic: string): boolean {
+  //   const patternParts = pattern.split('.');
+  //   const topicParts = topic.split('.');
+  //
+  //   if (patternParts.length !== topicParts.length) return false;
+  //
+  //   return patternParts.every((part, i) => part === '*' || part === topicParts[i]);
+  // }
 
   async onApplicationShutdown() {
     try {

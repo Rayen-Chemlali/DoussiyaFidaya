@@ -1,7 +1,8 @@
-import { Controller, Sse, Query, Logger } from '@nestjs/common';
+import { Controller, Sse, Query, Logger, UseGuards, Req } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { NotificationService } from '../services/notification.service';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 interface MessageEvent {
   data: string;
@@ -22,16 +23,17 @@ export class SseController {
   ) {}
 
   @Sse()
-  notifications(@Query() query: SseConnectDto): Observable<MessageEvent> {
-    const userId = query.userId;
-    const channels = query.channels.split(',');
-    this.logger.log(`SSE connection for user: ${userId}, channels: ${channels.join(', ')}`);
+  @UseGuards(JwtAuthGuard)
+  notifications(@Req() req: any ): Observable<MessageEvent> {
+    const userId = req.user.id;
+    console.log(userId);
+    this.logger.log(`SSE connection for user: ${userId}`);
 
     return new Observable<MessageEvent>((observer) => {
       let isRegistered = false;
       let listener: ((data: { eventName: string; payload: any }) => void) | null = null;
 
-      this.notificationService.registerClient(userId, channels)
+      this.notificationService.registerClient(userId)
         .then(() => {
           isRegistered = true;
 
