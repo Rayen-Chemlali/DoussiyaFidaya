@@ -1,0 +1,1 @@
+export { CertificatesDoctorsArgs } from "./CertificatesDoctorsArgs";

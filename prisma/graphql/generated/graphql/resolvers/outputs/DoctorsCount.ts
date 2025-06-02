@@ -1,0 +1,108 @@
+import * as TypeGraphQL from "type-graphql";
+import * as GraphQLScalars from "graphql-scalars";
+import { Prisma } from "@prisma/client";
+import { DecimalJSScalar } from "../../scalars";
+import { DoctorsCountCertificatesArgs } from "./args/DoctorsCountCertificatesArgs";
+import { DoctorsCountConsultationsArgs } from "./args/DoctorsCountConsultationsArgs";
+import { DoctorsCountDoctor_institutsArgs } from "./args/DoctorsCountDoctor_institutsArgs";
+import { DoctorsCountInstitutsArgs } from "./args/DoctorsCountInstitutsArgs";
+import { DoctorsCountLab_requestsArgs } from "./args/DoctorsCountLab_requestsArgs";
+import { DoctorsCountPrescriptionsArgs } from "./args/DoctorsCountPrescriptionsArgs";
+import { DoctorsCountRdv_requestsArgs } from "./args/DoctorsCountRdv_requestsArgs";
+import { DoctorsCountRdvsArgs } from "./args/DoctorsCountRdvsArgs";
+import { DoctorsCountReceivedMessagesArgs } from "./args/DoctorsCountReceivedMessagesArgs";
+import { DoctorsCountSentMessagesArgs } from "./args/DoctorsCountSentMessagesArgs";
+
+@TypeGraphQL.ObjectType("DoctorsCount", {})
+export class DoctorsCount {
+  certificates!: number;
+  consultations!: number;
+  doctor_instituts!: number;
+  lab_requests!: number;
+  prescriptions!: number;
+  rdv_requests!: number;
+  rdvs!: number;
+  sentMessages!: number;
+  receivedMessages!: number;
+  instituts!: number;
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "certificates",
+    nullable: false
+  })
+  getCertificates(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountCertificatesArgs): number {
+    return root.certificates;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "consultations",
+    nullable: false
+  })
+  getConsultations(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountConsultationsArgs): number {
+    return root.consultations;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "doctor_instituts",
+    nullable: false
+  })
+  getDoctor_instituts(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountDoctor_institutsArgs): number {
+    return root.doctor_instituts;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "lab_requests",
+    nullable: false
+  })
+  getLab_requests(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountLab_requestsArgs): number {
+    return root.lab_requests;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "prescriptions",
+    nullable: false
+  })
+  getPrescriptions(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountPrescriptionsArgs): number {
+    return root.prescriptions;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "rdv_requests",
+    nullable: false
+  })
+  getRdv_requests(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountRdv_requestsArgs): number {
+    return root.rdv_requests;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "rdvs",
+    nullable: false
+  })
+  getRdvs(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountRdvsArgs): number {
+    return root.rdvs;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "sentMessages",
+    nullable: false
+  })
+  getSentMessages(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountSentMessagesArgs): number {
+    return root.sentMessages;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "receivedMessages",
+    nullable: false
+  })
+  getReceivedMessages(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountReceivedMessagesArgs): number {
+    return root.receivedMessages;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    name: "instituts",
+    nullable: false
+  })
+  getInstituts(@TypeGraphQL.Root() root: DoctorsCount, @TypeGraphQL.Args() args: DoctorsCountInstitutsArgs): number {
+    return root.instituts;
+  }
+}

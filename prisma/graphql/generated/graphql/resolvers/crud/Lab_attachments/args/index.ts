@@ -1,0 +1,15 @@
+export { AggregateLab_attachmentsArgs } from "./AggregateLab_attachmentsArgs";
+export { CreateManyAndReturnLab_attachmentsArgs } from "./CreateManyAndReturnLab_attachmentsArgs";
+export { CreateManyLab_attachmentsArgs } from "./CreateManyLab_attachmentsArgs";
+export { CreateOneLab_attachmentsArgs } from "./CreateOneLab_attachmentsArgs";
+export { DeleteManyLab_attachmentsArgs } from "./DeleteManyLab_attachmentsArgs";
+export { DeleteOneLab_attachmentsArgs } from "./DeleteOneLab_attachmentsArgs";
+export { FindFirstLab_attachmentsArgs } from "./FindFirstLab_attachmentsArgs";
+export { FindFirstLab_attachmentsOrThrowArgs } from "./FindFirstLab_attachmentsOrThrowArgs";
+export { FindManyLab_attachmentsArgs } from "./FindManyLab_attachmentsArgs";
+export { FindUniqueLab_attachmentsArgs } from "./FindUniqueLab_attachmentsArgs";
+export { FindUniqueLab_attachmentsOrThrowArgs } from "./FindUniqueLab_attachmentsOrThrowArgs";
+export { GroupByLab_attachmentsArgs } from "./GroupByLab_attachmentsArgs";
+export { UpdateManyLab_attachmentsArgs } from "./UpdateManyLab_attachmentsArgs";
+export { UpdateOneLab_attachmentsArgs } from "./UpdateOneLab_attachmentsArgs";
+export { UpsertOneLab_attachmentsArgs } from "./UpsertOneLab_attachmentsArgs";

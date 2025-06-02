@@ -1,0 +1,15 @@
+export { AggregateLab_resultsArgs } from "./AggregateLab_resultsArgs";
+export { CreateManyAndReturnLab_resultsArgs } from "./CreateManyAndReturnLab_resultsArgs";
+export { CreateManyLab_resultsArgs } from "./CreateManyLab_resultsArgs";
+export { CreateOneLab_resultsArgs } from "./CreateOneLab_resultsArgs";
+export { DeleteManyLab_resultsArgs } from "./DeleteManyLab_resultsArgs";
+export { DeleteOneLab_resultsArgs } from "./DeleteOneLab_resultsArgs";
+export { FindFirstLab_resultsArgs } from "./FindFirstLab_resultsArgs";
+export { FindFirstLab_resultsOrThrowArgs } from "./FindFirstLab_resultsOrThrowArgs";
+export { FindManyLab_resultsArgs } from "./FindManyLab_resultsArgs";
+export { FindUniqueLab_resultsArgs } from "./FindUniqueLab_resultsArgs";
+export { FindUniqueLab_resultsOrThrowArgs } from "./FindUniqueLab_resultsOrThrowArgs";
+export { GroupByLab_resultsArgs } from "./GroupByLab_resultsArgs";
+export { UpdateManyLab_resultsArgs } from "./UpdateManyLab_resultsArgs";
+export { UpdateOneLab_resultsArgs } from "./UpdateOneLab_resultsArgs";
+export { UpsertOneLab_resultsArgs } from "./UpsertOneLab_resultsArgs";

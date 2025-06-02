@@ -1,0 +1,15 @@
+export { AggregatePharmaciesArgs } from "./AggregatePharmaciesArgs";
+export { CreateManyAndReturnPharmaciesArgs } from "./CreateManyAndReturnPharmaciesArgs";
+export { CreateManyPharmaciesArgs } from "./CreateManyPharmaciesArgs";
+export { CreateOnePharmaciesArgs } from "./CreateOnePharmaciesArgs";
+export { DeleteManyPharmaciesArgs } from "./DeleteManyPharmaciesArgs";
+export { DeleteOnePharmaciesArgs } from "./DeleteOnePharmaciesArgs";
+export { FindFirstPharmaciesArgs } from "./FindFirstPharmaciesArgs";
+export { FindFirstPharmaciesOrThrowArgs } from "./FindFirstPharmaciesOrThrowArgs";
+export { FindManyPharmaciesArgs } from "./FindManyPharmaciesArgs";
+export { FindUniquePharmaciesArgs } from "./FindUniquePharmaciesArgs";
+export { FindUniquePharmaciesOrThrowArgs } from "./FindUniquePharmaciesOrThrowArgs";
+export { GroupByPharmaciesArgs } from "./GroupByPharmaciesArgs";
+export { UpdateManyPharmaciesArgs } from "./UpdateManyPharmaciesArgs";
+export { UpdateOnePharmaciesArgs } from "./UpdateOnePharmaciesArgs";
+export { UpsertOnePharmaciesArgs } from "./UpsertOnePharmaciesArgs";

@@ -1,0 +1,15 @@
+export { AggregateCertificatesArgs } from "./AggregateCertificatesArgs";
+export { CreateManyAndReturnCertificatesArgs } from "./CreateManyAndReturnCertificatesArgs";
+export { CreateManyCertificatesArgs } from "./CreateManyCertificatesArgs";
+export { CreateOneCertificatesArgs } from "./CreateOneCertificatesArgs";
+export { DeleteManyCertificatesArgs } from "./DeleteManyCertificatesArgs";
+export { DeleteOneCertificatesArgs } from "./DeleteOneCertificatesArgs";
+export { FindFirstCertificatesArgs } from "./FindFirstCertificatesArgs";
+export { FindFirstCertificatesOrThrowArgs } from "./FindFirstCertificatesOrThrowArgs";
+export { FindManyCertificatesArgs } from "./FindManyCertificatesArgs";
+export { FindUniqueCertificatesArgs } from "./FindUniqueCertificatesArgs";
+export { FindUniqueCertificatesOrThrowArgs } from "./FindUniqueCertificatesOrThrowArgs";
+export { GroupByCertificatesArgs } from "./GroupByCertificatesArgs";
+export { UpdateManyCertificatesArgs } from "./UpdateManyCertificatesArgs";
+export { UpdateOneCertificatesArgs } from "./UpdateOneCertificatesArgs";
+export { UpsertOneCertificatesArgs } from "./UpsertOneCertificatesArgs";

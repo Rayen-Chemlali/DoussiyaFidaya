@@ -1,0 +1,11 @@
+import * as TypeGraphQL from "type-graphql";
+import * as GraphQLScalars from "graphql-scalars";
+import { RdvsWhereInput } from "../../../inputs/RdvsWhereInput";
+
+@TypeGraphQL.ArgsType()
+export class Rdv_requestsRdvs_rdvs_rdv_request_idTordv_requestsArgs {
+  @TypeGraphQL.Field(_type => RdvsWhereInput, {
+    nullable: true
+  })
+  where?: RdvsWhereInput | undefined;
+}
