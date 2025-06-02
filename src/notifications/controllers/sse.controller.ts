@@ -25,6 +25,8 @@ export class SseController {
   @Sse()
   @UseGuards(JwtAuthGuard)
   notifications(@Req() req: any ): Observable<MessageEvent> {
+    console.log("this is the request", req);
+    console.log("this is the request user", req.user);
     const userId = req.user.id;
     console.log(userId);
     this.logger.log(`SSE connection for user: ${userId}`);

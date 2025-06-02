@@ -9,7 +9,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: ['http://localhost:3000', 'http://localhost:8080'], // allow multiple origins
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
@@ -23,7 +23,6 @@ async function bootstrap() {
 
   // Start the server
   const port = process.env.PORT || 4000;
-  app.enableCors({ origin: 'http://localhost:8080' });
   await app.listen(port, '0.0.0.0');
   console.log(`Application is running on: http://localhost:${port}`);
 
