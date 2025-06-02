@@ -90,6 +90,7 @@ model consultations {
   patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   rdvs                      rdvs?
+  lab_requests              lab_requests[]
 }
 
 model ctscan_results {
@@ -136,6 +137,7 @@ model doctors {
   rdvs                rdvs[]
   sentMessages        Message[]              @relation("SentMessages")
   receivedMessages    Message[]              @relation("ReceivedMessages")
+  instituts           instituts_medicaux[]
 }
 
 model hopitaux {
@@ -153,6 +155,7 @@ model instituts_medicaux {
   authorizations   authorizations[]
   consultations    consultations[]
   doctor_instituts doctor_instituts[]
+  doctors          doctors[]
 }
 
 model lab_attachments {
@@ -196,6 +199,7 @@ model lab_requests {
   lab_documents             lab_documents[]
   doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   patients                  patients                    @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  consultations             consultations[]
 }
 
 model lab_results {
