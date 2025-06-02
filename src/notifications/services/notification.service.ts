@@ -141,7 +141,7 @@ export class NotificationService implements OnModuleInit {
   async deliverStoredNotifications(userId: string) {
     console.log('this is my id here deliverStoredNotifications', this.my_id);
     try {
-      const notifications = await this.prisma.userNotification.findMany({ where: { userId } });
+      const notifications = await this.prisma.userNotification.findMany({ where: { userId ,sentToUser:false} });
       console.log('these are my notifications', notifications);
       if (notifications.length > 0) {
         for (const notif of notifications) {
@@ -177,6 +177,7 @@ export class NotificationService implements OnModuleInit {
       console.log('this is the payload im sending', {entity:data.entity})
       setTimeout(() => this.eventCache.delete(eventName), 5000);
       this.eventEmitter.emit(`sse.notify:${userId}`, { eventName, payload: data });
+      this.rabbitClient.emit('notification-online', { eventName, payload: data, userIds: [userId] });
       console.log(`Emitted sse.notify:${userId} for user ${userId} from notifyClient`);
     } catch (err) {
       this.logger.error(`Error notifying client ${userId}: ${err.message}`);

@@ -8,10 +8,12 @@ export class NotificationWorkerService {
 
   @EventPattern('notification-offline')
   async handleNotification(msg: { eventName: string; payload: any; userIds: string[] }) {
+    console.log('Received [Event] offline notification', msg);
     await this.PersistNotification(false, msg);
   }
   @EventPattern('notification-online')
   async handleOnlineNotification(msg: { eventName: string; payload: any; userIds: string[] }) {
+    console.log('Received [Event] online notification', msg);
     await this.PersistNotification(true, msg);
   }
   async PersistNotification(status:boolean,msg: { eventName: string; payload: any; userIds: string[] }) {
