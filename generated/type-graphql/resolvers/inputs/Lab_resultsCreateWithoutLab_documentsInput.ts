@@ -29,5 +29,5 @@ export class Lab_resultsCreateWithoutLab_documentsInput {
   @TypeGraphQL.Field(_type => lab_results_result_type_enum, {
     nullable: false
   })
-  result_type!: "NORMAL" | "ABNORMAL" | "CRITICAL";
+  result_type!: "analysis" | "xray" | "ctscan";
 }

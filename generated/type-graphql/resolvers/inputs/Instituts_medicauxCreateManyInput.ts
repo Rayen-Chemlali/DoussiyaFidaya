@@ -14,5 +14,5 @@ export class Instituts_medicauxCreateManyInput {
   @TypeGraphQL.Field(_type => instituts_medicaux_type_enum, {
     nullable: false
   })
-  type!: "CLINIC" | "HOSPITAL" | "LABORATORY";
+  type!: "doctor" | "clinique" | "hopital";
 }

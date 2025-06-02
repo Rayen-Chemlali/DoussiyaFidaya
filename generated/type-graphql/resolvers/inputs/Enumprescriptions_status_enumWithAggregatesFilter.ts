@@ -12,17 +12,17 @@ export class Enumprescriptions_status_enumWithAggregatesFilter {
   @TypeGraphQL.Field(_type => prescriptions_status_enum, {
     nullable: true
   })
-  equals?: "ACTIVE" | "COMPLETED" | "CANCELLED" | undefined;
+  equals?: "Pending" | "Approved" | "Rejected" | undefined;
 
   @TypeGraphQL.Field(_type => [prescriptions_status_enum], {
     nullable: true
   })
-  in?: Array<"ACTIVE" | "COMPLETED" | "CANCELLED"> | undefined;
+  in?: Array<"Pending" | "Approved" | "Rejected"> | undefined;
 
   @TypeGraphQL.Field(_type => [prescriptions_status_enum], {
     nullable: true
   })
-  notIn?: Array<"ACTIVE" | "COMPLETED" | "CANCELLED"> | undefined;
+  notIn?: Array<"Pending" | "Approved" | "Rejected"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumprescriptions_status_enumWithAggregatesFilter, {
     nullable: true

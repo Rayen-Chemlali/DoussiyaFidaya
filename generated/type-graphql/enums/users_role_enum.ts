@@ -1,12 +1,13 @@
 import * as TypeGraphQL from "type-graphql";
 
 export enum users_role_enum {
-  ADMIN = "ADMIN",
-  DOCTOR = "DOCTOR",
-  PATIENT = "PATIENT",
-  LABORATORY = "LABORATORY",
-  HOSPITAL = "HOSPITAL",
-  CLINIC = "CLINIC"
+  Patient = "Patient",
+  Doctor = "Doctor",
+  Pharmacy = "Pharmacy",
+  Laboratory = "Laboratory",
+  Insurance = "Insurance",
+  Assistant = "Assistant",
+  Admin = "Admin"
 }
 TypeGraphQL.registerEnumType(users_role_enum, {
   name: "users_role_enum",

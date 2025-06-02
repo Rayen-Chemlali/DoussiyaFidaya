@@ -17,7 +17,7 @@ export class AuthorizationsGroupBy {
   @TypeGraphQL.Field(_type => authorizations_level_enum, {
     nullable: false
   })
-  level!: "READ" | "WRITE" | "ADMIN";
+  level!: "general" | "speciality" | "full_access";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

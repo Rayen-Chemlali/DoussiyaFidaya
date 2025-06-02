@@ -69,7 +69,7 @@ export class UsersMaxAggregate {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: true
   })
-  role!: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC" | null;
+  role!: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

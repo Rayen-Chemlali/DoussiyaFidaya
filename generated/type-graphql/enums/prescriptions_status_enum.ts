@@ -1,9 +1,9 @@
 import * as TypeGraphQL from "type-graphql";
 
 export enum prescriptions_status_enum {
-  ACTIVE = "ACTIVE",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED"
+  Pending = "Pending",
+  Approved = "Approved",
+  Rejected = "Rejected"
 }
 TypeGraphQL.registerEnumType(prescriptions_status_enum, {
   name: "prescriptions_status_enum",

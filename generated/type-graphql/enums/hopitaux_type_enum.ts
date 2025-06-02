@@ -1,8 +1,9 @@
 import * as TypeGraphQL from "type-graphql";
 
 export enum hopitaux_type_enum {
-  PUBLIC = "PUBLIC",
-  PRIVATE = "PRIVATE"
+  doctor = "doctor",
+  clinique = "clinique",
+  hopital = "hopital"
 }
 TypeGraphQL.registerEnumType(hopitaux_type_enum, {
   name: "hopitaux_type_enum",

@@ -30,7 +30,7 @@ export class Xray_resultsCreateInput {
   @TypeGraphQL.Field(_type => xray_results_result_type_enum, {
     nullable: false
   })
-  result_type!: "NORMAL" | "ABNORMAL" | "CRITICAL";
+  result_type!: "analysis" | "xray" | "ctscan";
 
   @TypeGraphQL.Field(_type => Lab_documentsCreateNestedOneWithoutXray_resultsInput, {
     nullable: false

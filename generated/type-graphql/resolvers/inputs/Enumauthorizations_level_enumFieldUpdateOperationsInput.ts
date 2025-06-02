@@ -9,5 +9,5 @@ export class Enumauthorizations_level_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => authorizations_level_enum, {
     nullable: true
   })
-  set?: "READ" | "WRITE" | "ADMIN" | undefined;
+  set?: "general" | "speciality" | "full_access" | undefined;
 }

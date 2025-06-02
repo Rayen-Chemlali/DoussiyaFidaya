@@ -1,9 +1,9 @@
 import * as TypeGraphQL from "type-graphql";
 
 export enum authorizations_level_enum {
-  READ = "READ",
-  WRITE = "WRITE",
-  ADMIN = "ADMIN"
+  general = "general",
+  speciality = "speciality",
+  full_access = "full_access"
 }
 TypeGraphQL.registerEnumType(authorizations_level_enum, {
   name: "authorizations_level_enum",

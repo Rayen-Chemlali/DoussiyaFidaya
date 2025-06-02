@@ -16,7 +16,7 @@ export class Instituts_medicauxCreateWithoutAuthorizationsInput {
   @TypeGraphQL.Field(_type => instituts_medicaux_type_enum, {
     nullable: false
   })
-  type!: "CLINIC" | "HOSPITAL" | "LABORATORY";
+  type!: "doctor" | "clinique" | "hopital";
 
   @TypeGraphQL.Field(_type => ConsultationsCreateNestedManyWithoutInstituts_medicauxInput, {
     nullable: true

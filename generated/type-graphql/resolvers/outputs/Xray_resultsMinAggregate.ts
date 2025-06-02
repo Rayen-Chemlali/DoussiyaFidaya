@@ -29,7 +29,7 @@ export class Xray_resultsMinAggregate {
   @TypeGraphQL.Field(_type => xray_results_result_type_enum, {
     nullable: true
   })
-  result_type!: "NORMAL" | "ABNORMAL" | "CRITICAL" | null;
+  result_type!: "analysis" | "xray" | "ctscan" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

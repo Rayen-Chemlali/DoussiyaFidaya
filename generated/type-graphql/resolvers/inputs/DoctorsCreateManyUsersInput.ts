@@ -18,7 +18,7 @@ export class DoctorsCreateManyUsersInput {
   @TypeGraphQL.Field(_type => doctors_type_enum, {
     nullable: false
   })
-  type!: "GENERAL_PRACTITIONER" | "SPECIALIST" | "SURGEON";
+  type!: "doctor" | "clinique" | "hopital";
 
   @TypeGraphQL.Field(_type => Boolean, {
     nullable: true
@@ -63,5 +63,5 @@ export class DoctorsCreateManyUsersInput {
   @TypeGraphQL.Field(_type => doctors_specialty_enum, {
     nullable: false
   })
-  specialty!: "GENERAL_PRACTITIONER" | "CARDIOLOGIST" | "DERMATOLOGIST" | "ENDOCRINOLOGIST" | "GASTROENTEROLOGIST" | "GYNECOLOGIST" | "HEMATOLOGIST" | "INFECTIOUS_DISEASE" | "INTERNIST" | "NEPHROLOGIST" | "NEUROLOGIST" | "OBSTETRICIAN" | "ONCOLOGIST" | "OPHTHALMOLOGIST" | "ORTHOPEDIST" | "OTOLARYNGOLOGIST" | "PEDIATRICIAN" | "PSYCHIATRIST" | "PULMONOLOGIST" | "RHEUMATOLOGIST" | "UROLOGIST";
+  specialty!: "generaliste" | "cardiologue" | "dermatologue" | "gynecologue" | "pediatre" | "orthopediste" | "psychiatre" | "ophtalmologue" | "otorhinolaryngologue" | "neurologue" | "urologue" | "endocrinologue" | "gastroenterologue" | "rheumatologue" | "anesthesiste" | "radiologue" | "oncologue" | "chirurgien" | "nutritionniste" | "physiotherapeute" | "psychologue" | "sexologue" | "geriatre" | "allergologue" | "hematologue" | "nephrologue" | "pneumologue" | "dentiste" | "orthodontiste" | "autre";
 }

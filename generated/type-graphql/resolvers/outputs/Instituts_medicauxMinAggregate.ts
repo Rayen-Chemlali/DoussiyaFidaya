@@ -14,5 +14,5 @@ export class Instituts_medicauxMinAggregate {
   @TypeGraphQL.Field(_type => instituts_medicaux_type_enum, {
     nullable: true
   })
-  type!: "CLINIC" | "HOSPITAL" | "LABORATORY" | null;
+  type!: "doctor" | "clinique" | "hopital" | null;
 }

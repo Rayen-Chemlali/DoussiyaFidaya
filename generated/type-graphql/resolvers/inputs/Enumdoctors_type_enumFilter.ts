@@ -10,17 +10,17 @@ export class Enumdoctors_type_enumFilter {
   @TypeGraphQL.Field(_type => doctors_type_enum, {
     nullable: true
   })
-  equals?: "GENERAL_PRACTITIONER" | "SPECIALIST" | "SURGEON" | undefined;
+  equals?: "doctor" | "clinique" | "hopital" | undefined;
 
   @TypeGraphQL.Field(_type => [doctors_type_enum], {
     nullable: true
   })
-  in?: Array<"GENERAL_PRACTITIONER" | "SPECIALIST" | "SURGEON"> | undefined;
+  in?: Array<"doctor" | "clinique" | "hopital"> | undefined;
 
   @TypeGraphQL.Field(_type => [doctors_type_enum], {
     nullable: true
   })
-  notIn?: Array<"GENERAL_PRACTITIONER" | "SPECIALIST" | "SURGEON"> | undefined;
+  notIn?: Array<"doctor" | "clinique" | "hopital"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumdoctors_type_enumFilter, {
     nullable: true

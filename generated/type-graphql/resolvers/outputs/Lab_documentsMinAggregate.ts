@@ -34,7 +34,7 @@ export class Lab_documentsMinAggregate {
   @TypeGraphQL.Field(_type => lab_documents_status_enum, {
     nullable: true
   })
-  status!: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | null;
+  status!: "pending" | "in_progress" | "completed" | "cancelled" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

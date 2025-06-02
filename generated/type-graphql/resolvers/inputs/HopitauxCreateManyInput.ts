@@ -14,7 +14,7 @@ export class HopitauxCreateManyInput {
   @TypeGraphQL.Field(_type => hopitaux_type_enum, {
     nullable: false
   })
-  type!: "PUBLIC" | "PRIVATE";
+  type!: "doctor" | "clinique" | "hopital";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: false

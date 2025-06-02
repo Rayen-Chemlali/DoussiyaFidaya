@@ -11,17 +11,17 @@ export class NestedEnumhopitaux_type_enumWithAggregatesFilter {
   @TypeGraphQL.Field(_type => hopitaux_type_enum, {
     nullable: true
   })
-  equals?: "PUBLIC" | "PRIVATE" | undefined;
+  equals?: "doctor" | "clinique" | "hopital" | undefined;
 
   @TypeGraphQL.Field(_type => [hopitaux_type_enum], {
     nullable: true
   })
-  in?: Array<"PUBLIC" | "PRIVATE"> | undefined;
+  in?: Array<"doctor" | "clinique" | "hopital"> | undefined;
 
   @TypeGraphQL.Field(_type => [hopitaux_type_enum], {
     nullable: true
   })
-  notIn?: Array<"PUBLIC" | "PRIVATE"> | undefined;
+  notIn?: Array<"doctor" | "clinique" | "hopital"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumhopitaux_type_enumWithAggregatesFilter, {
     nullable: true

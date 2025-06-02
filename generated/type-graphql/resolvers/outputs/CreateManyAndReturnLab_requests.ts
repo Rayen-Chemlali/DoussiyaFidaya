@@ -22,7 +22,7 @@ export class CreateManyAndReturnLab_requests {
   @TypeGraphQL.Field(_type => lab_requests_priority_enum, {
     nullable: true
   })
-  priority!: "LOW" | "MEDIUM" | "HIGH" | "URGENT" | null;
+  priority!: "low" | "medium" | "high" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

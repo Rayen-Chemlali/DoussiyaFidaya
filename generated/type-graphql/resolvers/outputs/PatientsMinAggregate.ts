@@ -24,7 +24,7 @@ export class PatientsMinAggregate {
   @TypeGraphQL.Field(_type => patients_gender_enum, {
     nullable: true
   })
-  gender!: "MALE" | "FEMALE" | "OTHER" | null;
+  gender!: "Male" | "Female" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

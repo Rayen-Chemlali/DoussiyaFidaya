@@ -9,5 +9,5 @@ export class NullableEnumlab_requests_priority_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => lab_requests_priority_enum, {
     nullable: true
   })
-  set?: "LOW" | "MEDIUM" | "HIGH" | "URGENT" | undefined;
+  set?: "low" | "medium" | "high" | undefined;
 }

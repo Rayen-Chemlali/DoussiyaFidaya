@@ -9,5 +9,5 @@ export class Enumlab_documents_status_enumFieldUpdateOperationsInput {
   @TypeGraphQL.Field(_type => lab_documents_status_enum, {
     nullable: true
   })
-  set?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | undefined;
+  set?: "pending" | "in_progress" | "completed" | "cancelled" | undefined;
 }

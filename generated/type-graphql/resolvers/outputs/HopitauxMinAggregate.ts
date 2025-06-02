@@ -14,7 +14,7 @@ export class HopitauxMinAggregate {
   @TypeGraphQL.Field(_type => hopitaux_type_enum, {
     nullable: true
   })
-  type!: "PUBLIC" | "PRIVATE" | null;
+  type!: "doctor" | "clinique" | "hopital" | null;
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

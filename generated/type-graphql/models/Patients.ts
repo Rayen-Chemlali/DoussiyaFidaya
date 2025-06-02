@@ -35,7 +35,7 @@ export class Patients {
   @TypeGraphQL.Field(_type => patients_gender_enum, {
     nullable: false
   })
-  gender!: "MALE" | "FEMALE" | "OTHER";
+  gender!: "Male" | "Female";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true

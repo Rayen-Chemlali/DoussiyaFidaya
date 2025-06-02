@@ -12,17 +12,17 @@ export class Enumpatients_gender_enumWithAggregatesFilter {
   @TypeGraphQL.Field(_type => patients_gender_enum, {
     nullable: true
   })
-  equals?: "MALE" | "FEMALE" | "OTHER" | undefined;
+  equals?: "Male" | "Female" | undefined;
 
   @TypeGraphQL.Field(_type => [patients_gender_enum], {
     nullable: true
   })
-  in?: Array<"MALE" | "FEMALE" | "OTHER"> | undefined;
+  in?: Array<"Male" | "Female"> | undefined;
 
   @TypeGraphQL.Field(_type => [patients_gender_enum], {
     nullable: true
   })
-  notIn?: Array<"MALE" | "FEMALE" | "OTHER"> | undefined;
+  notIn?: Array<"Male" | "Female"> | undefined;
 
   @TypeGraphQL.Field(_type => NestedEnumpatients_gender_enumWithAggregatesFilter, {
     nullable: true

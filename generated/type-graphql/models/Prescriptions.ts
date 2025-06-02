@@ -39,7 +39,7 @@ export class Prescriptions {
   @TypeGraphQL.Field(_type => prescriptions_status_enum, {
     nullable: false
   })
-  status!: "ACTIVE" | "COMPLETED" | "CANCELLED";
+  status!: "Pending" | "Approved" | "Rejected";
 
   @TypeGraphQL.Field(_type => Date, {
     nullable: false

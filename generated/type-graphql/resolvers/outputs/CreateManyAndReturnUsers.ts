@@ -69,7 +69,7 @@ export class CreateManyAndReturnUsers {
   @TypeGraphQL.Field(_type => users_role_enum, {
     nullable: false
   })
-  role!: "ADMIN" | "DOCTOR" | "PATIENT" | "LABORATORY" | "HOSPITAL" | "CLINIC";
+  role!: "Patient" | "Doctor" | "Pharmacy" | "Laboratory" | "Insurance" | "Assistant" | "Admin";
 
   @TypeGraphQL.Field(_type => String, {
     nullable: true
