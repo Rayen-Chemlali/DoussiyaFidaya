@@ -62,17 +62,6 @@ model cliniques {
   email   String?
 }
 
-model consultation_lab_requests {
-  consultation_id String        @db.Uuid
-  lab_request_id  String        @db.Uuid
-  lab_requests    lab_requests  @relation(fields: [lab_request_id], references: [id], onDelete: Cascade, map: "FK_c7ff515e4184d1f7f535e8b3caa")
-  consultations   consultations @relation(fields: [consultation_id], references: [id], onDelete: Cascade, map: "FK_dee1a36c581e90ee3237a3b5eda")
-
-  @@id([consultation_id, lab_request_id], map: "PK_fd46884e9600ab52922ed44848f")
-  @@index([lab_request_id], map: "IDX_c7ff515e4184d1f7f535e8b3ca")
-  @@index([consultation_id], map: "IDX_dee1a36c581e90ee3237a3b5ed")
-}
-
 model consultations {
   id                        String                      @id @default(uuid()) @db.Uuid
   section                   String?
@@ -83,7 +72,6 @@ model consultations {
   institut_medical_id       String?                     @db.Uuid
   prescription_id           String?                     @unique @db.Uuid
   patient_id                String                      @db.Uuid
-  consultation_lab_requests consultation_lab_requests[]
   lab_requests             lab_requests[]
   prescriptions             prescriptions?              @relation(fields: [prescription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   instituts_medicaux        instituts_medicaux?         @relation(fields: [institut_medical_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -102,16 +90,6 @@ model ctscan_results {
   lab_documents   lab_documents                   @relation(fields: [lab_document_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model doctor_instituts {
-  doctor_id           String             @db.Uuid
-  institut_medical_id String             @db.Uuid
-  doctors             doctors            @relation(fields: [doctor_id], references: [id], onDelete: Cascade, map: "FK_923f87cb0e2090945db970c7b6e")
-  instituts_medicaux  instituts_medicaux @relation(fields: [institut_medical_id], references: [id], onDelete: Cascade, map: "FK_b0a5ec63efd9946c346c74e5768")
-
-  @@id([doctor_id, institut_medical_id], map: "PK_2d7427057147c74b40bcaa512dd")
-  @@index([doctor_id], map: "IDX_923f87cb0e2090945db970c7b6")
-  @@index([institut_medical_id], map: "IDX_b0a5ec63efd9946c346c74e576")
-}
 
 model doctors {
   id                  String                 @id @default(uuid()) @db.Uuid
@@ -128,7 +106,6 @@ model doctors {
   user_id             String                 @unique @db.Uuid
   certificates        certificates[]
   consultations       consultations[]
-  doctor_instituts    doctor_instituts[]
   instituts           instituts_medicaux[]
   users               users                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   lab_requests        lab_requests[]
@@ -153,7 +130,6 @@ model instituts_medicaux {
   type             instituts_medicaux_type_enum
   authorizations   authorizations[]
   consultations    consultations[]
-  doctor_instituts doctor_instituts[]
   doctors         doctors[]
 }
 
@@ -194,7 +170,6 @@ model lab_requests {
   description               String?
   doctor_id                 String?                     @db.Uuid
   patient_id                String                      @db.Uuid
-  consultation_lab_requests consultation_lab_requests[]
   consultations            consultations[]
   lab_documents             lab_documents[]
   doctors                   doctors?                    @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
