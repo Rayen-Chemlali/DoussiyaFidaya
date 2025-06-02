@@ -2,7 +2,9 @@ import { BadRequestException, ConflictException, HttpException, Injectable, NotF
 import { JwtService } from '@nestjs/jwt';
 import {  doctors, patients, Prisma, users, users_role_enum } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { NotFoundError } from 'rxjs';
+// ... existing code ...
+import { PrismaService } from '../prisma/prisma.service';  // Update this import
+// ... existing code ...import { NotFoundError } from 'rxjs';
 import { MailerService } from 'src/mailer/mailer.service';
 import { VerificationService } from 'src/utils/verification/verification.service';
 import { DoctorRegistrationInput } from './dtos/doctor-registration.input';
@@ -12,41 +14,41 @@ import { PatientRegistrationInput } from './dtos/patient-registration.input';
 import { UserPayload } from './interfaces/payload.interface';
 import { AssociatedData } from './interfaces/payload.interface';
 import { send } from 'process';
-import { PrismaService } from '../prisma/prisma.service';
+
 @Injectable()
 export class AuthService {
     constructor(private readonly prisma : PrismaService,
-        private readonly mailerService : MailerService,
-        private readonly verificationService : VerificationService,
-        private readonly jwtService : JwtService,
-        
-    ) {}  
+                private readonly mailerService : MailerService,
+                private readonly verificationService : VerificationService,
+                private readonly jwtService : JwtService,
+
+    ) {}
     async register(body: any) {
 
-        
+
         const { role} = body;
         let dtoClass
-        if(role === users_role_enum.DOCTOR) {
+        if(role === users_role_enum.Doctor) {
             dtoClass = DoctorRegistrationInput;
         }
-        else if(role === users_role_enum.PATIENT) {
+        else if(role === users_role_enum.Patient) {
             dtoClass = PatientRegistrationInput;
         }
         else {
             throw new BadRequestException('Invalid role');
         }
-        
+
 
         const registrationInput: typeof dtoClass = plainToInstance(dtoClass, body) ;
 
-       const errors = await validate(registrationInput, {
+        const errors = await validate(registrationInput, {
             whitelist: true,               // Strips properties that are not in the DTO
-            
+
         });
         if (errors.length > 0) {
             throw new BadRequestException(errors);
         }
-        
+
         const { email, first_name, last_name, password, address, phone,cin , gender, type, specialty , date_of_birth} = registrationInput;
 
         const salt: string = await bcrypt.genSalt(10);
@@ -63,87 +65,87 @@ export class AuthService {
         if (cinExists) {
             throw new ConflictException('Cin already exists');
         }
-        
-        
+
+
         const resultedUser = await this.prisma.$transaction(async (tx) => {
-            let user: users;
-            try {
-                user = await tx.users.create({
-                        data: {
-                            email,
-                            first_name,
-                            last_name,
-                            password : hashedPassword,
-                            salt,
-                            address,
-                            phone,
-                            role,
-                            is_verified: false,
-                        }});
-            } catch (error) {
-                console.error('Error creating user:', error);
-                throw new BadRequestException('User creation failed');
-            }
+              let user: users;
+              try {
+                  user = await tx.users.create({
+                      data: {
+                          email,
+                          first_name,
+                          last_name,
+                          password : hashedPassword,
+                          salt,
+                          address,
+                          phone,
+                          role,
+                          is_verified: false,
+                      }});
+              } catch (error) {
+                  console.error('Error creating user:', error);
+                  throw new BadRequestException('User creation failed');
+              }
 
-            if (!user) {
-                throw new ConflictException('User creation failed');
-            }
-            if (role ===  users_role_enum.PATIENT) {
-                let patient : patients;
-                try {
-                    patient = await tx.patients.create({
-                        data: {
-                            user_id: user.id,
-                            cin : parseInt(cin), 
-                            date_of_birth,
-                            gender,
-                        }
-                    });
-                } 
-                    catch (error) {
-                    console.error('Error creating patient:', error);
-                    throw new BadRequestException('Patient creation failed');
-                }
-                await tx.users.update({
-                    where: { id: user.id },
-                    data: { associated_id: patient.id },
-                });
-            } else if (role === users_role_enum.DOCTOR) {
-                let doctor: doctors; 
-                try {
-                    doctor = await tx.doctors.create({
-                        data: {
-                            users : {
-                                connect: {
-                                    id: user.id,
-                                },
-                            },
-                            type,
-                            specialty,
-                            first_name,
-                            last_name,
-                            is_license_verified: false,
-                        },
-                    });
-                    } catch (error) {
-                    console.error('Error creating doctor:', error);
-                    throw new BadRequestException('Doctor creation failed');
-                    }
+              if (!user) {
+                  throw new ConflictException('User creation failed');
+              }
+              if (role ===  users_role_enum.Patient) {
+                  let patient : patients;
+                  try {
+                      patient = await tx.patients.create({
+                          data: {
+                              user_id: user.id,
+                              cin : parseInt(cin),
+                              date_of_birth,
+                              gender,
+                          }
+                      });
+                  }
+                  catch (error) {
+                      console.error('Error creating patient:', error);
+                      throw new BadRequestException('Patient creation failed');
+                  }
+                  await tx.users.update({
+                      where: { id: user.id },
+                      data: { associated_id: patient.id },
+                  });
+              } else if (role === users_role_enum.Doctor) {
+                  let doctor: doctors;
+                  try {
+                      doctor = await tx.doctors.create({
+                          data: {
+                              users : {
+                                  connect: {
+                                      id: user.id,
+                                  },
+                              },
+                              type,
+                              specialty,
+                              first_name,
+                              last_name,
+                              is_license_verified: false,
+                          },
+                      });
+                  } catch (error) {
+                      console.error('Error creating doctor:', error);
+                      throw new BadRequestException('Doctor creation failed');
+                  }
 
-                if (!doctor) {
-                    throw new ConflictException('Doctor creation failed');
-                }
+                  if (!doctor) {
+                      throw new ConflictException('Doctor creation failed');
+                  }
 
-                await tx.users.update({
-                    where: { id: user.id },
-                    data: { associated_id: doctor.id },
-                });
-            }
-            return user;
-            }
+                  await tx.users.update({
+                      where: { id: user.id },
+                      data: { associated_id: doctor.id },
+                  });
+              }
+              return user;
+          }
         );
-    
-    
+
+
         return {
             message: 'User registered successfully , verify your email',
             email: resultedUser.email,
@@ -177,11 +179,11 @@ export class AuthService {
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        
+
         const verificationCode = await this.verificationService.generateOtp(user.id,6, user.salt);
-        
+
         return this.sendMail(email, verificationCode);
-       
+
     }
 
     async getResetPasswordMail(email: string) {
@@ -229,7 +231,7 @@ export class AuthService {
         if (!decodedToken || !decodedToken['able_to_reset_password']) {
             throw new BadRequestException('Invalid token');
         }
-    
+
         const user = await this.prisma.users.findUnique({
             where: { email },
         });
@@ -249,63 +251,63 @@ export class AuthService {
 
 
     async login(email: string, plainPassword: string): Promise<{ message: string; user: UserPayload; token: string }> {
-    const foundUser = await this.prisma.users.findUnique({
-        where: { email },
-    });
-
-    if (!foundUser) {
-        throw new NotFoundException('User not found');
-    }
-    if (!foundUser.is_verified) {
-        throw new BadRequestException('Email not verified');
-    }
-
-    const hashedPassword = await bcrypt.hash(plainPassword, foundUser.salt);
-    if (hashedPassword !== foundUser.password) {
-        throw new BadRequestException('Invalid password');
-    }
-
-    const { password, salt, ...userWithoutSensitiveData } = foundUser;
-    const associatedId = foundUser.associated_id;
-    if (!associatedId) {
-        throw new NotFoundException('Associated data not found');
-    }
-
-    let associated_data: AssociatedData;
-
-    if (foundUser.role === users_role_enum.PATIENT) {
-        const patient = await this.prisma.patients.findUnique({
-            where: { id: associatedId },
+        const foundUser = await this.prisma.users.findUnique({
+            where: { email },
         });
-        if (!patient) {
-            throw new NotFoundException('Patient not found');
+
+        if (!foundUser) {
+            throw new NotFoundException('User not found');
         }
-        associated_data = {...patient }; // Include patient data if needed
-    } else if (foundUser.role === users_role_enum.DOCTOR) {
-        const doctor = await this.prisma.doctors.findUnique({
-            where: { id: associatedId },
-        });
-        if (!doctor) {
-            throw new NotFoundException('Doctor not found');
+        if (!foundUser.is_verified) {
+            throw new BadRequestException('Email not verified');
         }
-        associated_data = { ...doctor }; // Include doctor data if needed
-    } else {
-        throw new BadRequestException('Unknown user role');
+
+        const hashedPassword = await bcrypt.hash(plainPassword, foundUser.salt);
+        if (hashedPassword !== foundUser.password) {
+            throw new BadRequestException('Invalid password');
+        }
+
+        const { password, salt, ...userWithoutSensitiveData } = foundUser;
+        const associatedId = foundUser.associated_id;
+        if (!associatedId) {
+            throw new NotFoundException('Associated data not found');
+        }
+
+        let associated_data: AssociatedData;
+
+        if (foundUser.role === users_role_enum.Patient) {
+            const patient = await this.prisma.patients.findUnique({
+                where: { id: associatedId },
+            });
+            if (!patient) {
+                throw new NotFoundException('Patient not found');
+            }
+            associated_data = {...patient }; // Include patient data if needed
+        } else if (foundUser.role === users_role_enum.Doctor) {
+            const doctor = await this.prisma.doctors.findUnique({
+                where: { id: associatedId },
+            });
+            if (!doctor) {
+                throw new NotFoundException('Doctor not found');
+            }
+            associated_data = { ...doctor }; // Include doctor data if needed
+        } else {
+            throw new BadRequestException('Unknown user role');
+        }
+
+        const userPayload: UserPayload = {
+            ...userWithoutSensitiveData,
+            associated_data,
+        };
+
+        const token = this.jwtService.sign(userPayload);
+
+        return {
+            message: 'Login successful',
+            user: userPayload,
+            token,
+        };
     }
-
-    const userPayload: UserPayload = {
-        ...userWithoutSensitiveData,
-        associated_data,
-    };
-
-    const token = this.jwtService.sign(userPayload);
-
-    return {
-        message: 'Login successful',
-        user: userPayload,
-        token,
-    };
-}
 
 
 
@@ -329,7 +331,7 @@ export class AuthService {
     }
 
     // Register a patient
-     async registerPatient(registrationInput: PatientRegistrationInput) {
+    async registerPatient(registrationInput: PatientRegistrationInput) {
 
         const { email, first_name, last_name, password, address, phone, cin, gender, date_of_birth } = registrationInput;
 
@@ -356,7 +358,7 @@ export class AuthService {
                     salt,
                     address,
                     phone,
-                    role: users_role_enum.PATIENT,
+                    role: users_role_enum.Patient,
                     is_verified: false,
                 },
             });
@@ -384,8 +386,8 @@ export class AuthService {
         };
     }
     //doctor registration
-     async registerDoctor(registrationInput: DoctorRegistrationInput) {
-       
+    async registerDoctor(registrationInput: DoctorRegistrationInput) {
+
         const { email, first_name, last_name, password, address, phone, type, specialty } = registrationInput;
 
         const salt: string = await bcrypt.genSalt(10);
@@ -406,7 +408,7 @@ export class AuthService {
                     salt,
                     address,
                     phone,
-                    role: users_role_enum.DOCTOR,
+                    role: users_role_enum.Doctor,
                     is_verified: false,
                 },
             });
@@ -443,4 +445,3 @@ export class AuthService {
 
 
 }
-

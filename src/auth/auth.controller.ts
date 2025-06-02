@@ -8,7 +8,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {
-    
+
   }
   @Post('registerPatient')
   async register(@Body() registrationInput : any) {
@@ -54,14 +54,15 @@ export class AuthController {
 
     return this.authService.login(email, password);
   }
-  
-    @Get('status')
-    @UseGuards(JwtAuthGuard)
-    async getStatus(@Req() req :any) {
-        return {
-            message: "User is authenticated",
-            user : req.user
-  };
-    }
-}
 
+  @Get('status')
+  @UseGuards(JwtAuthGuard)
+  async getStatus(@Req() req :any) {
+    return {
+      message: "User is authenticated",
+      user : req.user
+    };
+  }
+
+
+}

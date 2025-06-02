@@ -28,6 +28,6 @@ import { JwtStrategy } from './strategies/jwt-strategie';
     VerificationModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailerService,JwtStrategy],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

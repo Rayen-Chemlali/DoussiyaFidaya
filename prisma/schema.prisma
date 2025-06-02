@@ -336,114 +336,124 @@ model xray_results {
 }
 
 enum analysis_results_result_type_enum {
-  NORMAL
-  ABNORMAL
-  CRITICAL
+  analysis
+  xray
+  ctscan
 }
 
 enum authorizations_level_enum {
-  READ
-  WRITE
-  ADMIN
+  general
+  speciality
+  full_access
 }
 
 enum cliniques_type_enum {
-  PRIVATE
-  PUBLIC
+  doctor
+  clinique
+  hopital
 }
 
 enum ctscan_results_result_type_enum {
-  NORMAL
-  ABNORMAL
-  CRITICAL
+  analysis
+  xray
+  ctscan
 }
 
 enum doctors_specialty_enum {
-  GENERAL_PRACTITIONER
-  CARDIOLOGIST
-  DERMATOLOGIST
-  ENDOCRINOLOGIST
-  GASTROENTEROLOGIST
-  GYNECOLOGIST
-  HEMATOLOGIST
-  INFECTIOUS_DISEASE
-  INTERNIST
-  NEPHROLOGIST
-  NEUROLOGIST
-  OBSTETRICIAN
-  ONCOLOGIST
-  OPHTHALMOLOGIST
-  ORTHOPEDIST
-  OTOLARYNGOLOGIST
-  PEDIATRICIAN
-  PSYCHIATRIST
-  PULMONOLOGIST
-  RHEUMATOLOGIST
-  UROLOGIST
+  generaliste
+  cardiologue
+  dermatologue
+  gynecologue
+  pediatre
+  orthopediste
+  psychiatre
+  ophtalmologue
+  otorhinolaryngologue
+  neurologue
+  urologue
+  endocrinologue
+  gastroenterologue
+  rheumatologue
+  anesthesiste
+  radiologue
+  oncologue
+  chirurgien
+  nutritionniste
+  physiotherapeute
+  psychologue
+  sexologue
+  geriatre
+  allergologue
+  hematologue
+  nephrologue
+  pneumologue
+  dentiste
+  orthodontiste
+  autre
 }
 
 enum doctors_type_enum {
-  GENERAL_PRACTITIONER
-  SPECIALIST
-  SURGEON
+  doctor
+  clinique
+  hopital
 }
 
 enum hopitaux_type_enum {
-  PUBLIC
-  PRIVATE
+  doctor
+  clinique
+  hopital
 }
 
 enum instituts_medicaux_type_enum {
-  CLINIC
-  HOSPITAL
-  LABORATORY
+  doctor
+  clinique
+  hopital
 }
 
 enum lab_documents_status_enum {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
+  pending
+  in_progress
+  completed
+  cancelled
 }
 
 enum lab_requests_priority_enum {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
+  low
+  medium
+  high
 }
 
 enum lab_results_result_type_enum {
-  NORMAL
-  ABNORMAL
-  CRITICAL
+  analysis
+  xray
+  ctscan
 }
 
 enum patients_gender_enum {
-  MALE
-  FEMALE
-  OTHER
+  Male
+  Female
 }
 
 enum prescriptions_status_enum {
-  ACTIVE
-  COMPLETED
-  CANCELLED
+  Pending
+  Approved
+  Rejected
 }
 
 enum users_role_enum {
-  ADMIN
-  DOCTOR
-  PATIENT
-  LABORATORY
-  HOSPITAL
-  CLINIC
+  Patient
+  Doctor
+  Pharmacy
+  Laboratory
+  Insurance
+  Assistant
+  Admin
 }
 
 enum xray_results_result_type_enum {
-  NORMAL
-  ABNORMAL
-  CRITICAL
+  analysis
+  xray
+  ctscan
 }
 
 model verification_tokens {
