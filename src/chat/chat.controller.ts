@@ -1,10 +1,10 @@
 import {
   Controller, Get, Post, Body, Param, UseGuards, Req, Query,
   UploadedFiles, UseInterceptors, ParseUUIDPipe, ParseIntPipe, DefaultValuePipe,
-  BadRequestException, Delete, HttpCode, HttpStatus
+  BadRequestException, Delete, HttpCode, HttpStatus,
+  Res
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ChatService } from './chat.service';
 import {
   Message,
   PatientCentricConversation,
@@ -14,12 +14,13 @@ import {
 } from '../types/chat.types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SendMessageDto, AttachmentDto } from './dto/send-message.dto';
+import { ChatService } from './chat.service';
+import { Response } from 'express';
 
 @Controller('chat')
 @UseGuards(JwtAuthGuard)
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
-
 
   @Post('messages')
   async createMessageViaHttp(
@@ -33,7 +34,6 @@ export class ChatController {
     return this.chatService.createMessage(senderId, data);
   }
 
-
   @Post('messages/:messageId/read')
   async markMessageAsReadViaHttp(
     @Req() req,
@@ -44,59 +44,6 @@ export class ChatController {
       throw new BadRequestException('Doctor ID not found in token');
     }
     return this.chatService.markMessageAsRead(messageId, readerId);
-  }
-
-
-  @Get('messages')
-  async getMessagesViaHttp(
-    @Req() req,
-    @Query('doctorId', ParseUUIDPipe) otherDoctorId: string,
-    @Query('patientId', ParseUUIDPipe) patientId: string,
-    @Query('cursor') cursor?: string,
-    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
-  ) {
-    const userId = req.user.associated_id || req.user.associated_data?.id;
-    if (!userId) {
-      throw new BadRequestException('Doctor ID not found in token');
-    }
-    if (!patientId) {
-      throw new BadRequestException('Patient ID is required.');
-    }
-    return this.chatService.getMessages(
-      userId,
-      otherDoctorId,
-      patientId,
-      cursor,
-      limit,
-    );
-  }
-
-  @Get('conversations/patient-centric')
-  async getPatientCentricConversations(@Req() req): Promise<PatientCentricConversation[]> {
-    const doctorId = req.user.associated_id || req.user.associated_data?.id;
-    if (!doctorId) {
-      throw new BadRequestException('Doctor ID not found in token');
-    }
-    return this.chatService.getPatientCentricConversations(doctorId);
-  }
-
-  @Get('conversations/doctor-centric')
-  async getDoctorCentricConversations(@Req() req): Promise<DoctorCentricConversation[]> {
-    const doctorId = req.user.associated_id || req.user.associated_data?.id;
-    if (!doctorId) {
-      throw new BadRequestException('Doctor ID not found in token');
-    }
-    return this.chatService.getDoctorCentricConversations(doctorId);
-  }
-
-
-  @Get('conversations')
-  async getConversationsViaHttp(@Req() req): Promise<PatientCentricConversation[]> {
-    const doctorId = req.user.associated_id || req.user.associated_data?.id;
-    if (!doctorId) {
-      throw new BadRequestException('Doctor ID not found in token');
-    }
-    return this.chatService.getPatientCentricConversations(doctorId);
   }
 
   @Delete('messages/:messageId')
@@ -117,94 +64,103 @@ export class ChatController {
   }
 
 
-  @Post('upload')
-  @UseInterceptors(FilesInterceptor('files', 10)) // 'files' est le nom du champ, 10 max
-  async uploadMultipleFiles(
+
+  @Get('conversations/sender')
+  async getMessagesByDoctorSenderId(@Req() req): Promise<{
+    conversations: Array<{
+      patientId: string;
+      doctorReceiverId: string;
+      patient: any;
+      receiver: any;
+      lastMessage: Message;
+      unreadCount: number;
+      totalMessages: number;
+    }>
+  }> {
+    const doctorSenderId = req.user.associated_id || req.user.associated_data?.id;
+    if (!doctorSenderId) {
+      throw new BadRequestException('Doctor ID not found in token');
+    }
+    return this.chatService.getMessagesByDoctorSenderId(doctorSenderId);
+  }
+
+  @Get('conversations/verify/:patientId/:doctorReceiverId')
+  async verifyIfExistConv(
+    @Req() req,
+    @Param('patientId', ParseUUIDPipe) patientId: string,
+    @Param('doctorReceiverId', ParseUUIDPipe) doctorReceiverId: string,
+  ): Promise<{ exists: boolean }> {
+    const doctorSenderId = req.user.associated_id || req.user.associated_data?.id;
+    if (!doctorSenderId) {
+      throw new BadRequestException('Doctor ID not found in token');
+    }
+
+    const exists = await this.chatService.verifyIfExistConv(patientId, doctorSenderId, doctorReceiverId);
+    return { exists };
+  }
+
+
+  @Get('conversations/:patientId/:doctorReceiverId')
+  async getConvByDoctorSenderId(
+    @Req() req,
+    @Param('patientId', ParseUUIDPipe) patientId: string,
+    @Param('doctorReceiverId', ParseUUIDPipe) doctorReceiverId: string,
+    @Query('cursor') cursor?: string,
+    @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit?: number,
+  ): Promise<{
+    messages: Message[];
+    hasMore: boolean;
+    nextCursor?: string;
+    patient: any;
+    receiver: any;
+  }> {
+    const doctorSenderId = req.user.associated_id || req.user.associated_data?.id;
+    if (!doctorSenderId) {
+      throw new BadRequestException('Doctor ID not found in token');
+    }
+
+    return this.chatService.getConvByDoctorSenderId(
+      patientId,
+      doctorSenderId,
+      doctorReceiverId,
+      cursor,
+      limit
+    );
+  }
+
+
+  @Post('upload-local')
+  @UseInterceptors(FilesInterceptor('files', 10))
+  async uploadMultipleFilesLocal(
     @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<{ files: AttachmentDto[] }> {
     if (!files || files.length === 0) {
       throw new BadRequestException('No files uploaded.');
     }
-    const uploadedAttachments = await this.chatService.uploadAttachments(files);
+    const uploadedAttachments = await this.chatService.uploadAttachmentsLocal(files);
     return { files: uploadedAttachments };
   }
 
+  @Get('download/:attachmentId')
+  async downloadAttachment(
+    @Param('attachmentId', ParseUUIDPipe) attachmentId: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      const { filePath, filename, mimeType } = await this.chatService.getAttachmentById(attachmentId);
 
-  @Get('doctors/search')
-  async searchDoctors(
-    @Req() req,
-    @Query('term') searchTerm?: string,
-  ): Promise<{ doctors: Doctor[] }> {
-    const currentDoctorId = req.user.associated_id || req.user.associated_data?.id;
-    if (!currentDoctorId) {
-      throw new BadRequestException('Doctor ID not found in token');
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+      const fs = require('fs');
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+    } catch (error) {
+      if (error.status === 404) {
+        res.status(404).json({ message: 'File not found' });
+      } else {
+        res.status(500).json({ message: 'Error downloading file' });
+      }
     }
-    const doctors = await this.chatService.searchDoctors(currentDoctorId, searchTerm);
-    return { doctors };
-  }
-
-
-  @Get('patients/search')
-  async searchPatients(
-    @Query('term') searchTerm?: string,
-  ): Promise<{ patients: PatientInfo[] }> {
-    const patients = await this.chatService.searchPatients(searchTerm);
-    return { patients };
-  }
-
-  @Get('doctors/:doctorId')
-  async getDoctorDetails(
-    @Param('doctorId', ParseUUIDPipe) doctorId: string,
-  ): Promise<Doctor> {
-    // Rechercher le docteur spécifique en excluant le docteur actuel
-    const doctors = await this.chatService.searchDoctors('00000000-0000-0000-0000-000000000000', '');
-    const doctor = doctors.find(d => d.id === doctorId);
-    if (!doctor) {
-      throw new BadRequestException('Doctor not found');
-    }
-    return doctor;
-  }
-
-  @Get('patients/:patientId')
-  async getPatientDetails(
-    @Param('patientId', ParseUUIDPipe) patientId: string,
-  ): Promise<PatientInfo> {
-    const patients = await this.chatService.searchPatients(patientId);
-    const patient = patients.find(p => p.id === patientId);
-    if (!patient) {
-      throw new BadRequestException('Patient not found');
-    }
-    return patient;
-  }
-
-
-  @Get('stats')
-  async getConversationStats(@Req() req): Promise<{
-    totalConversations: number;
-    unreadMessages: number;
-    activePatients: number;
-    totalMessages: number;
-  }> {
-    const doctorId = req.user.associated_id || req.user.associated_data?.id;
-    if (!doctorId) {
-      throw new BadRequestException('Doctor ID not found in token');
-    }
-
-    const [patientCentric, doctorCentric] = await Promise.all([
-      this.chatService.getPatientCentricConversations(doctorId),
-      this.chatService.getDoctorCentricConversations(doctorId)
-    ]);
-
-    const totalConversations = patientCentric.length;
-    const unreadMessages = patientCentric.reduce((sum, conv) => sum + conv.unreadCount, 0);
-    const activePatients = new Set(patientCentric.map(conv => conv.patient.id)).size;
-    const totalMessages = doctorCentric.reduce((sum, conv) => sum + conv.totalMessageCount, 0);
-
-    return {
-      totalConversations,
-      unreadMessages,
-      activePatients,
-      totalMessages
-    };
   }
 }
