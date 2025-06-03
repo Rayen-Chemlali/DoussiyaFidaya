@@ -41,16 +41,28 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   private readonly logger = new Logger(ChatGateway.name);
-  // Map des docteurs connectés par doctor.id (associated_id du token)
+
+
+
   private connectedDoctors: Map<string, Socket> = new Map();
 
   constructor(
     private readonly chatService: ChatService,
   ) {}
 
+  // Le token passe en header
   async handleConnection(client: Socket) {
     try {
-      const token = client.handshake.auth.token || client.handshake.headers['authorization']?.split(' ')[1];
+      let token = client.handshake.headers['authorization']?.split(' ')[1];
+
+      if (!token) {
+        const cookies = client.handshake.headers.cookie;
+        if (cookies) {
+          const tokenMatch = cookies.match(/(?:^|;\s*)token=([^;]*)/);
+          token = tokenMatch ? decodeURIComponent(tokenMatch[1]) : undefined;
+        }
+      }
+
       if (!token) {
         this.logger.warn('Connection attempt without token.');
         client.disconnect(true);
@@ -132,28 +144,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const message = await this.chatService.createMessage(senderId, data);
 
-      const populatedMessage = { ...message };
-      if (populatedMessage.attachments && populatedMessage.attachments.length > 0) {
-        for (const att of populatedMessage.attachments) {
-          if (att.path && !att.url) {
-            att.url = await this.chatService.getSignedUrlForAttachment(att.path);
-          }
-        }
-      }
 
-      // Envoyer le message au destinataire s'il est connecté
       const receiverSocket = this.connectedDoctors.get(data.receiverId);
       if (receiverSocket) {
-        receiverSocket.emit('newMessage', populatedMessage);
+        receiverSocket.emit('newMessage', message);
         this.logger.log(`Message sent from ${senderId} to ${data.receiverId} for patient ${data.patientId}`);
       } else {
         this.logger.log(`Receiver ${data.receiverId} is offline for patient ${data.patientId}. Message stored in database.`);
-        // TODO: Trigger push notification
-        // await this.notificationService.sendChatPushNotification(data.receiverId, message);
       }
 
-      client.emit('messageSent', populatedMessage);
-      return populatedMessage;
+      client.emit('messageSent', message);
+      return message;
 
     } catch (error) {
       this.logger.error(`Failed to send message from ${client.data.doctorId} for patient ${data.patientId}`, error);
@@ -322,5 +323,94 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleGetOnlineDoctors(@ConnectedSocket() client: Socket): void {
     const onlineDoctorIds = Array.from(this.connectedDoctors.keys());
     client.emit('onlineDoctors', { doctorIds: onlineDoctorIds });
+  }
+
+  @SubscribeMessage('getConversations')
+  async handleGetConversations(@ConnectedSocket() client: Socket): Promise<any> {
+    try {
+      const doctorId = client.data.doctorId;
+      if (!doctorId) {
+        throw new WsException('Unauthorized: No doctorId found on socket.');
+      }
+
+      const result = await this.chatService.getMessagesByDoctorSenderId(doctorId);
+
+      client.emit('conversationList', result);
+      return result;
+    } catch (error) {
+      this.logger.error(`Failed to get conversations for doctor ${client.data.doctorId}`, error);
+      throw new WsException(error.message || 'Failed to get conversations');
+    }
+  }
+
+  @SubscribeMessage('getConversationMessages')
+  async handleGetConversationMessages(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: {
+      patientId: string,
+      doctorReceiverId: string,
+      cursor?: string,
+      limit?: number
+    }
+  ): Promise<any> {
+    try {
+      const doctorId = client.data.doctorId;
+      if (!doctorId) {
+        throw new WsException('Unauthorized: No doctorId found on socket.');
+      }
+
+      if (!data.patientId || !data.doctorReceiverId) {
+        throw new WsException('patientId and doctorReceiverId are required.');
+      }
+
+      const result = await this.chatService.getConvByDoctorSenderId(
+        data.patientId,
+        doctorId,
+        data.doctorReceiverId,
+        data.cursor,
+        data.limit || 50
+      );
+
+      client.emit('conversationMessages', result);
+      return result;
+    } catch (error) {
+      this.logger.error(`Failed to get conversation messages for doctor ${client.data.doctorId}`, error);
+      throw new WsException(error.message || 'Failed to get conversation messages');
+    }
+  }
+
+  @SubscribeMessage('checkConversationExists')
+  async handleCheckConversationExists(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { patientId: string, doctorReceiverId: string }
+  ): Promise<any> {
+    try {
+      const doctorId = client.data.doctorId;
+      if (!doctorId) {
+        throw new WsException('Unauthorized: No doctorId found on socket.');
+      }
+
+      if (!data.patientId || !data.doctorReceiverId) {
+        throw new WsException('patientId and doctorReceiverId are required.');
+      }
+
+      const exists = await this.chatService.verifyIfExistConv(
+        data.patientId,
+        doctorId,
+        data.doctorReceiverId
+      );
+
+      const result = {
+        exists,
+        patientId: data.patientId,
+        doctorReceiverId: data.doctorReceiverId
+      };
+
+      client.emit('conversationExistsResult', result);
+      return result;
+    } catch (error) {
+      this.logger.error(`Failed to check conversation existence for doctor ${client.data.doctorId}`, error);
+      throw new WsException(error.message || 'Failed to check conversation existence');
+    }
   }
 }
