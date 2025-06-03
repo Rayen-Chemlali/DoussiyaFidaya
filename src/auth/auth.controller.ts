@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/comm
 import { AuthService } from './auth.service';
 import { DoctorRegistrationInput } from './dtos/doctor-registration.input';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ResetPasswordDto } from './dtos/resetpassword.dto';
+import { LoginInputDto } from './dtos/login-input.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -39,14 +41,14 @@ export class AuthController {
     return this.authService.verifyResetPasswordMail(email, token);
   }
   @Post('resetPassword/:email')
-  async resetPassword(@Param('email') email: string, @Body() body: any) {
+  async resetPassword(@Param('email') email: string, @Body() body: ResetPasswordDto) {
     const token = body.token;
     const password = body.password;
     return this.authService.resetPassword(email, password, token);
   }
 
   @Post('login')
-  async login(@Body() body: any) {
+  async login(@Body() body: LoginInputDto) {
     const email = body.email;
     const password = body.password;
 
