@@ -9,7 +9,6 @@ export class LoggerMiddleware implements NestMiddleware {
     console.log('URL:', req.originalUrl);
     console.log('Headers:', req.headers);
     console.log('Body:', req.body);
-    console.dir(req.body.variables, { depth: null, colors: true });
     next();
   }
 }
