@@ -15,6 +15,7 @@ import { ChatModule } from './chat/chat.module';
 
 import { NotificationsModule } from './notifications/notifications.module';
 import { PrismaMiddlewareService } from './notifications/services/prisma-middleware.service';
+import { PrismaService } from './prisma/prisma.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,9 +24,9 @@ import { PrismaMiddlewareService } from './notifications/services/prisma-middlew
     }),
     GraphQLModule.forRootAsync<YogaDriverConfig>({
       driver: YogaDriver,
-      imports: [NotificationsModule],
-      inject: [PrismaMiddlewareService],
-      useFactory: (prismaMiddleware: PrismaMiddlewareService): YogaDriverConfig => ({
+      imports: [NotificationsModule,PrismaModule],
+      inject: [PrismaMiddlewareService, PrismaService],
+      useFactory: (prismaMiddleware: PrismaMiddlewareService,prisma:PrismaService): YogaDriverConfig => ({
         driver: YogaDriver,
         schema: buildSchemaSync({
           resolvers,
@@ -33,7 +34,6 @@ import { PrismaMiddlewareService } from './notifications/services/prisma-middlew
           emitSchemaFile: join(process.cwd(), 'src/schema.gql'),
         }),
         context: ({ req }) => {
-          const prisma = new PrismaClient();
           prismaMiddleware.applyMiddleware(prisma, req);
           const userId = req.user?.userId;
           return { req, prisma, userId };
